@@ -1,0 +1,31 @@
+# docker-compose.prod.yml
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      target: production # Use 'production' stage from client/Dockerfile (Nginx)
+    ports:
+      - '80:80' # Nginx serves on port 80
+    restart: always
+    environment:
+      - NODE_ENV=production
+    # If Nginx needs to be configured with runtime env vars (e.g., API URL), add them here.
+
+  backend:
+    command: npm start # Uses 'node index.js' (from server/package.json scripts)
+    restart: always
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - .env.prod # Load production environment variables for the backend
+    # ports: - "8080:8080" # Exposing backend directly might not be needed if behind a reverse proxy like Nginx
+
+  mongo:
+    restart: always
+    volumes:
+      - mongo-prod-data:/data/db # Use a separate named volume for prod data
+    environment: # Secure Production MongoDB credentials from .env.prod
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASS}
+    # ports: - "27017:27017" # Usually not exposed directly in production; access via backend service

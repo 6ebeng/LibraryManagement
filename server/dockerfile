@@ -1,0 +1,19 @@
+# server/Dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package.json ./
+COPY package-lock.json ./
+
+# Install all dependencies (including devDependencies like nodemon for development)
+RUN npm ci
+
+COPY . .
+
+# Port used by the server (from index.js: process.env.PORT || 8080)
+EXPOSE 8080
+
+# Default command for production (server/package.json -> "start": "node index.js")
+# For development, this will be overridden to 'npm run dev' (which uses nodemon)
+CMD ["npm", "start"]

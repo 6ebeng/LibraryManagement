@@ -1,0 +1,41 @@
+# docker-compose.yml (Base - common for dev and prod)
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      # 'target' (development/production) will be specified in dev/prod specific files
+    networks:
+      - app-network
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    networks:
+      - app-network
+    depends_on:
+      - mongo
+    environment: # Common environment structure, actual values from .env files
+      - PORT=8080 # Default port
+
+  mongo:
+    image: mongo:latest
+    # Volumes and specific env vars for mongo will be in dev/prod files
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  # Define named volumes in dev/prod files to keep data separate
+  mongo-dev-data:
+    driver: local
+  mongo-prod-data:
+    driver: local

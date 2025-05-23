@@ -1,0 +1,31 @@
+# client/Dockerfile
+
+# Stage 1: Base for development and build dependencies
+FROM node:18-alpine AS base
+WORKDIR /app
+COPY package.json ./
+COPY package-lock.json ./
+# Install all dependencies (including devDependencies for 'npm start')
+RUN npm ci
+
+# Stage 2: Development stage
+FROM base AS development
+# Copy source code (can be overridden by volume mount in docker-compose.dev.yml)
+COPY . .
+EXPOSE 3000
+# Default command for 'react-scripts start' (React Dev Server)
+CMD ["npm", "start"]
+
+# Stage 3: Build stage for production
+FROM base AS build-stage
+# Copy full source for build, if not already present from 'base' or if 'base' was minimal
+COPY . .
+RUN npm run build
+
+# Stage 4: Production stage (Nginx)
+FROM nginx:alpine AS production
+COPY --from=build-stage /app/build /usr/share/nginx/html
+# Ensure nginx.conf is in the client directory
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

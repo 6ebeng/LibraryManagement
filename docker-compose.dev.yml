@@ -1,0 +1,45 @@
+# docker-compose.dev.yml
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      target: development # Use 'development' stage from client/Dockerfile (npm start)
+    ports:
+      - '3000:3000' # React dev server runs on port 3000
+    volumes:
+      - ./client:/app # Mount client app code for live reloading
+      - /app/node_modules # Use node_modules from the image, not the host
+    command: npm start
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true # Often needed for hot-reloading in Docker
+      # If your client/src/constants.js uses an env var for the API URL:
+      # - REACT_APP_BACKEND_API_URL=http://backend:8080/api
+    # If client/package.json has "proxy": "http://backend:8080", then calls to /api/... should work.
+    # If client/src/constants.js hardcodes "http://localhost:8080/api", it will work because
+    # the 'backend' service is also mapped to localhost:8080 on the host.
+    env_file:
+      - .env.dev
+
+  backend:
+    ports:
+      - '8080:8080'
+    command: npm run dev # Uses nodemon for live reloading (from server/package.json scripts)
+    volumes:
+      - ./server:/app # Mount server app code for live reloading
+      - /app/node_modules # Use node_modules from the image, not the host
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - .env.dev
+
+  mongo:
+    ports: # Expose MongoDB port directly for easier access in development
+      - '27017:27017'
+    volumes:
+      - mongo-dev-data:/data/db # Use a separate named volume for dev data
+    environment: # Dev MongoDB credentials (can be simple)
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASS}
+    # env_file: .env.dev # if MONGO_USER/PASS are defined there for mongo service
