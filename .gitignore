@@ -1,0 +1,87 @@
+# .gitignore
+
+# Node.js and npm
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json # If you prefer to only commit package.json and let CI/CD generate lock files
+pnpm-lock.yaml # If using pnpm
+
+# Build directories
+build/
+dist/
+out/
+coverage/
+
+# Environment variables
+.env
+.env.*
+!.env.example # Include example env files if you have them
+
+# Log files
+*.log
+logs/
+*.log.*
+
+# OS-generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Editor directories and files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Create React App (client-specific, but can be in root .gitignore)
+# If client has its own .gitignore, these might be there too.
+client/build/
+client/node_modules/ # Typically covered by root node_modules/ if client is a workspace
+                     # but explicit is safer if client is a separate package.
+
+# Server-specific (if any, beyond common Node.js)
+# server/node_modules/ # Same as client/node_modules/
+
+# Docker related (optional, if you build images locally and don't want to track certain files)
+# .dockerignore should primarily handle Docker build context,
+# but if you have local Docker artifacts not meant for Git:
+# docker-compose.override.yml # If it contains local-only sensitive data and isn't versioned for team dev
+
+# Test reports
+junit.xml
+TESTS-*.xml
+
+# IDE specific files
+nbproject/ # NetBeans
+*.bak
+*.tmp
+
+# Debug files
+*.pid
+*.seed
+*.pid.lock
+
+# Optional: Dependency directories if not using standard node_modules
+# bower_components/
+# jspm_packages/
+
+# Optional: Yarn PnP files
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
