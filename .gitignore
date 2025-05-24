@@ -13,6 +13,7 @@ build/
 dist/
 out/
 coverage/
+docs/Tasks/
 
 # Environment variables
 .env
