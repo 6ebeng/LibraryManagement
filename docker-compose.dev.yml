@@ -6,7 +6,7 @@ services:
     build:
       target: development # Use 'development' stage from client/Dockerfile (npm start)
     ports:
-      - '3000:3000' # React dev server runs on port 3000
+      - '8000:8000' # React dev server runs on port 3000
     volumes:
       - ./client:/app # Mount client app code for live reloading
       - /app/node_modules # Use node_modules from the image, not the host
