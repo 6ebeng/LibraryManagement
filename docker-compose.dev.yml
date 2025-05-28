@@ -43,7 +43,7 @@ services:
       target: development # Use the development stage from client Dockerfile
     environment:
       - CHOKIDAR_USEPOLLING=true
-      - PORT=3000
+      - PORT=3000 # <--- Changed this from 8080 to 3000
     ports:
       - '3000:3000' # Host port 3000 maps to container port 3000
     volumes:

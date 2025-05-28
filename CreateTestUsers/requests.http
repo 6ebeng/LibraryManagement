@@ -1,0 +1,28 @@
+### Register a new admin
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Main",
+  "lastName": "Librarian",
+  "email": "mainLibrarian@example.com",
+  "password": "Password123!",
+  "name": "Main Librarian",
+  "isAdmin": true,
+  "photoUrl": "http://example.com/default.jpg"
+}
+
+
+### Register a new MEMBER user
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Test",
+  "lastName": "Member",
+  "email": "testmember@example.com",
+  "password": "MemberPass123!",
+  "name": "Test Member",
+  "isAdmin": false,
+  "photoUrl": "http://example.com/member.jpg"
+}

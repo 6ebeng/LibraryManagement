@@ -1,19 +1,20 @@
-# server/Dockerfile
-FROM node:18-alpine
-
+# Base image for production
+FROM node:18-alpine AS base
 WORKDIR /app
+COPY package*.json ./
+RUN npm install --production
 
-COPY package.json ./
-COPY package-lock.json ./
-
-# Install all dependencies (including devDependencies like nodemon for development)
-RUN npm ci
-
+# Stage for development
+FROM base AS development 
+ENV NODE_ENV=development
+RUN npm install
 COPY . .
+CMD ["npm", "run", "dev"]
 
-# Port used by the server (from index.js: process.env.PORT || 8080)
-EXPOSE 8080
-
-# Default command for production (server/package.json -> "start": "node index.js")
-# For development, this will be overridden to 'npm run dev' (which uses nodemon)
+# Stage for production (could be different or built upon base)
+FROM base AS production
+ENV NODE_ENV=production
+COPY . .
+# Ensure you only have production dependencies if you build from base and copied node_modules
+# Or copy from a builder stage that has all modules then prune devDependencies
 CMD ["npm", "start"]
