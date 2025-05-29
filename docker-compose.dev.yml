@@ -37,6 +37,7 @@ services:
     networks:
       - app-network
     command: sh -c "npm run dev & sleep 10 && npm run seed"
+    entrypoint: ['sh', '/app/entrypoint.sh']
 
   frontend:
     container_name: frontend
