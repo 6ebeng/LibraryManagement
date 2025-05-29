@@ -12,22 +12,18 @@ if (process.env.NODE_ENV !== 'production') {
 // Test Users Data
 const testUsers = [
 	{
-		name: 'Sarah Johnson',
-		email: 'librarian@library.com',
-		dob: new Date('1985-03-15'),
-		phone: '+1-555-0123',
-		isAdmin: true, // This is the librarian
-		photoUrl: 'https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face',
-		password: 'librarian123',
+		name: 'Main Librarian',
+		email: 'mainLibrarian@example.com',
+		isAdmin: true,
+		photoUrl: 'http://example.com/default.jpg',
+		password: 'Password123!',
 	},
 	{
-		name: 'John Smith',
-		email: 'member@library.com',
-		dob: new Date('1992-07-22'),
-		phone: '+1-555-0456',
-		isAdmin: false, // This is a regular member
-		photoUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-		password: 'member123',
+		name: 'Test Member',
+		email: 'testmember@example.com',
+		isAdmin: false,
+		photoUrl: 'http://example.com/member.jpg',
+		password: 'MemberPass123!',
 	},
 ];
 
