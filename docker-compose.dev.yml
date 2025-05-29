@@ -47,6 +47,7 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true
       - PORT=3000 # <--- Changed this from 8080 to 3000
+      - WATCHPACK_POLLING=true
     ports:
       - '3000:3000' # Host port 3000 maps to container port 3000
     volumes:
