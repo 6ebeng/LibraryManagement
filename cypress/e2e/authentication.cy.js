@@ -32,7 +32,7 @@ describe('E2E: Authentication & Authorization', () => {
 
 		it('TC_AUTH_REG_001: Successful new user (Member) registration by Librarian', () => {
 			// 1. Login as Librarian.
-			cy.loginAsLibrarian('librarian_username', 'librarian_password'); // TODO: Use valid seeded librarian credentials
+			cy.loginAsLibrarian('mainLibrarian@example.com', 'Password123!'); // TODO: Use valid seeded librarian credentials
 
 			// 2. Navigate to 'User Management' or 'Add User' section.
 			cy.visit('/admin/users/add'); // TODO: Adjust path to your 'Add User' page
@@ -61,7 +61,7 @@ describe('E2E: Authentication & Authorization', () => {
 		});
 
 		it('TC_AUTH_REG_002: Attempt to register a new user with an existing username', () => {
-			cy.loginAsLibrarian('librarian_username', 'librarian_password');
+			cy.loginAsLibrarian('mainLibrarian@example.com', 'Password123!');
 			cy.visit('/admin/users/add');
 
 			// TODO: Ensure 'existing_e2e_user' is already in the database for this test
@@ -76,7 +76,7 @@ describe('E2E: Authentication & Authorization', () => {
 		});
 
 		it('TC_AUTH_REG_003: Attempt to register a new user with missing required fields (e.g., password)', () => {
-			cy.loginAsLibrarian('librarian_username', 'librarian_password');
+			cy.loginAsLibrarian('mainLibrarian@example.com', 'Password123!');
 			cy.visit('/admin/users/add');
 
 			cy.get('[data-testid="username-input"]').type(`missing_fields_user_${testTimestamp}`);
@@ -89,7 +89,7 @@ describe('E2E: Authentication & Authorization', () => {
 		});
 
 		it('TC_AUTH_REG_004: Attempt to register a new user with invalid data format (e.g., email)', () => {
-			cy.loginAsLibrarian('librarian_username', 'librarian_password');
+			cy.loginAsLibrarian('mainLibrarian@example.com', 'Password123!');
 			cy.visit('/admin/users/add');
 
 			cy.get('[data-testid="username-input"]').type(`invalid_email_user_${testTimestamp}`);
@@ -108,8 +108,8 @@ describe('E2E: Authentication & Authorization', () => {
 
 		it('TC_AUTH_LOGIN_001: Successful login with valid Librarian credentials', () => {
 			cy.visit('/login'); // TODO: Adjust path to your login page
-			cy.get('[data-testid="username-input"]').type('librarian_username'); // TODO: Use valid seeded librarian credentials
-			cy.get('[data-testid="password-input"]').type('librarian_password');
+			cy.get('[data-testid="username-input"]').type('mainLibrarian@example.com'); // TODO: Use valid seeded librarian credentials
+			cy.get('[data-testid="password-input"]').type('Password123!');
 			cy.get('button[type="submit"][data-testid="login-submit-button"]').click();
 
 			// Expected Results:
@@ -179,7 +179,7 @@ describe('E2E: Authentication & Authorization', () => {
 
 	describe('User Logout', () => {
 		it('TC_AUTH_LOGOUT_001: Successful logout for a logged-in Librarian', () => {
-			cy.loginAsLibrarian('librarian_username', 'librarian_password');
+			cy.loginAsLibrarian('mainLibrarian@example.com', 'Password123!');
 			cy.url().should('include', '/admin/dashboard'); // Verify login
 
 			cy.get('[data-testid="logout-button"]').click(); // TODO: Adjust logout button selector
@@ -207,7 +207,7 @@ describe('E2E: Authentication & Authorization', () => {
 
 	describe('Role-Based Access Control (RBAC)', () => {
 		it('TC_AUTH_RBAC_001: Verify Librarian can access Librarian-specific features', () => {
-			cy.loginAsLibrarian('librarian_username', 'librarian_password');
+			cy.loginAsLibrarian('mainLibrarian@example.com', 'Password123!');
 
 			// Attempt to navigate to 'User Management' section.
 			cy.visit('/admin/users'); // TODO: Adjust path
