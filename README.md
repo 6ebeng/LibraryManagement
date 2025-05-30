@@ -321,11 +321,10 @@ Contact authors if you need help or run into any issues.
 
 ## 👥 Authors
 
-- Sandul Renuja | 2020/CS/054 - 2020cs054@stu.ucsc.cmb.ac.lk
-- Abdullah Jasmin | 2020/CS/002 - 2020cs002@stu.ucsc.cmb.ac.lk
-- Ravindu Wegiriya | 2020/CS/204 - 2020cs204@stu.ucsc.cmb.ac.lk
-- Kaveesha Muthukuda | 2020/CS/118 - 2020cs118@stu.ucsc.cmb.ac.lk
-- Induwara Pathirana | 2020/CS/126 - 2020cs126@stu.ucsc.cmb.ac.lk
+- Tishko Salah | SE507 | 02-24-00022 - tishko.salah@ukh.edu.krd
+- Yassin Hussein | SE507 | 02-24-00221 - yassin.hussein@ukh.edu.krd
+- Sara Zuhair | SE507 | 02-24-00024 - sara.zuhair@ukh.edu.krd
+- Ravyar Barzan | SE507 | 02-24-00164 - ravyar.barzan@ukh.edu.krd
 
 <!-- VERSION HISTORY -->
 
