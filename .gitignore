@@ -86,3 +86,10 @@ nbproject/ # NetBeans
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
+
+
+# Ignore tests folder except .tex and .pdf files
+tests/*
+!tests/**/*.tex
+!tests/**/*.pdf
+
