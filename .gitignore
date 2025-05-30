@@ -16,9 +16,9 @@ coverage/
 docs/Tasks/
 
 # Environment variables
-.env
-.env.*
-!.env.example # Include example env files if you have them
+# .env
+# .env.*
+# !.env.example # Include example env files if you have them
 
 # Log files
 *.log
