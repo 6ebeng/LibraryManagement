@@ -2,7 +2,7 @@
 
 **Document Version:** 1.0
 **Creation Date:** 2025-05-30
-**Author:** 6ebeng (as Coder)
+**Author:** Tishko and Yassin (as Coder)
 **Phase:** 2
 **Task:** 2.1 Functional: Authentication Test Design (Coder's Technical Review & Enhancement)
 **Basis:**
