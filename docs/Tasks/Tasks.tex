@@ -1,0 +1,203 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+% \usepackage{pgfgantt} % Removed as Gantt chart is being removed - RE-ENABLING FOR THIS FIX
+\usepackage{pgfgantt} % Re-enabled for Gantt chart fix
+\usepackage{geometry}
+\usepackage{longtable}
+\usepackage{array} % For better column definitions in longtable
+\usepackage{pdflscape} % Can assist PDF viewers with page rotation
+\usepackage{helvet} % Using a sans-serif font for better readability
+\usepackage{enumitem} % Required for itemize and enumerate options
+\renewcommand{\familydefault}{\sfdefault}
+
+% This line sets the ENTIRE document to landscape orientation
+\geometry{left=0.5cm, right=1cm, top=1.5cm, bottom=1.5cm, landscape} 
+
+\title{Library Management System - Software Testing Plan and Timeline \\ \large SE507 - Group Project - Spring 2025}
+\author{Student Group (Replace with Your Team Name/Members)}
+\date{May 24, 2025 (Adjust as needed)}
+
+% Define a new counter for phases
+\newcounter{phasecounter}
+\renewcommand{\thephasecounter}{\arabic{phasecounter}}
+
+\begin{document}
+\maketitle
+\begin{center}
+    \textbf{Note:} This document provides an illustrative plan. Actual dates and durations should be adjusted by the team. The project timeline assumes a start in early March 2025 and submission by June 15, 2025.
+\end{center}
+
+\section*{Work Breakdown Structure - Phases}
+
+\begin{itemize}[leftmargin=*] % Main Phases as an unnumbered list
+    \item \stepcounter{phasecounter}\textbf{Phase \thephasecounter: Planning \& Initial Static Testing}
+        \begin{enumerate}[label=\thephasecounter.\arabic*., labelindent=1em, leftmargin=*] % Sub-tasks numbered with phase
+            \item Understand SRS \& Coursework Requirements
+            \item Develop Detailed Test Plan (incl. techniques, criteria) \& Task Distribution
+            \item VIII. Static Testing: Documentation Review (SRS, Test Plan)
+            \item VIII. Static Testing: Initial Code Review Setup \& Process Definition
+            \item \textbf{Milestone:} P1 Complete: Test Plan Finalized
+        \end{enumerate}
+
+    \item \stepcounter{phasecounter}\textbf{Phase \thephasecounter: Core Functional \& API Test Design \& Execution}
+        \begin{enumerate}[label=\thephasecounter.\arabic*., labelindent=1em, leftmargin=*]
+            \item I.A Functional: Authentication Test Design (Non-Coders)
+            \item I.B Functional: Entity Mgt. (incl. Data Integrity \& Constraint) Test Design (Non-Coders)
+            \item I.C-D Functional: Feature \& Use Case (incl. Error Handling) Test Design (Non-Coders)
+            \item I.E Functional: State Transition Test Design (Non-Coders)
+            \item II. API Test Scenario Design (Non-Coders)
+            \item II. API Test Automation Setup \& Initial Scripts (Coders)
+            \item I. Functional Test Execution \& Defect Reporting (Non-Coders)
+            \item II. API Test Execution (Manual \& Automated) (Team)
+            \item \textbf{Milestone:} P2 Complete: Core Functional/API Tests Executed
+        \end{enumerate}
+
+    \item \stepcounter{phasecounter}\textbf{Phase \thephasecounter: White-Box \& Non-Functional Testing}
+        \begin{enumerate}[label=\thephasecounter.\arabic*., labelindent=1em, leftmargin=*]
+            \item III. White-Box Test Planning \& Unit Test Development (Coders)
+            \item III. White-Box Test Execution \& Code Coverage Analysis (e.g., Decision, Path) (Coders)
+            \item IV.A Security Test Design \& Execution (Team)
+            \item IV.B Usability Test Design \& Execution (Non-Coders)
+            \item IV.C Performance (incl. Basic Network Conditions) Test Design \& Execution (Team)
+            \item IV.E Browser Compatibility Testing (Non-Coders)
+            \item VIII. Static Testing: Ongoing Code Reviews (Team)
+            \item \textbf{Milestone:} P3 Complete: White-Box/NFR Tests Executed
+        \end{enumerate}
+
+    \item \stepcounter{phasecounter}\textbf{Phase \thephasecounter: Integration \& Early Regression Testing}
+        \begin{enumerate}[label=\thephasecounter.\arabic*., labelindent=1em, leftmargin=*]
+            \item V. Integration Test Scenario Design (Non-Coders)
+            \item V. Integration Test Execution (Team)
+            \item VI. Regression Test Suite Development (Manual - Non-Coders)
+            \item VI. Regression Test Suite Development (Automated - Coders)
+            \item VI. Early Regression Test Cycles (Team)
+            \item \textbf{Milestone:} P4 Complete: Integration \& Initial Regression Done
+        \end{enumerate}
+
+    \item \stepcounter{phasecounter}\textbf{Phase \thephasecounter: System Changes, Final Testing \& Report}
+        \begin{enumerate}[label=\thephasecounter.\arabic*., labelindent=1em, leftmargin=*]
+            \item Suggest, Implement \& Test System Changes (Team)
+            \item VI. Final Regression Testing Cycles (Team)
+            \item VII. Installation/Deployment Testing (Team)
+            \item VIII. Static Testing: Final Documentation Review (Team)
+            \item Prepare Final Report \& Presentation (Team)
+            \item \textbf{Milestone:} Project Submission
+        \end{enumerate}
+\end{itemize}
+
+% Gantt Chart Section - This will also be on a landscape page
+% \newpage % Start Gantt on a new page for clarity
+% \section*{Project Timeline Overview}
+% \begin{ganttchart}[
+%     vgrid,
+%     hgrid,
+%     bar/.append style={fill=blue!50},
+%     bar incomplete/.append style={fill=orange!50},
+%     group/.append style={fill=green!30},
+%     milestone/.append style={fill=red!70, rounded corners=5pt},
+%     title label font=\bfseries,
+%     x unit=0.15cm, % Width of a single day - FURTHER REDUCED VALUE
+%     time slot format=little-endian,
+%     % calendar week text={\small W{##1}}, % Removed weekly display
+%     today=2025-05-24, 
+%     today label={Today}
+%     ]{2025-03-03}{2025-06-15} % Project start and end dates
+
+%     \gantttitlecalendar{year, month=name} \\ % Simplified calendar display
+
+%     % Phase 1: Planning, Setup & Initial Static Testing
+%     \ganttgroup[group/.append style={fill=cyan!30}]{Phase 1: Planning \& Initial Static Testing}{2025-03-03}{2025-03-16} \\
+%     \ganttbar[bar/.append style={fill=cyan!60}]{Understand SRS \& Coursework Req.}{2025-03-03}{2025-03-07} \\
+%     \ganttbar[bar/.append style={fill=cyan!60}]{Develop Detailed Test Plan \& Task Distribution}{2025-03-05}{2025-03-12} \\
+%     \ganttbar[bar/.append style={fill=cyan!60}]{VIII. Static Testing: Documentation Review (SRS, Plan)}{2025-03-10}{2025-03-16} \\
+%     \ganttbar[bar/.append style={fill=cyan!60}]{VIII. Static Testing: Initial Code Review Setup}{2025-03-12}{2025-03-16} \\
+%     \ganttmilestone[milestone/.append style={fill=cyan!80}]{P1 Complete: Test Plan Finalized}{2025-03-16} \\
+
+%     % Phase 2: Core Functional & API Test Design & Execution
+%     \ganttgroup[group/.append style={fill=blue!20}]{Phase 2: Core Functional \& API Test Design \& Execution}{2025-03-17}{2025-04-27} \\
+%     \ganttbar[bar/.append style={fill=blue!40}]{I.A Functional: Auth. Test Design (Non-Coders)}{2025-03-17}{2025-03-23} \\
+%     \ganttbar[bar/.append style={fill=blue!40}]{I.B Functional: Entity Mgt. Test Design (Non-Coders)}{2025-03-17}{2025-03-30} \\
+%     \ganttbar[bar/.append style={fill=blue!40}]{I.C-D Functional: Feature & Use Case Test Design (Non-Coders)}{2025-03-24}{2025-04-06} \\
+%     \ganttbar[bar/.append style={fill=blue!40}]{I.E Functional: State Transition Test Design (Non-Coders)}{2025-03-31}{2025-04-06} \\
+%     \ganttbar[bar/.append style={fill=blue!60}]{II. API Test Scenario Design (Non-Coders)}{2025-03-24}{2025-04-06} \\
+%     \ganttbar[bar/.append style={fill=blue!60}]{II. API Test Automation Setup \& Initial Scripts (Coders)}{2025-03-31}{2025-04-13} \\
+%     \ganttbar[bar incomplete/.append style={fill=blue!40}]{I. Functional Test Execution \& Defect Reporting (Non-Coders)}{2025-04-07}{2025-04-27} \\
+%     \ganttbar[bar incomplete/.append style={fill=blue!60}]{II. API Test Execution (Manual & Automated) (Team)}{2025-04-14}{2025-04-27} \\
+%     \ganttmilestone[milestone/.append style={fill=blue!70}]{P2 Complete: Core Functional/API Tests Executed}{2025-04-27} \\
+
+%     % Phase 3: White-Box & Non-Functional Test Design & Execution
+%     \ganttgroup[group/.append style={fill=orange!20}]{Phase 3: White-Box \& Non-Functional Testing}{2025-04-07}{2025-05-18} \\
+%     \ganttbar[bar/.append style={fill=orange!40}]{III. White-Box Test Planning \& Unit Test Dev. (Coders)}{2025-04-07}{2025-04-27} \\
+%     \ganttbar[bar incomplete/.append style={fill=orange!40}]{III. White-Box Test Execution \& Coverage Analysis (Coders)}{2025-04-28}{2025-05-11} \\
+%     \ganttbar[bar/.append style={fill=orange!60}]{IV.A Security Test Design \& Execution (Team)}{2025-04-21}{2025-05-04} \\
+%     \ganttbar[bar/.append style={fill=orange!60}]{IV.B Usability Test Design \& Execution (Non-Coders)}{2025-04-21}{2025-05-04} \\
+%     \ganttbar[bar/.append style={fill=orange!60}]{IV.C Performance (Basic) Test Design \& Execution (Team)}{2025-05-05}{2025-05-11} \\
+%     \ganttbar[bar/.append style={fill=orange!60}]{IV.E Browser Compatibility Testing (Non-Coders)}{2025-05-05}{2025-05-11} \\
+%     \ganttbar[bar/.append style={fill=orange!40}]{VIII. Static Testing: Ongoing Code Reviews (Coders)}{2025-04-07}{2025-05-18} \\ % Corrected from (Coders) to (Team) as per previous WBS
+%     \ganttmilestone[milestone/.append style={fill=orange!70}]{P3 Complete: White-Box/NFR Tests Executed}{2025-05-18} \\
+
+%     % Phase 4: Integration & Early Regression Testing
+%     \ganttgroup[group/.append style={fill=purple!20}]{Phase 4: Integration \& Early Regression}{2025-04-28}{2025-05-25} \\
+%     \ganttbar[bar/.append style={fill=purple!40}]{V. Integration Test Scenario Design (Non-Coders)}{2025-04-28}{2025-05-04} \\
+%     \ganttbar[bar incomplete/.append style={fill=purple!40}]{V. Integration Test Execution (Team)}{2025-05-05}{2025-05-18} \\
+%     \ganttbar[bar/.append style={fill=purple!60}]{VI. Regression Test Suite Development (Manual - Non-Coders)}{2025-05-05}{2025-05-18} \\
+%     \ganttbar[bar/.append style={fill=purple!60}]{VI. Regression Test Suite Development (Automated - Coders)}{2025-05-05}{2025-05-25} \\
+%     \ganttbar[bar incomplete/.append style={fill=purple!60}]{VI. Early Regression Test Cycles (Team)}{2025-05-12}{2025-05-25} \\
+%     \ganttmilestone[milestone/.append style={fill=purple!70}]{P4 Complete: Integration & Initial Regression Done}{2025-05-25} \\
+
+%     % Phase 5: System Changes, Final Regression, Documentation & Reporting
+%     \ganttgroup[group/.append style={fill=red!20}]{Phase 5: System Changes, Final Testing \& Report}{2025-05-19}{2025-06-15} \\
+%     \ganttbar[bar/.append style={fill=red!40}]{Suggest, Implement \& Test System Changes (Team)}{2025-05-19}{2025-06-01} \\
+%     \ganttbar[bar incomplete/.append style={fill=red!60}]{VI. Final Regression Testing Cycles (Team)}{2025-06-02}{2025-06-08} \\
+%     \ganttbar[bar/.append style={fill=red!40}]{VII. Installation/Deployment Testing (Team)}{2025-06-02}{2025-06-08} \\
+%     \ganttbar[bar/.append style={fill=red!40}]{VIII. Static Testing: Final Documentation Review (Team)}{2025-06-02}{2025-06-12} \\
+%     \ganttbar[bar/.append style={fill=red!60}]{Prepare Final Report \& Presentation (Team)}{2025-05-26}{2025-06-13} \\
+%     \ganttmilestone[milestone/.append style={fill=red!80}]{Project Submission}{2025-06-15} \\
+
+% \end{ganttchart}
+
+\newpage
+\section*{Detailed Task Assignments Overview}
+The following table provides a detailed breakdown of tasks. Refer to the Gantt chart for timeline allocation. The "Primary Responsibility (Group)" indicates the lead, but collaboration is expected.
+
+\tiny % Make font very small for the table
+% Adjusted column widths to better fit a landscape page (total ~25.7cm with 2cm margins each side)
+\begin{longtable}{|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{6cm}|>{\raggedright\arraybackslash}p{6cm}|>{\raggedright\arraybackslash}p{5.2cm}|}
+\caption{Detailed Task Distribution}\label{tab:task_details}\\
+\hline
+\textbf{Main Testing Category} & \textbf{Sub-Category / Specific Focus} & \textbf{Primary Resp. (Group)} & \textbf{Tasks for Coders} & \textbf{Tasks for Non-Coders/Spec. Experts} & \textbf{Notes/Collaboration} \\
+\hline
+\endfirsthead
+\multicolumn{6}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline
+\textbf{Main Testing Category} & \textbf{Sub-Category / Specific Focus} & \textbf{Primary Resp. (Group)} & \textbf{Tasks for Coders} & \textbf{Tasks for Non-Coders/Spec. Experts} & \textbf{Notes/Collaboration} \\
+\hline
+\endhead
+\hline \multicolumn{6}{|r|}{{Continued on next page}} \\ \hline
+\endfoot
+\hline
+\endlastfoot
+I. Functional Testing (Black-Box - SRS based) & Overall Lead \& Manual Execution & Non-Coders/ Specification Experts & "Review \& Enhance Test Cases; Troubleshoot \& Verify Defects; Identify Complex Scenarios; Support Test Data Generation" & "Lead Test Case Design (Sections I.A - I.D); Lead State Transition Testing Design (Section I.E); Lead Manual Test Execution; Lead Defect Reporting; Lead Test Data Preparation" & "Coders actively contribute to complex scenario identification and troubleshooting. Techniques: Equivalence Partitioning, Boundary Value Analysis, Error Guessing, State Transition Testing." \\ \hline
+I. Functional Testing (Black-Box - SRS based) & A. Authentication \& Authorization & Non-Coders/ Specification Experts & "Review test cases for technical edge cases (e.g. session handling details)." & "Design and execute tests for User Registration (Librarian creating users - uniqueness, required fields, invalid formats); User Login (valid/invalid credentials, redirection); User Logout; Role-Based Access Control (Librarian vs. Member access to features)." &  \\ \hline
+I. Functional Testing (Black-Box - SRS based) & B. Entity Management (CRUD Operations - Books, Authors, Genres, Users, Borrowals, Reviews) & Non-Coders/ Specification Experts & "Review CRUD test cases for data integrity implications from backend perspective." & "Design and execute tests for Create (valid, invalid, constraints, defaults); Read (list all, specific item, empty/non-existent); Update (valid, invalid, non-existent, constraints); Delete (valid, non-existent, referential integrity considerations)." &  \\ \hline
+I. Functional Testing (Black-Box - SRS based) & C. Specific Feature Testing (Dashboard, Book Mgt, Borrowal Mgt, User Mgt, Review Mgt) & Non-Coders/ Specification Experts & "Provide insights if specific feature behavior is tied to complex backend logic." & "Design and execute tests for Librarian Dashboard data display; Book Management (linking authors/genres, availability); Borrowal Management (status updates, due dates, history filtering); User Management (role updates); Review Management (ratings, CRUD)." &  \\ \hline
+I. Functional Testing (Black-Box - SRS based) & D. Use Case Testing (SRS Section 7 and implicit use cases) & Non-Coders/ Specification Experts & "Assist in understanding backend responses for alternative/exception flows." & "Design and execute tests for Main Flows and all specified Alternative/Exception Flows for each use case, ensuring graceful error handling and informative messages." &  \\ \hline
+I. Functional Testing (Black-Box - SRS based) & E. State Transition Testing & Non-Coders/ Specification Experts & "Review state models for technical correctness if backend implements explicit state machines." & "Identify entities/features with states (Borrowal Status, Book Availability, User Session); Design and execute tests for every valid/invalid transition and sequences of transitions." &  \\ \hline
+II. API Testing & Overall & Balanced (Coders lead automation, Non-Coders lead user-centric scenario design) & "Lead API Test Automation (scripts for core functionalities, regression, complex validation); Technical API Analysis (endpoints, specs, security); Execute \& Debug Automated API Tests; Advanced Postman Usage." & "Lead API Test Scenario Design (User-Centric - based on SRS \& user workflows); Manual API Testing (Postman for designed scenarios, request/response validation); Define API Test Data; Review API Test Results." & "Collaboration on test data definition. Non-Coders can execute pre-written Postman collections." \\ \hline
+III. White-Box Testing (Logic Coverage - Based on Source Code) & Overall & Coders & "Source Code Analysis \& Coverage Planning (Decision/Condition, Path, Data Flow); Unit Test Development \& Execution (Jest for frontend/backend); Unit Test Maintenance." & "Participate in discussions to understand unit test goals; Review unit test summaries/reports to understand component health related to features they are functionally testing." & "Focus on critical modules, controllers, models, complex logic." \\ \hline
+IV. Non-Functional Testing & A. Security Testing & Balanced & "Lead technical security testing: code reviews for vulnerabilities, server-side validation testing via API, penetration testing basics, verifying security configurations." & "Lead user-facing \& black-box security testing: attempt XSS in UI, test access controls from user roles, check for sensitive data exposure in UI, verify password policy enforcement from UI." &  \\ \hline
+IV. Non-Functional Testing & B. Usability Testing & Non-Coders/ Specification Experts & "Participate as 'users' in informal usability tests if needed; provide technical feedback on feasibility of usability suggestions." & "Design usability scenarios; conduct heuristic evaluations or informal tests; evaluate UI/UX (intuitiveness, consistency, messages, navigation, responsiveness, learnability, efficiency); document issues and suggestions." &  \\ \hline
+IV. Non-Functional Testing & C. Performance Testing (Basic) & Balanced & "Conduct basic API response time checks for critical endpoints (Postman/scripts); Investigate significant slowdowns reported by Non-Coders." & "Systematically observe, document, and report on perceived page load times and UI responsiveness for a predefined set of common user actions under varied conditions (e.g., few vs. many records)." &  \\ \hline
+IV. Non-Functional Testing & D. Maintainability & Shared & "Primarily assessed via Static Testing (Code Reviews - see Section VIII)." & "Primarily assessed via Static Testing (Documentation Reviews - see Section VIII)." &  \\ \hline
+IV. Non-Functional Testing & E. Browser Compatibility Testing & Non-Coders/ Specification Experts & "Assist in debugging browser-specific CSS/JS issues identified." & "Lead manual testing of core functionalities and UI rendering consistency across specified browsers (Chrome, Firefox, Edge, Safari); Document inconsistencies." &  \\ \hline
+V. Integration Testing & Overall & Balanced (Coders lead technical setup; Non-Coders lead end-to-end scenario design \& execution) & "Lead Technical Setup \& Debugging for integration tests; Test Backend Module \& Database Integration." & "Lead Design of End-to-End User Scenarios spanning multiple features; Execute User-Centric Integration Tests verifying data consistency and workflow integrity." &  \\ \hline
+VI. Regression Testing & Overall & Shared and Balanced & "Lead Development \& Maintenance of Automated Regression Suite (unit, API); Analyze Automated Test Failures." & "Lead Maintenance \& Execution of Manual Regression Suite (critical user workflows, previously found defects); Prioritize Manual Regression Tests." & "Whole team collaborates on regression strategy, scope, and review of results. New tests for changes are added to both manual/automated suites." \\ \hline
+VII. Installation/Deployment Testing & Overall & Balanced & "Lead verification of Docker setup, build processes, deployment scripts; Troubleshoot technical deployment issues." & "Lead execution of comprehensive smoke tests and basic acceptance tests from a user perspective after each deployment." &  \\ \hline
+VIII. Static Testing (Non-Execution Based) & Code Reviews/Inspections & Coders & "Lead technical reviews of code (logic, security, efficiency, standards); Prepare code for review." & "Actively participate in code reviews focusing on readability, alignment with SRS, understandability of comments, user story alignment. Can use checklists." &  \\ \hline
+VIII. Static Testing (Non-Execution Based) & Walkthroughs & Coders & "Lead walkthroughs of their code." & "Actively question and seek clarification during walkthroughs to ensure alignment with requirements." &  \\ \hline
+VIII. Static Testing (Non-Execution Based) & Documentation Review (SRS, Test Plan, Test Cases, Final Report) & Non-Coders/ Specification Experts & "Review documentation for technical accuracy; Contribute to sections detailing technical testing efforts." & "Lead the review of all project documentation for clarity, consistency, completeness, accuracy; Drive compilation of test-related sections of the final report." &  \\ \hline
+
+\end{longtable}
+
+\end{document}
