@@ -88,8 +88,58 @@ nbproject/ # NetBeans
 .pnp.*
 
 
-# Ignore tests folder except .tex and .pdf files
-tests/*
-!tests/**/*.tex
-!tests/**/*.pdf
+# LaTeX
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.fmt
+*.fot
+*.cb
+*.cb2
+*.figlist
+*.makefile
+*.fls_latexmk
+*.glg
+*.glo
+*.gls
+*.idx
+*.ilg
+*.ind
+*.ist
+*.lof
+*.log
+*.lot
+*.out
+*.toc
+*.acn
+*.acr
+*.alg
+*.glsdefs
+*.lso
+*.nlo
+*.nls
+*.slg
+*.syg
+*.syi
+*.synctex
+*.synctex(busy)
+*.synctex.gz
+*.synctex.gz(busy)
+*.pdfsync
+*.run.xml
+*.nav
+*.snm
+*.vrb
+*.xdy
+*.xyc
+*.xyd
+*-blx.aux
+*-blx.bib
+*.brf
+*.thm
+*.listing
+*.lol
 

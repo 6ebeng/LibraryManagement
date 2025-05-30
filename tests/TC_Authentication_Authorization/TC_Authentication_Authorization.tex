@@ -1,0 +1,243 @@
+\documentclass[10pt, a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{longtable}
+\usepackage{array} % For better column definitions in longtable
+\usepackage{enumitem} % Required for itemize and enumerate options
+\usepackage{helvet} % Using a sans-serif font for better readability
+\renewcommand{\familydefault}{\sfdefault}
+
+\geometry{left=0.5cm, right=0.5cm, top=2cm, bottom=2cm}
+
+\title{Functional Test Cases: Authentication \& Authorization \\ \large Library Management System}
+\author{Test Design Team (Non-Coders/Specification Experts)}
+\date{May 30, 2025}
+
+\begin{document}
+\maketitle
+\begin{center}
+    \textbf{Note:} These test cases are designed from a black-box, user-centric perspective. Actual results and status are to be filled during test execution. Refer to the SRS for complete requirements.
+\end{center}
+
+\section*{I.A Functional Test Cases: Authentication \& Authorization}
+
+\begin{longtable}{|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{5cm}|>{\raggedright\arraybackslash}p{5cm}|}
+\caption{Authentication and Authorization Test Cases}\label{tab:auth_test_cases}\\
+\hline
+\textbf{Test Case ID} & \textbf{Test Title} & \textbf{Test Steps} & \textbf{Expected Results} \\
+\hline
+\endfirsthead
+\multicolumn{4}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline
+\textbf{Test Case ID} & \textbf{Test Title} & \textbf{Test Steps} & \textbf{Expected Results} \\
+\hline
+\endhead
+\hline \multicolumn{4}{|r|}{{Continued on next page}} \\ \hline
+\endfoot
+\hline
+\endlastfoot
+
+% User Registration (by Librarian)
+\multicolumn{4}{|l|}{\textbf{Sub-Section: User Registration (by Librarian)}} \\ \hline
+TC\_AUTH\_REG\_001 & Successful new user (Member) registration by Librarian & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Navigate to 'User Management' or 'Add User' section.
+        \item Fill in all required fields with valid and unique data for a new 'Member' (e.g., username, password, email, full name).
+        \item Submit the registration form.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item System accepts the data.
+        \item A success message "User registered successfully" (or similar) is displayed.
+        \item The new user appears in the list of users.
+        \item The new user can subsequently log in (to be tested in Login cases).
+    \end{itemize} \\ \hline
+TC\_AUTH\_REG\_002 & Attempt to register a new user with an existing username & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Navigate to 'Add User' section.
+        \item Fill in user details, using a username that already exists in the system.
+        \item Submit the registration form.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item System rejects the registration.
+        \item An appropriate error message is displayed (e.g., "Username already exists").
+        \item The user is not created.
+    \end{itemize} \\ \hline
+TC\_AUTH\_REG\_003 & Attempt to register a new user with missing required fields & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Navigate to 'Add User' section.
+        \item Fill in user details but leave one or more mandatory fields blank (e.g., password or email).
+        \item Submit the registration form.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item System rejects the registration.
+        \item An appropriate error message is displayed, indicating which fields are required.
+        \item The user is not created.
+    \end{itemize} \\ \hline
+TC\_AUTH\_REG\_004 & Attempt to register a new user with invalid data format (e.g., email) & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Navigate to 'Add User' section.
+        \item Fill in user details, providing an incorrectly formatted email address (e.g., "usertest.com").
+        \item Submit the registration form.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item System rejects the registration.
+        \item An appropriate error message is displayed (e.g., "Invalid email format").
+        \item The user is not created.
+    \end{itemize} \\ \hline
+
+% User Login
+\multicolumn{4}{|l|}{\textbf{Sub-Section: User Login}} \\ \hline
+TC\_AUTH\_LOGIN\_001 & Successful login with valid Librarian credentials & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Navigate to the login page.
+        \item Enter valid Librarian username.
+        \item Enter corresponding valid password.
+        \item Click the 'Login' button.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item User is authenticated successfully.
+        \item User is redirected to the Librarian dashboard/homepage.
+        \item Librarian-specific functionalities are visible/accessible.
+    \end{itemize} \\ \hline
+TC\_AUTH\_LOGIN\_002 & Successful login with valid Member credentials & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Navigate to the login page.
+        \item Enter valid Member username.
+        \item Enter corresponding valid password.
+        \item Click the 'Login' button.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item User is authenticated successfully.
+        \item User is redirected to the Member dashboard/homepage.
+        \item Member-specific functionalities are visible/accessible.
+    \end{itemize} \\ \hline
+TC\_AUTH\_LOGIN\_003 & Attempt login with invalid username & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Navigate to the login page.
+        \item Enter a username that does not exist.
+        \item Enter any password.
+        \item Click the 'Login' button.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login fails.
+        \item An appropriate error message is displayed (e.g., "Invalid username or password").
+        \item User remains on the login page.
+    \end{itemize} \\ \hline
+TC\_AUTH\_LOGIN\_004 & Attempt login with valid username but invalid password & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Navigate to the login page.
+        \item Enter a valid existing username.
+        \item Enter an incorrect password for that username.
+        \item Click the 'Login' button.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login fails.
+        \item An appropriate error message is displayed (e.g., "Invalid username or password").
+        \item User remains on the login page.
+    \end{itemize} \\ \hline
+TC\_AUTH\_LOGIN\_005 & Attempt login with empty username field & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Navigate to the login page.
+        \item Leave the username field empty.
+        \item Enter any password.
+        \item Click the 'Login' button.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login fails.
+        \item An appropriate error message is displayed (e.g., "Username is required").
+        \item User remains on the login page.
+    \end{itemize} \\ \hline
+TC\_AUTH\_LOGIN\_006 & Attempt login with empty password field & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Navigate to the login page.
+        \item Enter a valid username.
+        \item Leave the password field empty.
+        \item Click the 'Login' button.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login fails.
+        \item An appropriate error message is displayed (e.g., "Password is required").
+        \item User remains on the login page.
+    \end{itemize} \\ \hline
+
+% User Logout
+\multicolumn{4}{|l|}{\textbf{Sub-Section: User Logout}} \\ \hline
+TC\_AUTH\_LOGOUT\_001 & Successful logout for a logged-in Librarian & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Click the 'Logout' button/link.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item User is logged out successfully.
+        \item User is redirected to the login page or public homepage.
+        \item Session is terminated (user cannot access protected pages without logging in again).
+    \end{itemize} \\ \hline
+TC\_AUTH\_LOGOUT\_002 & Successful logout for a logged-in Member & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Member.
+        \item Click the 'Logout' button/link.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item User is logged out successfully.
+        \item User is redirected to the login page or public homepage.
+        \item Session is terminated.
+    \end{itemize} \\ \hline
+
+% Role-Based Access Control (RBAC)
+\multicolumn{4}{|l|}{\textbf{Sub-Section: Role-Based Access Control (RBAC)}} \\ \hline
+TC\_AUTH\_RBAC\_001 & Verify Librarian can access Librarian-specific features (e.g., User Management) & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Attempt to navigate to 'User Management' section.
+        \item Attempt to navigate to 'Book Management' (add/edit/delete books).
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Librarian successfully accesses 'User Management' page.
+        \item Librarian can view and interact with user administration tools.
+        \item Librarian successfully accesses 'Book Management' page and can perform CRUD operations on books.
+    \end{itemize} \\ \hline
+TC\_AUTH\_RBAC\_002 & Verify Member cannot access Librarian-specific features (e.g., User Management) & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Member.
+        \item Check if 'User Management' link/button is visible.
+        \item Attempt to navigate directly to the User Management URL (if known).
+        \item Check if 'Add Book' or 'Edit Book' options are available.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item 'User Management' link/button is not visible or is disabled.
+        \item Direct navigation to User Management URL redirects to an error page or member dashboard.
+        \item 'Add Book'/'Edit Book' options are not available. Access is denied.
+    \end{itemize} \\ \hline
+TC\_AUTH\_RBAC\_003 & Verify Member can access Member-specific features (e.g., Search Books, View Borrowal History) & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Member.
+        \item Attempt to navigate to 'Search Books' page.
+        \item Attempt to view 'My Borrowal History'.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Member successfully accesses 'Search Books' page and can search.
+        \item Member successfully accesses 'My Borrowal History' and can view their own history.
+    \end{itemize} \\ \hline
+TC\_AUTH\_RBAC\_004 & Verify guest (not logged in) user access to public pages and restriction from protected pages & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Ensure no user is logged in (clear session/cookies or use incognito window).
+        \item Attempt to navigate to the login page.
+        \item Attempt to navigate to a public book search page (if applicable).
+        \item Attempt to navigate to 'User Management' URL.
+        \item Attempt to navigate to 'My Borrowal History' URL.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login page is accessible.
+        \item Public book search page is accessible (if such a feature exists for guests).
+        \item Access to 'User Management' URL is denied, likely redirecting to login page.
+        \item Access to 'My Borrowal History' URL is denied, likely redirecting to login page.
+    \end{itemize} \\ \hline
+
+\end{longtable}
+
+\end{document}
