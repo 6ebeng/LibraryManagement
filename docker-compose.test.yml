@@ -62,7 +62,7 @@ services:
     container_name: backend-e2e
     build:
       context: ./server
-      target: development
+      target: e2e-test-server
     ports:
       - '8081:8080'
     volumes:
