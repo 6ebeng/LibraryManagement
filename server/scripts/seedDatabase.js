@@ -12,18 +12,18 @@ if (process.env.NODE_ENV !== 'production') {
 // Test Users Data
 const testUsers = [
 	{
-		name: 'Main Librarian',
-		email: 'mainLibrarian@example.com',
+		name: process.env.TEST_MEMBER_FULLNAME,
+		email: process.env.TEST_MEMBER_EMAIL,
 		isAdmin: true,
 		photoUrl: 'http://example.com/default.jpg',
-		password: 'Password123!',
+		password: process.env.TEST_LIBRARIAN_PASSWORD,
 	},
 	{
-		name: 'Test Member',
-		email: 'testmember@example.com',
+		name: process.env.TEST_MEMBER_FULLNAME,
+		email: process.env.TEST_MEMBER_EMAIL,
 		isAdmin: false,
 		photoUrl: 'http://example.com/member.jpg',
-		password: 'MemberPass123!',
+		password: process.env.TEST_MEMBER_PASSWORD,
 	},
 ];
 

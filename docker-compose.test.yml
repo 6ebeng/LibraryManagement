@@ -37,7 +37,8 @@ services:
       # MONGO_URI is now sourced by the application directly from .env.test
       - CI=true
       - SESSION_SECRET=${SESSION_SECRET} # MODIFIED - sources from .env.test
-    command: sh -c "npm install && npm run test:api" # Assumes "test:api" is for single run
+    # MODIFIED COMMAND: Added database seeding before running tests
+    command: sh -c "npm install && node /app/scripts/seedDatabase.js && npm run test:api"
     networks:
       - test-network
 
@@ -138,6 +139,7 @@ services:
       - SESSION_SECRET=${SESSION_SECRET} # MODIFIED - sources from .env.test
       # CI=true is removed to allow watch mode for Jest if it behaves differently
     # Assumes "test:api:watch" script exists in server/package.json (e.g., "jest --watchAll")
+    # Consider adding seedDatabase.js here too if watch mode tests need a clean seeded state repeatedly
     command: sh -c "npm install && npm run test:api:watch"
     networks:
       - test-network
