@@ -73,7 +73,7 @@ services:
     env_file:
       - .env.test # MODIFIED
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=test
       # MONGO_URI is now sourced by the application directly from .env.test
       - PORT=8080
       - CHOKIDAR_USEPOLLING=true
@@ -140,7 +140,7 @@ services:
       # CI=true is removed to allow watch mode for Jest if it behaves differently
     # Assumes "test:api:watch" script exists in server/package.json (e.g., "jest --watchAll")
     # Consider adding seedDatabase.js here too if watch mode tests need a clean seeded state repeatedly
-    command: sh -c "npm install && npm run test:api:watch"
+    command: sh -c "npm install && node /app/scripts/seedDatabase.js && npm run test:api:watch"
     networks:
       - test-network
 
