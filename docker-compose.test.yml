@@ -13,7 +13,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
       - MONGO_INITDB_DATABASE=library_management_test
     env_file:
-      - .env.test # MODIFIED
+      - .env.test
     networks:
       - test-network
 
@@ -33,11 +33,7 @@ services:
     environment:
       - NODE_ENV=test
       - CI=true
-    # 1. Remove or comment out the explicit entrypoint override:
-    # entrypoint: ['/bin/sh', '-c']
-
-    # 2. Modify the command to be correctly executed by server/entrypoint.sh's "exec "$@""
-    #    The command string should be passed to sh -c for proper execution of shell operators like &&
+    # The command string is passed to sh -c for proper execution of shell operators like &&
     command: ['sh', '-c', 'npm install && node /app/scripts/seedDatabase.js && npm run test:api']
     networks:
       - test-network
@@ -49,7 +45,7 @@ services:
       target: development
     volumes:
       - ./client:/app
-      - /app/node_modules
+      - /app/node_modules # Ensured this is active for consistency
     environment:
       - NODE_ENV=test
       - CI=true
@@ -67,7 +63,7 @@ services:
       - '8081:8080'
     volumes:
       - ./server:/app
-      - /app/node_modules # Similar note to component-tester about this volume
+      - /app/node_modules
     depends_on:
       - mongo-test
     env_file:
@@ -78,10 +74,7 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - SESSION_SECRET=${SESSION_SECRET}
       - E2E_TESTING=true
-    # MODIFIED: Use the specific e2e entrypoint script
-    entrypoint: ['sh', '/app/scripts/entrypoint-e2e.sh'] # MODIFIED
-    # REMOVE the explicit command, as entrypoint now handles it
-    # command: sh -c "npm install && node /app/scripts/seedDatabase.js && npm run dev"
+    entrypoint: ['sh', '/app/scripts/entrypoint-e2e.sh']
     networks:
       - test-network
 
@@ -141,8 +134,8 @@ services:
     environment:
       - NODE_ENV=test
       - SESSION_SECRET=${SESSION_SECRET}
-    # ADD entrypoint to override any default entrypoint from the Dockerfile
-    entrypoint: ['/bin/sh', '-c'] # ADD THIS LINE
+      # - CHOKIDAR_USEPOLLING=true # Optional: Add if file watching is unreliable
+    entrypoint: ['/bin/sh', '-c']
     command: 'node /app/scripts/seedDatabase.js && npm run test:api:watch'
     networks:
       - test-network
@@ -157,7 +150,11 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=test
-    command: sh -c "npm test"
+      # - WATCHPACK_POLLING=true   # Optional: For react-scripts test, if watching is unreliable
+      # - CHOKIDAR_USEPOLLING=true # General alternative for polling
+    command: sh -c "npm test" # This should default to watch mode if CI=false
+    stdin_open: true # Keep STDIN open for interactive watch mode
+    tty: true # Allocate a TTY for interactive watch mode
     networks:
       - test-network
 
@@ -175,6 +172,9 @@ services:
     working_dir: /e2e
     volumes:
       - ./:/e2e
+    # Expose Cypress GUI port if needed, though typically accessed via X11 forwarding or similar
+    # ports:
+    #   - "XXXX:XXXX"
     command: cypress open --project /e2e
     networks:
       - test-network
