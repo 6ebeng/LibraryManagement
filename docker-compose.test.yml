@@ -31,14 +31,14 @@ services:
       - ./server:/app
       - /app/node_modules
     env_file:
-      - .env.test # MODIFIED
+      - .env.test
     environment:
       - NODE_ENV=test
-      # MONGO_URI is now sourced by the application directly from .env.test
       - CI=true
-      - SESSION_SECRET=${SESSION_SECRET} # MODIFIED - sources from .env.test
-    # MODIFIED COMMAND: Added database seeding before running tests
-    command: sh -c "npm install && node /app/scripts/seedDatabase.js && npm run test:api"
+      - SESSION_SECRET=${SESSION_SECRET}
+    # ADD entrypoint to override any default entrypoint from the Dockerfile
+    entrypoint: ['/bin/sh', '-c'] # ADD THIS LINE
+    command: 'node /app/scripts/seedDatabase.js && npm run test:api'
     networks:
       - test-network
 
@@ -53,7 +53,7 @@ services:
     environment:
       - NODE_ENV=test
       - CI=true
-    command: sh -c "npm install && npm test -- --watchAll=false --passWithNoTests"
+    command: sh -c "npm test -- --watchAll=false --passWithNoTests"
     networks:
       - test-network
 
@@ -67,18 +67,21 @@ services:
       - '8081:8080'
     volumes:
       - ./server:/app
-      - /app/node_modules
+      - /app/node_modules # Similar note to component-tester about this volume
     depends_on:
       - mongo-test
     env_file:
-      - .env.test # MODIFIED
+      - .env.test
     environment:
       - NODE_ENV=test
-      # MONGO_URI is now sourced by the application directly from .env.test
       - PORT=8080
       - CHOKIDAR_USEPOLLING=true
-      - SESSION_SECRET=${SESSION_SECRET} # MODIFIED - sources from .env.test
-    command: sh -c "npm install && node /app/scripts/seedDatabase.js && npm run dev"
+      - SESSION_SECRET=${SESSION_SECRET}
+      - E2E_TESTING=true
+    # MODIFIED: Use the specific e2e entrypoint script
+    entrypoint: ['sh', '/app/scripts/entrypoint-e2e.sh'] # MODIFIED
+    # REMOVE the explicit command, as entrypoint now handles it
+    # command: sh -c "npm install && node /app/scripts/seedDatabase.js && npm run dev"
     networks:
       - test-network
 
@@ -100,7 +103,7 @@ services:
       - PORT=3000
       - WATCHPACK_POLLING=true
       - REACT_APP_API_URL=http://backend-e2e:8080/api
-    command: sh -c "npm install && npm start"
+    command: sh -c "npm start"
     networks:
       - test-network
 
@@ -110,6 +113,8 @@ services:
     depends_on:
       - frontend-e2e
       - backend-e2e
+    env_file:
+      - .env.test
     environment:
       - CYPRESS_BASE_URL=http://frontend-e2e:3000
       - CYPRESS_API_URL=http://backend-e2e:8080/api
@@ -132,15 +137,13 @@ services:
       - ./server:/app
       - /app/node_modules
     env_file:
-      - .env.test # MODIFIED
+      - .env.test
     environment:
       - NODE_ENV=test
-      # MONGO_URI is now sourced by the application directly from .env.test
-      - SESSION_SECRET=${SESSION_SECRET} # MODIFIED - sources from .env.test
-      # CI=true is removed to allow watch mode for Jest if it behaves differently
-    # Assumes "test:api:watch" script exists in server/package.json (e.g., "jest --watchAll")
-    # Consider adding seedDatabase.js here too if watch mode tests need a clean seeded state repeatedly
-    command: sh -c "npm install && node /app/scripts/seedDatabase.js && npm run test:api:watch"
+      - SESSION_SECRET=${SESSION_SECRET}
+    # ADD entrypoint to override any default entrypoint from the Dockerfile
+    entrypoint: ['/bin/sh', '-c'] # ADD THIS LINE
+    command: 'node /app/scripts/seedDatabase.js && npm run test:api:watch'
     networks:
       - test-network
 
@@ -154,9 +157,7 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=test
-      # CI=true is removed to allow default watch mode for react-scripts test
-    # Runs "npm test" which defaults to watch mode in Create React App
-    command: sh -c "npm install && npm test"
+    command: sh -c "npm test"
     networks:
       - test-network
 
@@ -166,6 +167,8 @@ services:
     depends_on:
       - frontend-e2e
       - backend-e2e
+    env_file:
+      - .env.test
     environment:
       - CYPRESS_BASE_URL=http://frontend-e2e:3000
       - CYPRESS_API_URL=http://backend-e2e:8080/api

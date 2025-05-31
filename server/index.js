@@ -42,13 +42,32 @@ mongoose
 	})
 	.catch((err) => console.log('DB connection error', err));
 
-// Use CORS for Cross Origin Resource Sharing
-app.use(
-	cors({
-		origin: 'http://localhost:3000',
+// Configure CORS
+let corsOptions;
+// When NODE_ENV is 'test' (as set for backend-e2e in docker-compose.test.yml)
+if (process.env.NODE_ENV === 'test') {
+	const allowedTestOrigins = [
+		'http://localhost:3000', // For local client development against test backend
+		'http://frontend-e2e:3000', // For Cypress E2E tests
+	];
+	corsOptions = {
+		origin: (origin, callback) => {
+			if (!origin || allowedTestOrigins.indexOf(origin) !== -1) {
+				callback(null, true);
+			} else {
+				callback(new Error('Not allowed by CORS for test environment'));
+			}
+		},
 		credentials: true,
-	})
-);
+	};
+} else {
+	// Default CORS for development/production
+	corsOptions = {
+		origin: 'http://localhost:3000', // Or your production frontend URL
+		credentials: true,
+	};
+}
+app.use(cors(corsOptions));
 
 // Set middleware to manage sessions
 app.use(
@@ -94,8 +113,8 @@ app.post('/api/seed', async (req, res) => {
 
 app.get('/', (req, res) => res.send('Welcome to Library Management System'));
 
-if (process.env.NODE_ENV !== 'test') {
-	app.listen(PORT, () => console.log(`Server listening on port ${PORT}!`));
+if (process.env.NODE_ENV !== 'test' || process.env.E2E_TESTING === 'true') {
+	app.listen(process.env.PORT || 8080, () => console.log(`Server listening on port ${process.env.PORT || 8080} for ${process.env.NODE_ENV} (E2E: ${process.env.E2E_TESTING})!`));
 }
 
 module.exports = app;

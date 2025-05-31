@@ -1,3 +1,4 @@
+// LibraryManagement/server/scripts/seedDatabase.js
 const mongoose = require('mongoose');
 const User = require('../models/user');
 const Book = require('../models/book');
@@ -12,8 +13,8 @@ if (process.env.NODE_ENV !== 'production') {
 // Test Users Data
 const testUsers = [
 	{
-		name: process.env.TEST_MEMBER_FULLNAME,
-		email: process.env.TEST_MEMBER_EMAIL,
+		name: process.env.TEST_LIBRARIAN_FULLNAME,
+		email: process.env.TEST_LIBRARIAN_EMAIL,
 		isAdmin: true,
 		photoUrl: 'http://example.com/default.jpg',
 		password: process.env.TEST_LIBRARIAN_PASSWORD,
@@ -114,7 +115,7 @@ const testBooksTemplate = [
 		isbn: '978-0-06-112008-4',
 		isAvailable: true,
 		summary: 'A novel about racial injustice and childhood innocence in the American South.',
-		photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=300&fit=crop',
+		photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=300&fit=crop', // Note: URL seems duplicated
 		authorName: 'Harper Lee',
 		genreName: 'Fiction',
 	},
@@ -150,20 +151,30 @@ const testBooksTemplate = [
 		isbn: '978-0-14-143977-8',
 		isAvailable: true,
 		summary: 'A comedy of manners about a young woman who fancies herself a matchmaker.',
-		photoUrl: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=200&h=300&fit=crop',
+		photoUrl: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=200&h=300&fit=crop', // Note: URL seems duplicated
 		authorName: 'Jane Austen',
 		genreName: 'Romance',
 	},
 ];
 
 const seedDatabase = async () => {
+	// Explicitly manage connection state to ensure it's closed appropriately
+	let connectionClosed = false;
+	const closeConnection = async () => {
+		if (mongoose.connection.readyState === 1 && !connectionClosed) {
+			await mongoose.connection.close();
+			console.log('Database connection closed.');
+			connectionClosed = true;
+		}
+	};
+
 	try {
 		// Connect to MongoDB
 		await mongoose.connect(process.env.MONGO_URI, {
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
 		});
-
+		connectionClosed = false; // Reset flag on new connection attempt
 		console.log('Connected to MongoDB for seeding...');
 
 		// Check if data already exists (avoid duplicate seeding)
@@ -172,12 +183,14 @@ const seedDatabase = async () => {
 
 		if (existingUsers > 0 || existingBooks > 0) {
 			console.log('Database already contains data. Skipping seeding...');
-			process.exit(0);
+			// Do not exit here; allow the calling script to decide.
+			// The connection will be closed in the finally block.
+			return; // Indicate successful completion of this check
 		}
 
 		// Clear existing data (just in case)
+		// This should only run if the DB is being freshly seeded.
 		await Promise.all([User.deleteMany({}), Book.deleteMany({}), Author.deleteMany({}), Genre.deleteMany({})]);
-
 		console.log('Cleared existing data...');
 
 		// Seed Genres
@@ -196,56 +209,84 @@ const seedDatabase = async () => {
 			const user = new User({
 				name: userData.name,
 				email: userData.email,
-				dob: userData.dob,
-				phone: userData.phone,
+				// dob: userData.dob, // dob was not in your testUsers structure
+				// phone: userData.phone, // phone was not in your testUsers structure
 				isAdmin: userData.isAdmin,
 				photoUrl: userData.photoUrl,
 			});
 
-			// Set password (this will hash it automatically using the setPassword method)
-			user.setPassword(userData.password);
+			user.setPassword(userData.password); // Assumes User model has setPassword method
 			await user.save();
 		}
 		console.log(`✓ Created ${testUsers.length} users`);
 
 		// Seed Books with proper author and genre references
 		console.log('Seeding books...');
-		const testBooks = testBooksTemplate.map((bookTemplate) => {
+		const booksToSeed = testBooksTemplate.map((bookTemplate) => {
 			const author = createdAuthors.find((a) => a.name === bookTemplate.authorName);
 			const genre = createdGenres.find((g) => g.name === bookTemplate.genreName);
+
+			if (!author) {
+				console.warn(`Author not found for book: ${bookTemplate.name}. Skipping authorId.`);
+			}
+			if (!genre) {
+				console.warn(`Genre not found for book: ${bookTemplate.name}. Skipping genreId.`);
+			}
 
 			return {
 				name: bookTemplate.name,
 				isbn: bookTemplate.isbn,
-				authorId: author._id,
-				genreId: genre._id,
+				authorId: author ? author._id : null,
+				genreId: genre ? genre._id : null,
 				isAvailable: bookTemplate.isAvailable,
 				summary: bookTemplate.summary,
 				photoUrl: bookTemplate.photoUrl,
 			};
 		});
 
-		const createdBooks = await Book.insertMany(testBooks);
+		const createdBooks = await Book.insertMany(booksToSeed);
 		console.log(`✓ Created ${createdBooks.length} books`);
 
 		console.log('\n🎉 Database seeding completed successfully!');
-		console.log('\nTest Users Created:');
-		console.log('- Librarian: librarian@library.com (password: librarian123)');
-		console.log('- Member: member@library.com (password: member123)');
+		console.log('\nTest Users Created (ensure .env passwords match):');
+		console.log(`- Librarian: ${process.env.TEST_LIBRARIAN_EMAIL}`);
+		console.log(`- Member: ${process.env.TEST_MEMBER_EMAIL}`);
 		console.log(`\nCreated ${createdBooks.length} books with authors and genres`);
 	} catch (error) {
 		console.error('Error seeding database:', error);
-		process.exit(1);
+		// Re-throw the error so the calling script (if (require.main === module)) can catch it and exit with 1
+		throw error;
 	} finally {
-		await mongoose.connection.close();
-		console.log('Database connection closed.');
-		process.exit(0);
+		// Ensure the connection is closed, regardless of success or failure (if opened)
+		await closeConnection();
 	}
 };
 
 // Run the seeding if this file is executed directly
 if (require.main === module) {
-	seedDatabase();
+	seedDatabase()
+		.then(() => {
+			console.log('Seeding script finished operation from direct run.');
+			// process.exit(0) will be called only if the promise resolves
+			// and after the finally block in seedDatabase has executed.
+			// If seedDatabase returned due to existing data, it's still a "success" for this direct run.
+			if (mongoose.connection.readyState !== 0 && mongoose.connection.readyState !== 3) {
+				// 0 = disconnected, 3 = disconnecting
+				// If connection wasn't closed by seedDatabase's finally (e.g. early return), ensure it's closed.
+				mongoose.connection.close().then(() => process.exit(0));
+			} else {
+				process.exit(0);
+			}
+		})
+		.catch((error) => {
+			console.error('Seeding script failed from direct run:', error.message);
+			// process.exit(1) will be called if the promise rejects
+			if (mongoose.connection.readyState !== 0 && mongoose.connection.readyState !== 3) {
+				mongoose.connection.close().then(() => process.exit(1));
+			} else {
+				process.exit(1);
+			}
+		});
 }
 
 module.exports = seedDatabase;

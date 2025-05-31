@@ -1,12 +1,22 @@
 // MongoDB initialization script
 // This runs when the MongoDB container starts for the first time
 
-db = db.getSiblingDB('library_management');
+const dbName = process.env.MONGO_INITDB_DATABASE || 'LibraryManagement';
+db = db.getSiblingDB(dbName);
 
-// Create collections if they don't exist
-db.createCollection('users');
-db.createCollection('books');
-db.createCollection('authors');
-db.createCollection('genres');
+print(`MongoDB: Initializing database: ${dbName}`);
 
-print('MongoDB initialized with library_management database and collections');
+// Define collections to create
+const collections = ['users', 'books', 'authors', 'genres'];
+const existingCollections = db.getCollectionNames();
+
+collections.forEach((collectionName) => {
+	if (!existingCollections.includes(collectionName)) {
+		db.createCollection(collectionName);
+		print(`MongoDB: Created '${collectionName}' collection in ${dbName}.`);
+	} else {
+		print(`MongoDB: '${collectionName}' collection already exists in ${dbName}.`);
+	}
+});
+
+print(`MongoDB: Finished mongo-init.js for ${dbName}.`);
