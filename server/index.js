@@ -94,4 +94,8 @@ app.post('/api/seed', async (req, res) => {
 
 app.get('/', (req, res) => res.send('Welcome to Library Management System'));
 
-app.listen(PORT, () => console.log(`Server listening on port ${PORT}!`));
+if (process.env.NODE_ENV !== 'test') {
+	app.listen(PORT, () => console.log(`Server listening on port ${PORT}!`));
+}
+
+module.exports = app;

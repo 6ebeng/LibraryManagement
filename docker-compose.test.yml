@@ -10,11 +10,12 @@ services:
       - mongo-test-data:/data/db
       - ./server/scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     environment:
+      # These will be sourced from .env.test. If blank in .env.test, MongoDB starts without default auth.
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
       - MONGO_INITDB_DATABASE=library_management_test
     env_file:
-      - .env.dev
+      - .env.test # MODIFIED
     networks:
       - test-network
 
@@ -30,12 +31,12 @@ services:
       - ./server:/app
       - /app/node_modules
     env_file:
-      - .env.dev
+      - .env.test # MODIFIED
     environment:
       - NODE_ENV=test
-      - MONGO_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo-test:27017/library_management_test?authSource=admin
+      # MONGO_URI is now sourced by the application directly from .env.test
       - CI=true
-      - SESSION_SECRET=test_session_secret
+      - SESSION_SECRET=${SESSION_SECRET} # MODIFIED - sources from .env.test
     command: sh -c "npm install && npm run test:api" # Assumes "test:api" is for single run
     networks:
       - test-network
@@ -69,13 +70,13 @@ services:
     depends_on:
       - mongo-test
     env_file:
-      - .env.dev
+      - .env.test # MODIFIED
     environment:
       - NODE_ENV=development
-      - MONGO_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo-test:27017/library_management_test?authSource=admin
+      # MONGO_URI is now sourced by the application directly from .env.test
       - PORT=8080
       - CHOKIDAR_USEPOLLING=true
-      - SESSION_SECRET=test_session_secret
+      - SESSION_SECRET=${SESSION_SECRET} # MODIFIED - sources from .env.test
     command: sh -c "npm install && node /app/scripts/seedDatabase.js && npm run dev"
     networks:
       - test-network
@@ -130,11 +131,11 @@ services:
       - ./server:/app
       - /app/node_modules
     env_file:
-      - .env.dev
+      - .env.test # MODIFIED
     environment:
       - NODE_ENV=test
-      - MONGO_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo-test:27017/library_management_test?authSource=admin
-      - SESSION_SECRET=test_session_secret
+      # MONGO_URI is now sourced by the application directly from .env.test
+      - SESSION_SECRET=${SESSION_SECRET} # MODIFIED - sources from .env.test
       # CI=true is removed to allow watch mode for Jest if it behaves differently
     # Assumes "test:api:watch" script exists in server/package.json (e.g., "jest --watchAll")
     command: sh -c "npm install && npm run test:api:watch"
@@ -166,16 +167,9 @@ services:
     environment:
       - CYPRESS_BASE_URL=http://frontend-e2e:3000
       - CYPRESS_API_URL=http://backend-e2e:8080/api
-      # For Linux, you might need to pass DISPLAY and mount X11 socket for GUI:
-      # - DISPLAY=$DISPLAY
-      # volumes:
-      #  - /tmp/.X11-unix:/tmp/.X11-unix
     working_dir: /e2e
     volumes:
       - ./:/e2e
-    # Runs Cypress in interactive mode.
-    # Note: Requires X11 forwarding setup on your host if you want to see the GUI.
-    # On Windows/Mac, this can be complex. Consider running 'cypress open' locally against Docker-served app.
     command: cypress open --project /e2e
     networks:
       - test-network

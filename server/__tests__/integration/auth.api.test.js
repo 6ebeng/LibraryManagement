@@ -8,7 +8,7 @@
  */
 
 const request = require('supertest');
-const app = require('../../server'); // TODO: Adjust path to your main Express app file (server.js or app.js)
+const app = require('../../index.js'); // TODO: Adjust path to your main Express app file (server.js or app.js)
 // TODO: Setup for test database (e.g., in-memory MongoDB) and seeding
 // const mongoose = require('mongoose');
 // const { MongoMemoryServer } = require('mongodb-memory-server');
