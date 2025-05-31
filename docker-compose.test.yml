@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mongo-test:
     container_name: mongo-test
@@ -24,7 +22,7 @@ services:
     container_name: api-tester
     build:
       context: ./server
-      target: development
+      target: development # Assumes this target in server/Dockerfile uses /app/entrypoint.sh
     depends_on:
       - mongo-test
     volumes:
@@ -35,10 +33,12 @@ services:
     environment:
       - NODE_ENV=test
       - CI=true
-      - SESSION_SECRET=${SESSION_SECRET}
-    # ADD entrypoint to override any default entrypoint from the Dockerfile
-    entrypoint: ['/bin/sh', '-c'] # ADD THIS LINE
-    command: 'node /app/scripts/seedDatabase.js && npm run test:api'
+    # 1. Remove or comment out the explicit entrypoint override:
+    # entrypoint: ['/bin/sh', '-c']
+
+    # 2. Modify the command to be correctly executed by server/entrypoint.sh's "exec "$@""
+    #    The command string should be passed to sh -c for proper execution of shell operators like &&
+    command: ['sh', '-c', 'npm install && node /app/scripts/seedDatabase.js && npm run test:api']
     networks:
       - test-network
 

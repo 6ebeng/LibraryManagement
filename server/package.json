@@ -22,8 +22,8 @@
 		"dev": "nodemon index.js",
 		"start": "node index.js",
 		"seed": "node scripts/seedDatabase.js",
-		"test:api": "NODE_ENV=test jest --runInBand --detectOpenHandles --forceExit",
-		"test:api:watch": "NODE_ENV=test jest --watchAll"
+		"test:api": "jest --runInBand --detectOpenHandles --forceExit",
+		"test:api:watch": "jest --watchAll"
 	},
 	"license": "ISC",
 	"dependencies": {

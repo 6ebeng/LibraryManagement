@@ -1,32 +1,47 @@
+# LibraryManagement/server/Dockerfile
+
 # ---- Base Stage ----
 FROM node:18-alpine AS base
 WORKDIR /app
+
+# Copy package files and install dependencies
 COPY package*.json ./
+RUN npm install
 
-# ---- Dependencies Stage ----
-FROM base AS dependencies
-RUN npm install --silent
-
-# ---- Development Stage (for api-tester, general dev) ----
-FROM dependencies AS development
-ENV NODE_ENV=development
+# Copy the rest of the application code
 COPY . .
-# entrypoint.sh also runs seed and then npm run dev
-# CMD ["sh", "/app/entrypoint.sh"]
-# For api-tester, the command is overridden by docker-compose.test.yml
 
-# ---- E2E Test Server Stage (for backend-e2e) ----
-FROM dependencies AS e2e-test-server
+# ---- Development Stage ----
+FROM base AS development
+ENV NODE_ENV=development
+
+# entrypoint.sh handles seeding and starting the dev server
+# It's referenced in docker-compose.dev.yml
+# CMD ["sh", "/app/entrypoint.sh"]
+# The command/entrypoint is usually set in docker-compose for dev
+
+FROM base AS test
+ENV NODE_ENV=test
+
+# ---- E2E Test Server Stage ----
+FROM base AS e2e-test-server
 ENV NODE_ENV=test
 ENV E2E_TESTING=true
-COPY . .
-# entrypoint-e2e.sh is specified in docker-compose.test.yml for this service
-# It handles seeding and starting the dev server.
+
+# entrypoint-e2e.sh handles seeding and starting the server for E2E
+# It's referenced in docker-compose.test.yml
+# CMD ["sh", "/app/scripts/entrypoint-e2e.sh"]
+# The command/entrypoint is usually set in docker-compose for e2e
 
 # ---- Production Stage ----
 FROM base AS production
 ENV NODE_ENV=production
-RUN npm ci --only=production --silent
-COPY . .
+
+# For production, we might want to install only production dependencies
+# This can be done by re-running npm install with --only=production
+# Or, if base stage uses `npm ci`, it typically installs based on package-lock.json
+# For simplicity, we'll assume base stage is sufficient or adjust as needed.
+# RUN npm ci --only=production
+
 EXPOSE 8080
-CMD ["npm", "start"]
+CMD [ "npm", "start" ]
