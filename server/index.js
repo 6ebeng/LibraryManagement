@@ -105,6 +105,9 @@ app.use('/api/borrowal', borrowalRouter);
 app.use('/api/genre', genreRouter);
 app.use('/api/user', userRouter);
 app.use('/api/review', reviewRouter);
+app.get('/api/health', (req, res) => {
+	res.status(200).json({ status: 'UP', message: 'Backend is healthy' });
+});
 
 // Add seed endpoint for manual seeding
 app.post('/api/seed', async (req, res) => {

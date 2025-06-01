@@ -158,81 +158,72 @@ const testBooksTemplate = [
 ];
 
 const seedDatabase = async () => {
-	// Explicitly manage connection state to ensure it's closed appropriately
 	let connectionClosed = false;
-	const closeConnection = async () => {
+
+	// Helper to close connection, respects E2E_TESTING flag unless forced
+	const closeConnection = async (forceClose = false) => {
 		if (mongoose.connection.readyState === 1 && !connectionClosed) {
-			await mongoose.connection.close();
-			console.log('Database connection closed.');
-			connectionClosed = true;
+			if (process.env.E2E_TESTING !== 'true' || forceClose) {
+				await mongoose.connection.close();
+				console.log('Database connection closed by seeder.');
+				connectionClosed = true;
+			}
 		}
 	};
 
 	try {
-		// Connect to MongoDB
-		await mongoose.connect(process.env.MONGO_URI, {
-			useNewUrlParser: true,
-			useUnifiedTopology: true,
-		});
-		connectionClosed = false; // Reset flag on new connection attempt
-		console.log('Connected to MongoDB for seeding...');
+		if (mongoose.connection.readyState !== 1) {
+			await mongoose.connect(process.env.MONGO_URI, {
+				useNewUrlParser: true,
+				useUnifiedTopology: true,
+			});
+			console.log('Connected to MongoDB for seeding...');
+		} else {
+			console.log('Using existing MongoDB connection for seeding...');
+		}
+		connectionClosed = false; // Reset flag for current execution
 
-		// Check if data already exists (avoid duplicate seeding)
 		const existingUsers = await User.countDocuments();
 		const existingBooks = await Book.countDocuments();
 
 		if (existingUsers > 0 || existingBooks > 0) {
 			console.log('Database already contains data. Skipping seeding...');
-			// Do not exit here; allow the calling script to decide.
-			// The connection will be closed in the finally block.
-			return; // Indicate successful completion of this check
+			// If not in E2E_TESTING mode and skipping, close the connection
+			// as the script's job is done.
+			if (process.env.E2E_TESTING !== 'true') {
+				await closeConnection(true); // Force close
+			}
+			return; // Exit the seedDatabase function
 		}
 
-		// Clear existing data (just in case)
-		// This should only run if the DB is being freshly seeded.
 		await Promise.all([User.deleteMany({}), Book.deleteMany({}), Author.deleteMany({}), Genre.deleteMany({})]);
 		console.log('Cleared existing data...');
 
-		// Seed Genres
 		console.log('Seeding genres...');
 		const createdGenres = await Genre.insertMany(testGenres);
 		console.log(`✓ Created ${createdGenres.length} genres`);
 
-		// Seed Authors
 		console.log('Seeding authors...');
 		const createdAuthors = await Author.insertMany(testAuthors);
 		console.log(`✓ Created ${createdAuthors.length} authors`);
 
-		// Seed Users with hashed passwords
 		console.log('Seeding users...');
 		for (const userData of testUsers) {
 			const user = new User({
 				name: userData.name,
 				email: userData.email,
-				// dob: userData.dob, // dob was not in your testUsers structure
-				// phone: userData.phone, // phone was not in your testUsers structure
 				isAdmin: userData.isAdmin,
 				photoUrl: userData.photoUrl,
 			});
-
-			user.setPassword(userData.password); // Assumes User model has setPassword method
+			user.setPassword(userData.password);
 			await user.save();
 		}
 		console.log(`✓ Created ${testUsers.length} users`);
 
-		// Seed Books with proper author and genre references
 		console.log('Seeding books...');
 		const booksToSeed = testBooksTemplate.map((bookTemplate) => {
 			const author = createdAuthors.find((a) => a.name === bookTemplate.authorName);
 			const genre = createdGenres.find((g) => g.name === bookTemplate.genreName);
-
-			if (!author) {
-				console.warn(`Author not found for book: ${bookTemplate.name}. Skipping authorId.`);
-			}
-			if (!genre) {
-				console.warn(`Genre not found for book: ${bookTemplate.name}. Skipping genreId.`);
-			}
-
 			return {
 				name: bookTemplate.name,
 				isbn: bookTemplate.isbn,
@@ -243,50 +234,47 @@ const seedDatabase = async () => {
 				photoUrl: bookTemplate.photoUrl,
 			};
 		});
-
 		const createdBooks = await Book.insertMany(booksToSeed);
 		console.log(`✓ Created ${createdBooks.length} books`);
 
 		console.log('\n🎉 Database seeding completed successfully!');
 		console.log('\nTest Users Created (ensure .env passwords match):');
-		console.log(`- Librarian: ${process.env.TEST_LIBRARIAN_EMAIL}`);
-		console.log(`- Member: ${process.env.TEST_MEMBER_EMAIL}`);
+		console.log(`- Librarian: ${process.env.TEST_LIBRARIAN_EMAIL || 'mainLibrarian@example.com'}`);
+		console.log(`- Member: ${process.env.TEST_MEMBER_EMAIL || 'testmember@example.com'}`);
 		console.log(`\nCreated ${createdBooks.length} books with authors and genres`);
 	} catch (error) {
 		console.error('Error seeding database:', error);
-		// Re-throw the error so the calling script (if (require.main === module)) can catch it and exit with 1
-		throw error;
+		await closeConnection(true); // Force close on error
+		throw error; // Re-throw to ensure entrypoint script sees failure
 	} finally {
-		// Ensure the connection is closed, regardless of success or failure (if opened)
-		await closeConnection();
+		// If this script is run directly (not as a module) AND E2E_TESTING is NOT true,
+		// then it's responsible for closing its own connection.
+		if (require.main === module && process.env.E2E_TESTING !== 'true') {
+			await closeConnection(true); // Force close
+		}
+		// If E2E_TESTING is true, the connection is intentionally left open for the server
+		// that will be started by entrypoint-e2e.sh.
 	}
 };
 
-// Run the seeding if this file is executed directly
+// Handling direct execution
 if (require.main === module) {
 	seedDatabase()
 		.then(() => {
-			console.log('Seeding script finished operation from direct run.');
-			// process.exit(0) will be called only if the promise resolves
-			// and after the finally block in seedDatabase has executed.
-			// If seedDatabase returned due to existing data, it's still a "success" for this direct run.
-			if (mongoose.connection.readyState !== 0 && mongoose.connection.readyState !== 3) {
-				// 0 = disconnected, 3 = disconnecting
-				// If connection wasn't closed by seedDatabase's finally (e.g. early return), ensure it's closed.
-				mongoose.connection.close().then(() => process.exit(0));
-			} else {
-				process.exit(0);
-			}
+			console.log(`Seeding script finished operation (E2E_TESTING: ${process.env.E2E_TESTING}).`);
+			// If not in E2E_TESTING mode, the script can exit.
+			// The connection closure is handled within seedDatabase's try/catch/finally.
+			// if (process.env.E2E_TESTING !== 'true') {
+			// 	process.exit(0);
+			// }
+			process.exit(0);
+			// If E2E_TESTING is true, do nothing here; entrypoint-e2e.sh continues.
 		})
 		.catch((error) => {
-			console.error('Seeding script failed from direct run:', error.message);
-			// process.exit(1) will be called if the promise rejects
-			if (mongoose.connection.readyState !== 0 && mongoose.connection.readyState !== 3) {
-				mongoose.connection.close().then(() => process.exit(1));
-			} else {
-				process.exit(1);
-			}
+			console.error('Seeding script failed:', error.message);
+			process.exit(1); // Connection is closed on error by seedDatabase's catch.
 		});
 }
 
+module.exports = seedDatabase;
 module.exports = seedDatabase;

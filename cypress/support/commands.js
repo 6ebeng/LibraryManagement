@@ -1,39 +1,50 @@
-// LibraryManagement/cypress/support/commands.js
+// cypress/support/commands.js
+
 Cypress.Commands.add('loginAsLibrarian', (email, password) => {
 	cy.session(
-		[email, password],
+		[email, password], // Session key for caching
 		() => {
-			// Use cy.session for faster logins across tests
-			cy.visit('/login'); // Adjust to your login page path
-			cy.get('[data-testid="username-input"]').type(email); // Ensure your app uses email for username field during login
-			cy.get('[data-testid="password-input"]').type(password);
-			cy.get('button[type="submit"][data-testid="login-submit-button"]').click();
-			cy.url().should('include', '/admin/dashboard'); // Verify redirection to librarian dashboard
-			// Add a check for a unique element on the dashboard to confirm login
-			cy.get('[data-testid="librarian-dashboard-welcome"]').should('be.visible');
+			// This block runs when the session is new or needs to be re-established
+			cy.visit('/login');
+			// Corrected selectors to match LoginForm.js
+			cy.get('input[name="email"]').type(email);
+			cy.get('input[name="password"]').type(password);
+			cy.get('button[type="submit"]').click();
+
+			// Assertions to confirm successful login and correct page
+			// Match this URL with your application's actual redirect for librarians
+			cy.url().should('include', '/dashboard', { timeout: 10000 });
+			// Example: Check for a welcome message or a unique element on the librarian's dashboard
+			// Ensure this element and text actually exist on your librarian dashboard.
+			// Consider using data-testid for robustness if possible.
+			cy.contains('h4', 'Hi', { timeout: 10000 }).should('be.visible');
 		},
 		{
-			cacheAcrossSpecs: true, // Optional: caches session across multiple spec files
+			cacheAcrossSpecs: true, // Enables session reuse across different spec files
 		}
 	);
-	// Visit a page after login to ensure session is applied for the test context
-	cy.visit('/admin/dashboard');
 });
 
 Cypress.Commands.add('loginAsMember', (email, password) => {
 	cy.session(
-		[email, password],
+		[email, password], // Session key
 		() => {
-			cy.visit('/login'); // Adjust to your login page path
-			cy.get('[data-testid="username-input"]').type(email); // Ensure your app uses email for username field during login
-			cy.get('[data-testid="password-input"]').type(password);
-			cy.get('button[type="submit"][data-testid="login-submit-button"]').click();
-			cy.url().should('include', '/member/dashboard'); // Verify redirection to member dashboard
-			cy.get('[data-testid="member-dashboard-welcome"]').should('be.visible');
+			cy.visit('/login');
+			// Corrected selectors to match LoginForm.js
+			cy.get('input[name="email"]').type(email);
+			cy.get('input[name="password"]').type(password);
+			cy.get('button[type="submit"]').click();
+
+			// Assertions to confirm successful login and correct page
+			// Match this URL with your application's actual redirect for members
+			cy.url().should('include', '/books', { timeout: 10000 }); // Or '/books' if that's the landing page
+			// Example: Check for a welcome message or a unique element on the member's dashboard.
+			// Replace '[data-testid="member-dashboard-welcome"]' with an actual, reliable selector.
+			// If not using data-testid, cy.contains('Some unique text on member dashboard').should('be.visible');
+			cy.get('div.MuiBox-root > p', { timeout: 10000 }).should('be.visible');
 		},
 		{
 			cacheAcrossSpecs: true,
 		}
 	);
-	cy.visit('/member/dashboard');
 });

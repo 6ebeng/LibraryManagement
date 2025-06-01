@@ -60,21 +60,19 @@ services:
       context: ./server
       target: e2e-test-server
     ports:
-      - '8081:8080'
+      - '8080:8080'
     volumes:
       - ./server:/app
       - /app/node_modules
-    depends_on:
+    depends_on: # This depends_on is for mongo-test
       - mongo-test
     env_file:
       - .env.test
     environment:
-      - NODE_ENV=test
       - PORT=8080
       - CHOKIDAR_USEPOLLING=true
-      - SESSION_SECRET=${SESSION_SECRET}
       - E2E_TESTING=true
-    entrypoint: ['sh', '/app/scripts/entrypoint-e2e.sh']
+    entrypoint: ['sh', '/app/entrypoint.sh'] # This script seeds and then starts the server
     networks:
       - test-network
 
@@ -84,25 +82,26 @@ services:
       context: ./client
       target: development
     ports:
-      - '3001:3000'
+      - '3000:3000'
     volumes:
       - ./client:/app
       - /app/node_modules
     depends_on:
-      - backend-e2e
+      backend-e2e: # This ensures backend is at least started before frontend tries to connect (for its own build/runtime)
+        condition: service_started # Or service_healthy if frontend actively needs backend to be fully healthy during its startup
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
       - PORT=3000
       - WATCHPACK_POLLING=true
       - REACT_APP_API_URL=http://backend-e2e:8080/api
-    command: sh -c "npm start"
+    command: sh -c "npm start && sleep 15"
     networks:
       - test-network
 
-  e2e-runner: # For single-run E2E tests
+  e2e-runner:
     container_name: e2e-runner
-    image: cypress/included:10.10.0 # Or your preferred Cypress version
+    image: cypress/included:10.10.0
     depends_on:
       - frontend-e2e
       - backend-e2e
@@ -114,7 +113,7 @@ services:
     working_dir: /e2e
     volumes:
       - ./:/e2e
-    command: cypress run --config video=false
+    command: cypress run --config-file /e2e/cypress/cypress.config.js --config video=false
     networks:
       - test-network
 
@@ -148,6 +147,8 @@ services:
     volumes:
       - ./client:/app
       - /app/node_modules
+    env_file:
+      - .env.test
     environment:
       - NODE_ENV=test
       # - WATCHPACK_POLLING=true   # Optional: For react-scripts test, if watching is unreliable
@@ -175,7 +176,7 @@ services:
     # Expose Cypress GUI port if needed, though typically accessed via X11 forwarding or similar
     # ports:
     #   - "XXXX:XXXX"
-    command: cypress open --project /e2e
+    command: cypress open --project /e2e --config-file /e2e/cypress/cypress.config.js
     networks:
       - test-network
 

@@ -5,6 +5,7 @@ module.exports = defineConfig({
 		baseUrl: 'http://localhost:3000', // Will be overridden by CYPRESS_BASE_URL in Docker
 		specPattern: 'cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
 		supportFile: 'cypress/support/e2e.js',
+		experimentalSessionAndOrigin: true, // Added this line
 		// projectId: "yourProjectId", // If you use Cypress Cloud
 		setupNodeEvents(on, config) {
 			// Initialize config.env if it doesn't exist
