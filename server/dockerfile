@@ -26,6 +26,9 @@ ENV NODE_ENV=test
 # ---- E2E Test Server Stage ----
 FROM base AS e2e-test-server
 
+# Install curl for health checks
+RUN apk add --no-cache curl
+
 # entrypoint-e2e.sh handles seeding and starting the server for E2E
 # It's referenced in docker-compose.test.yml
 # CMD ["sh", "/app/scripts/entrypoint-e2e.sh"]

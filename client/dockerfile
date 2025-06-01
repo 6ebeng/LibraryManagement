@@ -16,6 +16,9 @@ ENV CHOKIDAR_USEPOLLING=true
 ENV WATCHPACK_POLLING=true
 ENV PORT=3000
 
+# Install curl for health checks
+RUN apk add --no-cache curl
+
 EXPOSE 3000
 CMD ["npm", "start"]
 
