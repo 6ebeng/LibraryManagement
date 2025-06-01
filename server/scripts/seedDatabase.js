@@ -158,15 +158,18 @@ const testBooksTemplate = [
 ];
 
 const seedDatabase = async () => {
-	let connectionClosed = false;
+	let connectionClosed = false; // Renamed from connectionClosedBySeeder for clarity within this script
 
-	// Helper to close connection, respects E2E_TESTING flag unless forced
-	const closeConnection = async (forceClose = false) => {
+	// Helper to close the Mongoose connection initiated by this script
+	const closeCurrentConnection = async () => {
 		if (mongoose.connection.readyState === 1 && !connectionClosed) {
-			if (process.env.E2E_TESTING !== 'true' || forceClose) {
+			try {
 				await mongoose.connection.close();
-				console.log('Database connection closed by seeder.');
+				console.log('Database connection closed by seeder script.');
 				connectionClosed = true;
+			} catch (error) {
+				console.error('Error closing connection in seeder script:', error);
+				// Decide if to throw, but usually logging is sufficient here
 			}
 		}
 	};
@@ -177,9 +180,9 @@ const seedDatabase = async () => {
 				useNewUrlParser: true,
 				useUnifiedTopology: true,
 			});
-			console.log('Connected to MongoDB for seeding...');
+			console.log(`Connected to MongoDB for seeding: ${process.env.MONGO_URI}`);
 		} else {
-			console.log('Using existing MongoDB connection for seeding...');
+			console.log(`Using existing MongoDB connection for seeding: ${mongoose.connection.name}`);
 		}
 		connectionClosed = false; // Reset flag for current execution
 
@@ -188,93 +191,79 @@ const seedDatabase = async () => {
 
 		if (existingUsers > 0 || existingBooks > 0) {
 			console.log('Database already contains data. Skipping seeding...');
-			// If not in E2E_TESTING mode and skipping, close the connection
-			// as the script's job is done.
-			if (process.env.E2E_TESTING !== 'true') {
-				await closeConnection(true); // Force close
+			// No explicit return here, allow finally block to close connection
+		} else {
+			await Promise.all([User.deleteMany({}), Book.deleteMany({}), Author.deleteMany({}), Genre.deleteMany({})]);
+			console.log('Cleared existing data...');
+
+			console.log('Seeding genres...');
+			const createdGenres = await Genre.insertMany(testGenres);
+			console.log(`✓ Created ${createdGenres.length} genres`);
+
+			console.log('Seeding authors...');
+			const createdAuthors = await Author.insertMany(testAuthors);
+			console.log(`✓ Created ${createdAuthors.length} authors`);
+
+			console.log('Seeding users...');
+			for (const userData of testUsers) {
+				const user = new User({
+					name: userData.name,
+					email: userData.email,
+					isAdmin: userData.isAdmin,
+					photoUrl: userData.photoUrl,
+				});
+				user.setPassword(userData.password);
+				await user.save();
 			}
-			return; // Exit the seedDatabase function
-		}
+			console.log(`✓ Created ${testUsers.length} users`);
 
-		await Promise.all([User.deleteMany({}), Book.deleteMany({}), Author.deleteMany({}), Genre.deleteMany({})]);
-		console.log('Cleared existing data...');
-
-		console.log('Seeding genres...');
-		const createdGenres = await Genre.insertMany(testGenres);
-		console.log(`✓ Created ${createdGenres.length} genres`);
-
-		console.log('Seeding authors...');
-		const createdAuthors = await Author.insertMany(testAuthors);
-		console.log(`✓ Created ${createdAuthors.length} authors`);
-
-		console.log('Seeding users...');
-		for (const userData of testUsers) {
-			const user = new User({
-				name: userData.name,
-				email: userData.email,
-				isAdmin: userData.isAdmin,
-				photoUrl: userData.photoUrl,
+			console.log('Seeding books...');
+			const booksToSeed = testBooksTemplate.map((bookTemplate) => {
+				const author = createdAuthors.find((a) => a.name === bookTemplate.authorName);
+				const genre = createdGenres.find((g) => g.name === bookTemplate.genreName);
+				return {
+					name: bookTemplate.name,
+					isbn: bookTemplate.isbn,
+					authorId: author ? author._id : null,
+					genreId: genre ? genre._id : null,
+					isAvailable: bookTemplate.isAvailable,
+					summary: bookTemplate.summary,
+					photoUrl: bookTemplate.photoUrl,
+				};
 			});
-			user.setPassword(userData.password);
-			await user.save();
+			const createdBooks = await Book.insertMany(booksToSeed);
+			console.log(`✓ Created ${createdBooks.length} books`);
+
+			console.log('\n🎉 Database seeding completed successfully!');
+			console.log('\nTest Users Created (ensure .env passwords match):');
+			console.log(`- Librarian: ${process.env.TEST_LIBRARIAN_EMAIL || 'mainLibrarian@example.com'}`);
+			console.log(`- Member: ${process.env.TEST_MEMBER_EMAIL || 'testmember@example.com'}`);
+			console.log(`\nCreated ${createdBooks.length} books with authors and genres`);
 		}
-		console.log(`✓ Created ${testUsers.length} users`);
-
-		console.log('Seeding books...');
-		const booksToSeed = testBooksTemplate.map((bookTemplate) => {
-			const author = createdAuthors.find((a) => a.name === bookTemplate.authorName);
-			const genre = createdGenres.find((g) => g.name === bookTemplate.genreName);
-			return {
-				name: bookTemplate.name,
-				isbn: bookTemplate.isbn,
-				authorId: author ? author._id : null,
-				genreId: genre ? genre._id : null,
-				isAvailable: bookTemplate.isAvailable,
-				summary: bookTemplate.summary,
-				photoUrl: bookTemplate.photoUrl,
-			};
-		});
-		const createdBooks = await Book.insertMany(booksToSeed);
-		console.log(`✓ Created ${createdBooks.length} books`);
-
-		console.log('\n🎉 Database seeding completed successfully!');
-		console.log('\nTest Users Created (ensure .env passwords match):');
-		console.log(`- Librarian: ${process.env.TEST_LIBRARIAN_EMAIL || 'mainLibrarian@example.com'}`);
-		console.log(`- Member: ${process.env.TEST_MEMBER_EMAIL || 'testmember@example.com'}`);
-		console.log(`\nCreated ${createdBooks.length} books with authors and genres`);
 	} catch (error) {
-		console.error('Error seeding database:', error);
-		await closeConnection(true); // Force close on error
-		throw error; // Re-throw to ensure entrypoint script sees failure
+		console.error('Error during database seeding process:', error);
+		// Allow finally block to close connection and then re-throw
+		throw error;
 	} finally {
-		// If this script is run directly (not as a module) AND E2E_TESTING is NOT true,
-		// then it's responsible for closing its own connection.
-		if (require.main === module && process.env.E2E_TESTING !== 'true') {
-			await closeConnection(true); // Force close
-		}
-		// If E2E_TESTING is true, the connection is intentionally left open for the server
-		// that will be started by entrypoint-e2e.sh.
+		// Always attempt to close the connection made by this script before exiting.
+		// The main server (index.js) will establish its own separate connection.
+		await closeCurrentConnection();
 	}
 };
 
-// Handling direct execution
+// Handling direct execution:
+// This block allows the script to be run directly (e.g., `node seedDatabase.js`).
+// It ensures the script exits with an appropriate code after completion or error.
 if (require.main === module) {
 	seedDatabase()
 		.then(() => {
-			console.log(`Seeding script finished operation (E2E_TESTING: ${process.env.E2E_TESTING}).`);
-			// If not in E2E_TESTING mode, the script can exit.
-			// The connection closure is handled within seedDatabase's try/catch/finally.
-			// if (process.env.E2E_TESTING !== 'true') {
-			// 	process.exit(0);
-			// }
-			process.exit(0);
-			// If E2E_TESTING is true, do nothing here; entrypoint-e2e.sh continues.
+			console.log(`Seeding script finished operation (E2E_TESTING: ${process.env.E2E_TESTING}). Script will now exit naturally.`);
+			// Node.js will exit with code 0 by default if the promise resolves.
 		})
 		.catch((error) => {
 			console.error('Seeding script failed:', error.message);
-			process.exit(1); // Connection is closed on error by seedDatabase's catch.
+			process.exitCode = 1; // Set exit code to 1 for errors. Node.js will exit with this code.
 		});
 }
 
-module.exports = seedDatabase;
 module.exports = seedDatabase;

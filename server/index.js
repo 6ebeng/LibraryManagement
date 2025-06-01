@@ -1,3 +1,14 @@
+// Add to the beginning of server/index.js
+process.on('uncaughtException', (error) => {
+	console.error('UNCAUGHT EXCEPTION in server/index.js:', error);
+	process.exit(1); // Exit so nodemon can restart, or implement more graceful shutdown
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+	console.error('UNHANDLED PROMISE REJECTION in server/index.js:', reason, 'Promise:', promise);
+	// Optionally, throw reason; or process.exit(1);
+});
+
 // Import required modules
 const express = require('express');
 const cors = require('cors');
@@ -40,9 +51,11 @@ mongoose
 		useUnifiedTopology: true,
 	})
 	.then(() => {
-		// Suppress DB connection message in test environment
-		if (process.env.NODE_ENV !== 'test') {
-			console.log('Connected to DB on MongoDB Atlas');
+		// Updated logging for clarity
+		if (process.env.NODE_ENV === 'test' || process.env.E2E_TESTING === 'true') {
+			console.log(`Connected to test DB: ${process.env.MONGO_URI}`);
+		} else {
+			console.log(`Connected to DB: ${process.env.MONGO_URI}`); // Or keep the Atlas message if it's always Atlas for non-test
 		}
 	})
 	.catch((err) => console.log('DB connection error', err));
@@ -106,7 +119,14 @@ app.use('/api/genre', genreRouter);
 app.use('/api/user', userRouter);
 app.use('/api/review', reviewRouter);
 app.get('/api/health', (req, res) => {
-	res.status(200).json({ status: 'UP', message: 'Backend is healthy' });
+	console.log('HEALTH CHECK: /api/health endpoint was hit at', new Date().toISOString());
+	try {
+		res.status(200).send('Backend is healthy');
+		console.log('HEALTH CHECK: Responded 200 OK at', new Date().toISOString());
+	} catch (e) {
+		console.error('HEALTH CHECK: Error within /api/health route:', e);
+		res.status(500).send('Error processing health check');
+	}
 });
 
 // Add seed endpoint for manual seeding

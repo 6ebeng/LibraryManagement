@@ -69,12 +69,19 @@ services:
     env_file:
       - .env.test
     environment:
+      - NODE_ENV=test
+      - MONGO_URI=${MONGO_URI}
       - PORT=8080
       - CHOKIDAR_USEPOLLING=true
       - E2E_TESTING=true
-    entrypoint: ['sh', '/app/entrypoint.sh'] # This script seeds and then starts the server
+    entrypoint: ['sh', '/app/scripts/entrypoint-e2e.sh'] # This script seeds and then starts the server
     networks:
       - test-network
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://backend-e2e:8080/api/health']
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   frontend-e2e:
     container_name: frontend-e2e
@@ -87,29 +94,35 @@ services:
       - ./client:/app
       - /app/node_modules
     depends_on:
-      backend-e2e: # This ensures backend is at least started before frontend tries to connect (for its own build/runtime)
-        condition: service_started # Or service_healthy if frontend actively needs backend to be fully healthy during its startup
+      - backend-e2e
+    command: sh -c "npm start"
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
       - PORT=3000
       - WATCHPACK_POLLING=true
-      - REACT_APP_API_URL=http://backend-e2e:8080/api
-    command: sh -c "npm start && sleep 15"
+      - REACT_APP_API_URL=http://backend-e2e:8080
     networks:
       - test-network
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://frontend-e2e:3000/']
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   e2e-runner:
     container_name: e2e-runner
     image: cypress/included:10.10.0
     depends_on:
-      - frontend-e2e
-      - backend-e2e
+      frontend-e2e:
+        condition: service_healthy
+      backend-e2e:
+        condition: service_healthy
     env_file:
       - .env.test
     environment:
-      - CYPRESS_BASE_URL=http://frontend-e2e:3000
-      - CYPRESS_API_URL=http://backend-e2e:8080/api
+      - CYPRESS_BASE_URL=${CYPRESS_BASE_URL}
+      - CYPRESS_API_URL=${CYPRESS_API_URL}
     working_dir: /e2e
     volumes:
       - ./:/e2e
