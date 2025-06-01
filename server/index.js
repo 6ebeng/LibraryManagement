@@ -1,14 +1,3 @@
-// Add to the beginning of server/index.js
-process.on('uncaughtException', (error) => {
-	console.error('UNCAUGHT EXCEPTION in server/index.js:', error);
-	process.exit(1); // Exit so nodemon can restart, or implement more graceful shutdown
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-	console.error('UNHANDLED PROMISE REJECTION in server/index.js:', reason, 'Promise:', promise);
-	// Optionally, throw reason; or process.exit(1);
-});
-
 // Import required modules
 const express = require('express');
 const cors = require('cors');
@@ -126,19 +115,6 @@ app.get('/api/health', (req, res) => {
 	} catch (e) {
 		console.error('HEALTH CHECK: Error within /api/health route:', e);
 		res.status(500).send('Error processing health check');
-	}
-});
-
-// Add seed endpoint for manual seeding
-app.post('/api/seed', async (req, res) => {
-	try {
-		// Assuming seedDatabase is defined elsewhere or you might want to import it.
-		// For now, this line will cause an error if seedDatabase is not in scope.
-		// await seedDatabase();
-		console.warn('/api/seed endpoint called, but seedDatabase function might not be in scope here.');
-		res.json({ success: true, message: 'Database seed endpoint called (ensure seedDatabase is implemented and available)' });
-	} catch (error) {
-		res.status(500).json({ success: false, error: error.message });
 	}
 });
 
