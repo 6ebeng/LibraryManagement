@@ -120,9 +120,6 @@ services:
         condition: service_healthy
     env_file:
       - .env.test
-    environment:
-      - CYPRESS_BASE_URL=${CYPRESS_BASE_URL}
-      - CYPRESS_API_URL=${CYPRESS_API_URL}
     working_dir: /e2e
     volumes:
       - ./:/e2e

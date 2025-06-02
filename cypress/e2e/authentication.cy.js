@@ -104,8 +104,8 @@ describe('E2E: Authentication & Authorization', () => {
 			// The loginAsLibrarian command should assert internal login success.
 			// Add assertions for elements *after* login command's internal checks.
 			// Potential Failure Point: [data-testid="librarian-dashboard-welcome"] may not exist or text may differ.
-			cy.get('[data-testid="librarian-dashboard-welcome"]').should('be.visible');
-			cy.contains('User Management').should('be.visible');
+			cy.contains('h4', 'Hi Main, Welcome back').should('be.visible');
+			cy.get('p').contains('Librarian').should('be.visible');
 		});
 
 		it('TC_AUTH_LOGIN_002: Successful login with valid Member credentials', () => {

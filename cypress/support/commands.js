@@ -6,7 +6,7 @@ Cypress.Commands.add('loginAsLibrarian', (email, password) => {
 		() => {
 			// This block runs when the session is new or needs to be re-established
 			cy.visit('/login');
-			// Corrected selectors to match LoginForm.js
+			// Updated selectors to match the actual HTML structure
 			cy.get('input[name="email"]').type(email);
 			cy.get('input[name="password"]').type(password);
 			cy.get('button[type="submit"]').click();
@@ -30,7 +30,7 @@ Cypress.Commands.add('loginAsMember', (email, password) => {
 		[email, password], // Session key
 		() => {
 			cy.visit('/login');
-			// Corrected selectors to match LoginForm.js
+			// Updated selectors to match the actual HTML structure
 			cy.get('input[name="email"]').type(email);
 			cy.get('input[name="password"]').type(password);
 			cy.get('button[type="submit"]').click();
