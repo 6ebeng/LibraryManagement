@@ -8,6 +8,7 @@
 		"test:component:watch": "docker-compose --env-file .env.test -f docker-compose.test.yml run --rm --service-ports component-tester-watch",
 		"test:component:watch:build": "docker-compose --env-file .env.test -f docker-compose.test.yml build component-tester-watch && docker-compose -f docker-compose.test.yml run --rm --service-ports component-tester-watch",
 		"test:e2e": "docker-compose --env-file .env.test -f docker-compose.test.yml up --build --exit-code-from e2e-runner --abort-on-container-exit e2e-runner frontend-e2e backend-e2e mongo-test",
+		"test:e2e:chrome": "docker-compose --env-file .env.test -f docker-compose.test.yml run --rm e2e-runner cypress run --browser chrome --config-file /e2e/cypress/cypress.config.js",
 		"test": "npm run test:api && npm run test:component && npm run test:e2e",
 		"test:clean": "docker-compose -f docker-compose.test.yml down -v --remove-orphans"
 	},

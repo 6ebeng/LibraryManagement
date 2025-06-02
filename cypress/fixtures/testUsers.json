@@ -1,0 +1,14 @@
+{
+	"librarian": {
+		"email": "mainLibrarian@example.com",
+		"password": "Password123!",
+		"fullName": "Main Librarian",
+		"role": "Librarian"
+	},
+	"member": {
+		"email": "testmember@example.com",
+		"password": "MemberPass123!",
+		"fullName": "Test Member",
+		"role": "Member"
+	}
+}
