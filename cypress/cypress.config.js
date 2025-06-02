@@ -1,61 +1,84 @@
-// LibraryManagement/cypress/cypress.config.js
 const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
 	e2e: {
-		baseUrl: 'http://localhost:3000', // Will be overridden by CYPRESS_BASE_URL in Docker if set
+		baseUrl: 'http://localhost:3000', // Will be overridden by CYPRESS_BASE_URL in Docker
 		specPattern: 'cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
 		supportFile: 'cypress/support/e2e.js',
-		videosFolder: 'cypress/videos', // Standard folder for videos
-		screenshotsFolder: 'cypress/screenshots', // Standard folder for screenshots
-		fixturesFolder: 'cypress/fixtures', // Standard folder for fixture files
-		downloadsFolder: 'cypress/downloads', // Standard folder for downloaded files
-		video: false, // Default to false, can be overridden by CLI or CI config
-		screenshotOnRunFailure: true, // Good practice for debugging failed tests
-		reporter: 'spec', // Default reporter, good for CI and local
+		videosFolder: 'cypress/videos',
+		screenshotsFolder: 'cypress/screenshots',
+		fixturesFolder: 'cypress/fixtures',
+		downloadsFolder: 'cypress/downloads',
+		video: false,
+		screenshotOnRunFailure: true,
+		viewportWidth: 1280,
+		viewportHeight: 720,
+		defaultCommandTimeout: 10000,
+		requestTimeout: 10000,
+		responseTimeout: 30000,
+		pageLoadTimeout: 30000,
+
+		// Fixed reporter configuration
+		reporter: 'spec', // Use 'mochawesome' or 'junit' if you need XML reports
 		reporterOptions: {
-			// Example reporter options for JUnit, useful for CI
-			mochaFile: 'cypress/results/results-[hash].xml',
-			toConsole: true,
+			// Only include these if using 'junit' reporter
+			// mochaFile: 'cypress/results/results-[hash].xml',
+			// toConsole: true,
 		},
-		experimentalSessionAndOrigin: true, // Enables cy.session() and cy.origin()
-		// projectId: "yourProjectId", // Uncomment and set if you use Cypress Cloud
+
+		// Updated for newer Cypress versions
+		experimentalSessionAndOrigin: false, // Deprecated in v12+
+
+		// Add retries for flaky tests
+		retries: {
+			runMode: 2,
+			openMode: 0,
+		},
 
 		setupNodeEvents(on, config) {
-			// Initialize config.env if it doesn't exist to avoid errors
+			// Initialize config.env if it doesn't exist
 			config.env = config.env || {};
 
-			// Load environment variables from process.env (e.g., sourced from .env.test by Docker Compose)
-			// and make them available to Cypress.env() in your tests.
-			// This allows for secure handling of sensitive data like credentials.
-			config.env.TEST_LIBRARIAN_EMAIL = process.env.TEST_LIBRARIAN_EMAIL;
-			config.env.TEST_LIBRARIAN_PASSWORD = process.env.TEST_LIBRARIAN_PASSWORD;
-			config.env.TEST_MEMBER_EMAIL = process.env.TEST_MEMBER_EMAIL;
-			config.env.TEST_MEMBER_PASSWORD = process.env.TEST_MEMBER_PASSWORD;
+			// Load environment variables with proper error handling
+			const requiredEnvVars = ['TEST_LIBRARIAN_EMAIL', 'TEST_LIBRARIAN_PASSWORD', 'TEST_MEMBER_EMAIL', 'TEST_MEMBER_PASSWORD'];
 
-			// Example: API URL can also be set here if needed, or overridden by CYPRESS_API_URL
-			// config.env.API_URL = process.env.API_URL || 'http://localhost:5000/api';
+			requiredEnvVars.forEach((envVar) => {
+				if (process.env[envVar]) {
+					config.env[envVar] = process.env[envVar];
+				} else {
+					console.warn(`Warning: ${envVar} is not set in environment variables`);
+				}
+			});
 
-			// You can add any other environment variables you need here in the same way.
-			// For example, to load all environment variables prefixed with CYPRESS_:
-			// Object.keys(process.env).forEach((key) => {
-			//   if (key.startsWith('CYPRESS_')) {
-			//     config.env[key.replace('CYPRESS_', '')] = process.env[key];
-			//   }
-			// });
+			// Load CYPRESS_ prefixed environment variables
+			Object.keys(process.env).forEach((key) => {
+				if (key.startsWith('CYPRESS_')) {
+					const cypressKey = key.replace('CYPRESS_', '');
+					config.env[cypressKey] = process.env[key];
+				}
+			});
 
-			// Make sure to return the config object as it might have been modified.
+			// Set API URL from environment or default
+			config.env.API_URL = process.env.CYPRESS_API_URL || 'http://localhost:8080/api';
+
+			// Task for logging (useful for debugging)
+			on('task', {
+				log(message) {
+					console.log(message);
+					return null;
+				},
+			});
+
 			return config;
 		},
 	},
 
 	component: {
-		// Configuration for Cypress component testing, if you plan to use it.
 		devServer: {
-			framework: 'create-react-app', // Or your specific framework like 'react', 'vue', 'angular'
-			bundler: 'webpack', // Or 'vite'
+			framework: 'create-react-app',
+			bundler: 'webpack',
 		},
-		specPattern: 'src/**/*.cy.{js,jsx,ts,tsx}', // Common pattern for component tests
-		supportFile: 'cypress/support/component.js', // Support file for component tests
+		specPattern: 'src/**/*.cy.{js,jsx,ts,tsx}',
+		supportFile: 'cypress/support/component.js',
 	},
 });
