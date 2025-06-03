@@ -150,3 +150,7 @@ cypress/screenshots/
 cypress/videos/
 cypress/fixtures/downloads/
 cypress.env.json
+
+docker-compose.development.yml
+docker-compose.production.yml
+docker-compose.test.yml
