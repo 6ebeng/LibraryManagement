@@ -143,3 +143,10 @@ nbproject/ # NetBeans
 *.listing
 *.lol
 
+
+# Cypress
+cypress/downloads/
+cypress/screenshots/
+cypress/videos/
+cypress/fixtures/downloads/
+cypress.env.json

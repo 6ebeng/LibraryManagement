@@ -31,7 +31,7 @@ module.exports = defineConfig({
 
 		// Add retries for flaky tests
 		retries: {
-			runMode: 2,
+			runMode: 0,
 			openMode: 0,
 		},
 
