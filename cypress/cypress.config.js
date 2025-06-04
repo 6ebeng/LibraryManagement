@@ -9,7 +9,7 @@ module.exports = defineConfig({
 		screenshotsFolder: 'cypress/screenshots',
 		fixturesFolder: 'cypress/fixtures',
 		downloadsFolder: 'cypress/downloads',
-		video: false,
+		video: true,
 		screenshotOnRunFailure: true,
 		viewportWidth: 1280,
 		viewportHeight: 720,
@@ -21,13 +21,12 @@ module.exports = defineConfig({
 		// Fixed reporter configuration
 		reporter: 'spec', // Use 'mochawesome' or 'junit' if you need XML reports
 		reporterOptions: {
-			// Only include these if using 'junit' reporter
-			// mochaFile: 'cypress/results/results-[hash].xml',
-			// toConsole: true,
+			mochaFile: 'cypress/results/[name]-[hash].xml', // For JUnit reporter
+			toConsole: true, // Log to console
+			overwrite: false, // Do not overwrite existing reports (Aligned with comment)
+			html: false, // Disable HTML report if using JUnit
+			json: true, // Enable JSON report
 		},
-
-		// Updated for newer Cypress versions
-		experimentalSessionAndOrigin: false, // Deprecated in v12+
 
 		// Add retries for flaky tests
 		retries: {
@@ -36,12 +35,13 @@ module.exports = defineConfig({
 		},
 
 		setupNodeEvents(on, config) {
-			// Initialize config.env if it doesn't exist
 			config.env = config.env || {};
 
-			// Load environment variables with proper error handling
-			const requiredEnvVars = ['TEST_LIBRARIAN_EMAIL', 'TEST_LIBRARIAN_PASSWORD', 'TEST_MEMBER_EMAIL', 'TEST_MEMBER_PASSWORD'];
+			// This section correctly loads variables from process.env into Cypress.env()
+			// Your .env.test file provides these values to process.env if loaded correctly.
 
+			// Loads TEST_LIBRARIAN_EMAIL, etc. if they are in process.env
+			const requiredEnvVars = ['TEST_LIBRARIAN_EMAIL', 'TEST_LIBRARIAN_PASSWORD', 'TEST_MEMBER_EMAIL', 'TEST_MEMBER_PASSWORD'];
 			requiredEnvVars.forEach((envVar) => {
 				if (process.env[envVar]) {
 					config.env[envVar] = process.env[envVar];
@@ -50,7 +50,10 @@ module.exports = defineConfig({
 				}
 			});
 
-			// Load CYPRESS_ prefixed environment variables
+			// Loads all CYPRESS_ prefixed variables from process.env into config.env, stripping the prefix.
+			// So, CYPRESS_API_URL from .env.test becomes config.env.API_URL (accessible via Cypress.env('API_URL')).
+			// CYPRESS_TEST_LIBRARIAN_EMAIL becomes config.env.TEST_LIBRARIAN_EMAIL.
+			// CYPRESS_defaultCommandTimeout becomes config.env.defaultCommandTimeout (accessible via Cypress.env('defaultCommandTimeout')).
 			Object.keys(process.env).forEach((key) => {
 				if (key.startsWith('CYPRESS_')) {
 					const cypressKey = key.replace('CYPRESS_', '');
@@ -58,10 +61,19 @@ module.exports = defineConfig({
 				}
 			});
 
-			// Set API URL from environment or default
-			config.env.API_URL = process.env.CYPRESS_API_URL || 'http://localhost:8080/api';
+			// This specific assignment for API_URL is okay, though the loop above would also set it
+			// if CYPRESS_API_URL is in process.env. It ensures API_URL is explicitly available.
+			if (process.env.CYPRESS_API_URL) {
+				config.env.API_URL = process.env.CYPRESS_API_URL;
+			} else {
+				console.warn(
+					'Warning: CYPRESS_API_URL is not set in environment variables. ' +
+						'Backend API tests might fail or point to an incorrect URL. ' +
+						'Defaulting to http://localhost:8080 for local non-Docker runs, but ensure this is correct for your setup, or set http://backend:8080 for default Docker setups.'
+				);
+				// Ensure a default is set if not present, to avoid issues if it's expected.
+			}
 
-			// Task for logging (useful for debugging)
 			on('task', {
 				log(message) {
 					console.log(message);
