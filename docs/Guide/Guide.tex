@@ -135,7 +135,7 @@ docker-compose -f docker-compose.dev.yml up --build
     \item \textbf{Verify Services:}
     \begin{itemize}
         \item The React frontend should be accessible at \href{http://localhost:3000}{\texttt{http://localhost:3000}}.
-        \item The Node.js backend API will be running on \href{http://localhost:5000}{\texttt{http://localhost:5000}}.
+        \item The Node.js backend API will be running on \href{http://localhost:8080}{\texttt{http://localhost:5000}}.
     \end{itemize}
     \item \textbf{Troubleshooting:} If containers fail to start, check the Docker logs for errors. Common issues include port conflicts or configuration errors in the `.yml` files.
 \end{enumerate}
@@ -570,7 +570,7 @@ The report should contain the following sections:
 
 \subsection{Key Commands}
 \begin{description}
-    \item[Run Dev Environment:] \texttt{docker-compose -f docker-compose.dev.yml up --build}
+    \item[Run Dev Environment:] \texttt{docker-compose -f docker-compose.test.yml up --build}
     \item[Run Cypress (Interactive):] \texttt{npm run e2e:watch}
     \item[Run Cypress (Headless):] \texttt{npm run e2e}
     \item[Run Backend Tests:] \texttt{cd server \&\& npm test}

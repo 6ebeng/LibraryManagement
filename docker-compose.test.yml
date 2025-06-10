@@ -1,0 +1,213 @@
+services:
+  mongo-test:
+    container_name: mongo-test
+    image: mongo:latest
+    ports:
+      - '27018:27017' # Using a different host port to avoid conflict with dev
+    volumes:
+      - mongo-test-data:/data/db
+      - ./server/scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    environment:
+      # These will be sourced from .env.test. If blank in .env.test, MongoDB starts without default auth.
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=library_management_test
+    env_file:
+      - .env.test
+    networks:
+      - test-network
+
+  # --- CI/Single-Run Test Services ---
+  api-tester:
+    container_name: api-tester
+    build:
+      context: ./server
+      target: development # Assumes this target in server/Dockerfile uses /app/entrypoint.sh
+    depends_on:
+      - mongo-test
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    env_file:
+      - .env.test
+    environment:
+      - NODE_ENV=test
+      - CI=true
+    # The command string is passed to sh -c for proper execution of shell operators like &&
+    command: ['sh', '-c', 'npm install && node /app/scripts/seedDatabase.js && npm run test:api']
+    networks:
+      - test-network
+
+  component-tester:
+    container_name: component-tester
+    build:
+      context: ./client
+      target: development
+    env_file:
+      - .env.test
+    volumes:
+      - ./client:/app
+      - /app/node_modules # Ensured this is active for consistency
+    environment:
+      - NODE_ENV=test
+      - CI=true
+    command: sh -c "npm test -- --watchAll=false --passWithNoTests"
+    networks:
+      - test-network
+
+  # --- Services for E2E Testing (dependencies for e2e-runner and e2e-runner-watch) ---
+  backend-e2e:
+    container_name: backend-e2e
+    build:
+      context: ./server
+      target: e2e-test-server
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    depends_on: # This depends_on is for mongo-test
+      - mongo-test
+    env_file:
+      - .env.test
+    environment:
+      - NODE_ENV=test
+      - MONGO_URI=${MONGO_URI}
+      - PORT=8080
+      - CHOKIDAR_USEPOLLING=true
+      - E2E_TESTING=true
+    entrypoint: ['sh', '/app/scripts/entrypoint-e2e.sh'] # This script seeds and then starts the server
+    networks:
+      - test-network
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://backend-e2e:8080/api/health']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  frontend-e2e:
+    container_name: frontend-e2e
+    build:
+      context: ./client
+      target: development
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env.test
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    command: sh -c "npm start"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - PORT=3000
+      - WATCHPACK_POLLING=true
+      - REACT_APP_API_URL=http://backend-e2e:8080
+    networks:
+      - test-network
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://frontend-e2e:3000/']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  e2e-runner:
+    container_name: e2e-runner
+    build:
+      context: ./e2e
+      dockerfile: Dockerfile
+      target: production
+    env_file:
+      - .env.test
+    depends_on:
+      frontend-e2e:
+        condition: service_healthy
+      backend-e2e:
+        condition: service_healthy
+    environment:
+      - CYPRESS_BASE_URL=http://frontend-e2e:3000
+      - CYPRESS_API_URL=http://backend-e2e:8080
+    working_dir: /app
+    volumes:
+      - ./e2e/cypress/data:/app/cypress/data
+    entrypoint: ['sh', 'cypress_runner.sh', '--browser', 'chrome']
+    networks:
+      - test-network
+
+  # --- Development Watch Mode Services ---
+  api-tester-watch:
+    container_name: api-tester-watch
+    build:
+      context: ./server
+      target: development
+    depends_on:
+      - mongo-test
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    env_file:
+      - .env.test
+    environment:
+      - NODE_ENV=test
+      - SESSION_SECRET=${SESSION_SECRET}
+      # - CHOKIDAR_USEPOLLING=true # Optional: Add if file watching is unreliable
+    entrypoint: ['/bin/sh', '-c']
+    command: 'node /app/scripts/seedDatabase.js && npm run test:api:watch'
+    networks:
+      - test-network
+
+  component-tester-watch:
+    container_name: component-tester-watch
+    build:
+      context: ./client
+      target: development
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    env_file:
+      - .env.test
+    environment:
+      - NODE_ENV=test
+      # - WATCHPACK_POLLING=true   # Optional: For react-scripts test, if watching is unreliable
+      # - CHOKIDAR_USEPOLLING=true # General alternative for polling
+    command: sh -c "npm test" # This should default to watch mode if CI=false
+    stdin_open: true # Keep STDIN open for interactive watch mode
+    tty: true # Allocate a TTY for interactive watch mode
+    networks:
+      - test-network
+
+  e2e-runner-watch:
+    container_name: e2e-runner-watch
+    build:
+      context: ./e2e
+      dockerfile: Dockerfile
+      target: development
+    depends_on:
+      frontend-e2e:
+        condition: service_healthy
+      backend-e2e:
+        condition: service_healthy
+    env_file:
+      - .env.test
+    environment:
+      - CYPRESS_BASE_URL=http://frontend-e2e:3000
+      - CYPRESS_API_URL=http://backend-e2e:8080
+      - DISPLAY=${DISPLAY}
+      - CYPRESS_CACHE_FOLDER=/app/cache/Cypress
+      - CHOKIDAR_USEPOLLING=true
+    working_dir: /app
+    volumes:
+      - ./e2e/cypress:/app/cypress
+      - ./e2e/cypress/data:/app/cypress/data
+      - /mnt/wslg/.X11-unix:/tmp/.X11-unix #cd /mnt/c/Users/Tishko/Desktop/LibraryManagement
+    entrypoint: ['sh', 'entrypoint-e2e-watch.sh']
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge
+
+volumes:
+  mongo-test-data:
+    driver: local
