@@ -16,7 +16,7 @@
 		"test:clean": "docker-compose -f docker-compose.test.yml down -v --remove-orphans",
 		"dev:watch:up": "docker-compose --env-file .env.dev -f docker-compose.dev.yml up -d --build ",
 		"dev:watch:down": "docker-compose -f docker-compose.dev.yml down -v --remove-orphans",
-		"clean-latex": "powershell -Command \"Get-ChildItem -Path testCases -Recurse -File | Where-Object { $_.Extension -notin @('.tex', '.pdf', '.bib', '.png', '.jpg') } | Remove-Item -Force\""
+		"clean-latex": "powershell -Command \"Get-ChildItem -Path docs -Recurse -File | Where-Object { $_.Extension -notin @('.tex', '.pdf', '.bib', '.png', '.jpg', '.docx') } | Remove-Item -Force\""
 	},
 	"devDependencies": {
 		"@types/cypress": "^0.1.6",
