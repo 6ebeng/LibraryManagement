@@ -8,9 +8,20 @@
 		"test:component:watch": "docker-compose --env-file .env.test -f docker-compose.test.yml run --rm --service-ports component-tester-watch",
 		"test:component:watch:build": "docker-compose --env-file .env.test -f docker-compose.test.yml build component-tester-watch && docker-compose -f docker-compose.test.yml run --rm --service-ports component-tester-watch",
 		"test:e2e": "docker-compose --env-file .env.test -f docker-compose.test.yml up --build --exit-code-from e2e-runner --abort-on-container-exit e2e-runner frontend-e2e backend-e2e mongo-test",
-		"test:e2e:chrome": "docker-compose --env-file .env.test -f docker-compose.test.yml run --rm e2e-runner cypress run --browser chrome --config-file /e2e/cypress/cypress.config.js",
-		"test": "npm run test:api && npm run test:component && npm run test:e2e",
-		"test:clean": "docker-compose -f docker-compose.test.yml down -v --remove-orphans"
+		"test:e2e:watch": "docker-compose --env-file .env.test -f docker-compose.test.yml up e2e-runner-watch --build",
+		"report:e2e:merge": "mochawesome-merge e2e/cypress/data/reports/*.json -o e2e/cypress/data/reports/combined-report.json",
+		"report:e2e:generate": "marge e2e/cypress/data/reports/combined-report.json -f combined-report -o e2e/cypress/data/reports --inline",
+		"test:e2e:report": "npm run test:e2e && npm run report:e2e:merge && npm run report:e2e:generate && npm run test:clean",
+		"test": "npm run test:api && npm run test:component && npm run test:e2e:report",
+		"test:clean": "docker-compose -f docker-compose.test.yml down -v --remove-orphans",
+		"dev:watch:up": "docker-compose --env-file .env.dev -f docker-compose.dev.yml up -d --build ",
+		"dev:watch:down": "docker-compose -f docker-compose.dev.yml down -v --remove-orphans",
+		"clean-latex": "powershell -Command \"Get-ChildItem -Path testCases -Recurse -File | Where-Object { $_.Extension -notin @('.tex', '.pdf', '.bib', '.png', '.jpg') } | Remove-Item -Force\""
 	},
-	"devDependencies": {}
+	"devDependencies": {
+		"@types/cypress": "^0.1.6",
+		"@types/node": "^22.15.30",
+		"mochawesome-merge": "^4.3.0",
+		"mochawesome-report-generator": "^6.2.0"
+	}
 }

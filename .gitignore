@@ -145,11 +145,9 @@ nbproject/ # NetBeans
 
 
 # Cypress
-cypress/downloads/
-cypress/screenshots/
-cypress/videos/
-cypress/fixtures/downloads/
-cypress.env.json
+e2e/cypress/data/
+e2e/cypress.env.json
+
 
 docker-compose.dev.yml
 docker-compose.prod.yml

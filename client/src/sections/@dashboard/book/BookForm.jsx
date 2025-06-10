@@ -22,6 +22,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import {useEffect, useState} from "react";
 import Iconify from "../../../components/iconify";
+import { apiUrl, routes, methods } from "../../../constants";
 
 const BookForm = ({
                     isUpdateForm,
@@ -38,7 +39,7 @@ const BookForm = ({
   const [genres, setGenres] = useState([]);
 
   const getAllAuthors = () => {
-    axios.get('http://localhost:8080/api/author/getAll')
+    axios.get(apiUrl(routes.AUTHOR, methods.GET_ALL))
       .then((response) => {
         // handle success
         console.log(response.data)
@@ -52,7 +53,7 @@ const BookForm = ({
   }
 
   const getAllGenres = () => {
-    axios.get('http://localhost:8080/api/genre/getAll')
+    axios.get(apiUrl(routes.GENRE, methods.GET_ALL))
       .then((response) => {
         // handle success
         console.log(response.data)

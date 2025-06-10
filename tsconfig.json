@@ -1,0 +1,25 @@
+{
+	"compilerOptions": {
+		"target": "es2020",
+		"lib": ["es2020", "dom"],
+		"types": ["cypress", "node"],
+		"module": "esnext",
+		"moduleResolution": "node",
+		"jsx": "react-jsx",
+		"strict": false,
+		"noImplicitAny": false,
+		"strictNullChecks": false,
+		"baseUrl": ".",
+		"allowSyntheticDefaultImports": true,
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
+		"allowJs": true,
+		"skipLibCheck": true,
+		"paths": {
+			"@fixtures/*": ["./e2e/cypress/fixtures/*"],
+			"@support/*": ["./e2e/cypress/support/*"]
+		}
+	},
+	"include": ["e2e/**/*.ts", "client/src/**/*.js", "client/src/**/*.jsx", "client/src/**/*.ts", "client/src/**/*.tsx"],
+	"exclude": ["node_modules"]
+}

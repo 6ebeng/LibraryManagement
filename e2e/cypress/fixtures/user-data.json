@@ -1,0 +1,10 @@
+{
+  "librarian": {
+    "email": "mainLibrarian@example.com",
+    "password": "Password123!"
+  },
+  "member": {
+    "email": "testmember@example.com",
+    "password": "MemberPass123!"
+  }
+}

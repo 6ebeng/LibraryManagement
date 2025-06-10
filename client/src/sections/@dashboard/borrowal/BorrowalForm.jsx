@@ -18,6 +18,7 @@ import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import Iconify from "../../../components/iconify";
 import { useAuth } from "../../../hooks/useAuth";
+import { apiUrl, routes, methods } from "../../../constants";
 
 const BorrowalForm = ({
                         handleAddBorrowal,
@@ -33,7 +34,7 @@ const BorrowalForm = ({
   const [books, setBooks] = useState([]);
 
   const getAllMembers = () => {
-    axios.get('http://localhost:8080/api/user/getAllMembers')
+    axios.get(apiUrl(routes.USER, 'getAllMembers'))
       .then((response) => {
         // handle success
         console.log(response.data)
@@ -52,7 +53,7 @@ const BorrowalForm = ({
   }
 
   const getAllBooks = () => {
-    axios.get('http://localhost:8080/api/book/getAll')
+    axios.get(apiUrl(routes.BOOK, methods.GET_ALL))
       .then((response) => {
         // handle success
         console.log(response.data)

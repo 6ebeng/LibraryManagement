@@ -1,0 +1,259 @@
+\documentclass[10pt, a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{longtable}
+\usepackage{array} % For better column definitions in longtable
+\usepackage{enumitem} % Required for itemize and enumerate options
+\usepackage{helvet} % Using a sans-serif font for better readability
+\renewcommand{\familydefault}{\sfdefault}
+
+\geometry{left=1cm, right=1cm, top=2cm, bottom=2cm}
+
+\title{Functional Test Cases: Specific Feature Testing \\ \large Library Management System}
+\author{Test Design Team (Non-Coders/Specification Experts)}
+\date{June 5, 2025}
+
+\begin{document}
+\maketitle
+\begin{center}
+    \textbf{Note:} These test cases are designed from a black-box, user-centric perspective based on the SRS document. Actual results and status are to be filled during test execution.
+\end{center}
+
+\section*{I.C Functional Test Cases: Specific Feature Testing}
+
+\begin{longtable}{|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{4.5cm}|>{\raggedright\arraybackslash}p{4.5cm}|>{\raggedright\arraybackslash}p{4.5cm}|}
+\caption{Specific Feature Test Cases}\label{tab:feature_test_cases}\\
+\hline
+\textbf{Test Case ID} & \textbf{Test Title} & \textbf{Test Steps} & \textbf{Expected Results} \\
+\hline
+\endfirsthead
+\multicolumn{4}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline
+\textbf{Test Case ID} & \textbf{Test Title} & \textbf{Test Steps} & \textbf{Expected Results} \\
+\hline
+\endhead
+\hline \multicolumn{4}{|r|}{{Continued on next page}} \\ \hline
+\endfoot
+\hline
+\endlastfoot
+
+% Sub-Section: Dashboard (Librarian)
+\multicolumn{4}{|l|}{\textbf{Sub-Section: Dashboard (Librarian)}} \\ \hline
+TC\_DASH\_001 & Verify Librarian can access the Dashboard & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Navigate to the Dashboard.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item User is successfully redirected to the Librarian dashboard at '/dashboard'.
+        \item Dashboard displays overview statistics and charts.
+    \end{itemize} \\ \hline
+TC\_DASH\_002 & Verify Member cannot access the Dashboard & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as a 'Member' user.
+        \item Attempt to navigate directly to the '/dashboard' URL.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Access is denied.
+        \item User is redirected to the member landing page (e.g., '/books') or an error page.
+    \end{itemize} \\ \hline
+
+% Sub-Section: Book Management (CRUD)
+\multicolumn{4}{|l|}{\textbf{Sub-Section: Book Management (CRUD)}} \\ \hline
+TC\_BOOK\_ADD\_001 & Successful new book creation by Librarian &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Navigate to 'Book Management' (/books).
+        \item Click "New Book" button.
+        \item Fill in all required fields (Name, ISBN) with valid data.
+        \item Select existing Author and Genre.
+        \item Submit the form.
+    \end{itemize} &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item A success message is displayed.
+        \item The new book record is created and appears in the book list.
+    \end{itemize} \\ \hline
+TC\_BOOK\_ADD\_002 & Attempt to create a book with missing required fields &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Navigate to 'Book Management'.
+        \item Open the "Add Book" form.
+        \item Leave a required field (e.g., Name) blank.
+        \item Submit the form.
+    \end{itemize} &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The system rejects the submission.
+        \item An error message indicating the required field is missing is displayed.
+        \item The book is not added to the database.
+    \end{itemize} \\ \hline
+TC\_BOOK\_VIEW\_001 & Verify Member can view list of books and book details &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Member.
+        \item Navigate to 'Book Management' (/books).
+        \item Click on a specific book in the list.
+    \end{itemize} &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Member can successfully view the list of all books.
+        \item Member can successfully view the details of a specific book.
+    \end{itemize} \\ \hline
+TC\_BOOK\_UPD\_001 & Successful update of a book's details by Librarian &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Navigate to 'Book Management'.
+        \item Select a book to edit.
+        \item Change a field (e.g., update the summary).
+        \item Save the changes.
+    \end{itemize} &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item A success message is displayed.
+        \item The updated information is reflected correctly in the book's detail view.
+    \end{itemize} \\ \hline
+TC\_BOOK\_DEL\_001 & Successful deletion of a book by Librarian &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Navigate to 'Book Management'.
+        \item Select a book to delete.
+        \item Confirm the deletion in the dialog.
+    \end{itemize} &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item A success message is displayed.
+        \item The book is removed from the book list.
+    \end{itemize} \\ \hline
+TC\_BOOK\_ACCESS\_001 & Verify Member cannot access book CRUD operations &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Member.
+        \item Navigate to 'Book Management'.
+    \end{itemize} &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item "Add Book", "Edit Book", and "Delete Book" UI elements are not visible or are disabled.
+        \item Direct access to corresponding API endpoints is denied.
+    \end{itemize} \\ \hline
+    
+% Sub-Section: Borrowal Management
+\multicolumn{4}{|l|}{\textbf{Sub-Section: Borrowal Management}} \\ \hline
+TC\_BORW\_ADD\_001 & Successful borrowal request by Member for an available book &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Member.
+        \item Navigate to 'Borrowal Management' (/borrowals).
+        \item Click "New Borrowal".
+        \item Select a book that is marked as available.
+        \item Submit the form.
+    \end{itemize} &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item A success message is displayed.
+        \item A new borrowal record is created with 'Borrowed' status and correct dates.
+        \item The new record appears in the member's borrowal history.
+    \end{itemize} \\ \hline
+TC\_BORW\_ADD\_002 & Attempt to borrow a book that is not available &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Member.
+        \item Navigate to 'Borrowal Management'.
+        \item Attempt to create a new borrowal for a book that is not available.
+    \end{itemize} &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The UI should clearly indicate the book is not available.
+        \item The system prevents the submission or displays a clear error message.
+    \end{itemize} \\ \hline
+TC\_BORW\_VIEW\_001 & Verify Member can only view their own borrowal history &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as a Member who has borrowal records.
+        \item Navigate to 'Borrowal Management' (/borrowals).
+    \end{itemize} &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The list displays only the borrowals associated with the logged-in member's ID.
+        \item Records of other members are not visible.
+    \end{itemize} \\ \hline
+TC\_BORW\_VIEW\_002 & Verify Librarian can view all borrowal records &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Navigate to 'Borrowal Management'.
+    \end{itemize} &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item A list of all borrowal records for all members is displayed.
+    \end{itemize} \\ \hline
+TC\_BORW\_UPD\_001 & Successful update of borrowal status by Librarian &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Navigate to 'Borrowal Management'.
+        \item Select an existing 'Borrowed' record.
+        \item Update its status to 'Returned'.
+        \item Save the change.
+    \end{itemize} &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item A success message is displayed.
+        \item The record's status is correctly updated in the list.
+    \end{itemize} \\ \hline
+    
+% Sub-Section: User Management (by Librarian)
+\multicolumn{4}{|l|}{\textbf{Sub-Section: User Management (by Librarian)}} \\ \hline
+TC\_USER\_VIEW\_001 & Verify Librarian can view list of all users &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Navigate to 'User Management' (/users).
+    \end{itemize} &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item A list of all users (both Librarians and Members) is displayed correctly.
+    \end{itemize} \\ \hline
+TC\_USER\_UPD\_001 & Successful update of a user's details by Librarian &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Navigate to 'User Management'.
+        \item Select a user to edit.
+        \item Update a non-critical field (e.g., Phone number).
+        \item Save the changes.
+    \end{itemize} &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item A success message is displayed.
+        \item The user's details are correctly updated.
+    \end{itemize} \\ \hline
+TC\_USER\_DEL\_001 & Successful deletion of a user by Librarian &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Navigate to 'User Management'.
+        \item Select a user account to delete.
+        \item Confirm the deletion.
+    \end{itemize} &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item A success message is displayed.
+        \item The user is removed from the list of users.
+        \item The deleted user can no longer log in.
+    \end{itemize} \\ \hline
+
+% Sub-Section: Review Management
+\multicolumn{4}{|l|}{\textbf{Sub-Section: Review Management (Assumed Admin UI)}} \\ \hline
+TC\_REV\_ADD\_001 & Successful addition of a review by Librarian (Admin action) &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Navigate to a book's detail page.
+        \item Use an administrative function to add a review for the book.
+        \item Enter a star rating and review text.
+        \item Submit the review.
+    \end{itemize} &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item A success message is displayed.
+        \item The new review appears in the list of reviews for that book.
+    \end{itemize} \\ \hline
+TC\_REV\_VIEW\_001 & Verify any user can view reviews for a book &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item As any logged-in user (or guest, if public).
+        \item Navigate to the detail page of a book that has reviews.
+    \end{itemize} &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The list of reviews for the book is displayed correctly.
+    \end{itemize} \\ \hline
+TC\_REV\_DEL\_001 & Successful deletion of a review by Librarian &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Navigate to a book with reviews.
+        \item Select a specific review to delete.
+        \item Confirm the deletion.
+    \end{itemize} &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item A success message is displayed.
+        \item The review is removed from the book's list of reviews.
+    \end{itemize} \\ \hline
+
+\end{longtable}
+
+\end{document}

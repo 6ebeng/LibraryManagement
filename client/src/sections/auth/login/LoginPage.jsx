@@ -7,7 +7,9 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../../hooks/useAuth';
 
 import Logo from '../../../components/logo';
+import { apiUrl, routes, methods } from '../../../constants';
 import { LoginForm } from './index';
+
 
 // ----------------------------------------------------------------------
 
@@ -44,7 +46,7 @@ export default function LoginPage() {
       toast.error('Please enter email and password');
     } else {
       axios
-        .post(`http://localhost:8080/api/auth/login`, { email, password }, { withCredentials: false })
+        .post(apiUrl(routes.AUTH, methods.LOGIN), { email, password }, { withCredentials: false })
         .then((response) => {
           // handle success
           if (response.status === 200) {

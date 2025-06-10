@@ -1,0 +1,136 @@
+\documentclass[10pt, a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{longtable}
+\usepackage{array} % For better column definitions in longtable
+\usepackage{enumitem} % Required for itemize and enumerate options
+\usepackage{helvet} % Using a sans-serif font for better readability
+\renewcommand{\familydefault}{\sfdefault}
+
+\geometry{left=1.5cm, right=1.5cm, top=2cm, bottom=2cm}
+
+\title{Non-Functional Test Cases: Maintainability \\ \large Library Management System}
+\author{Shared and Balanced (Coders and Non-Coders/Specification Experts)}
+\date{June 5, 2025}
+
+\begin{document}
+\maketitle
+\begin{center}
+    \textbf{Note:} These test cases are designed to assess the maintainability of the software and its associated documentation. They are primarily based on static review and analysis techniques. Refer to the SRS and lecture materials for complete requirements and context.
+\end{center}
+
+\section*{IV.D Non-Functional Test Cases: Maintainability}
+
+\begin{longtable}{|>{\small\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{5cm}|>{\raggedright\arraybackslash}p{5cm}|}
+\caption{Maintainability Test Cases}\label{tab:maintain_test_cases}\\
+\hline
+\textbf{Test Case ID} & \textbf{Test Title} & \textbf{Test Steps (Review Actions)} & \textbf{Expected Results (Maintainability Attributes)} \\
+\hline
+\endfirsthead
+\multicolumn{4}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline
+\textbf{Test Case ID} & \textbf{Test Title} & \textbf{Test Steps (Review Actions)} & \textbf{Expected Results (Maintainability Attributes)} \\
+\hline
+\endhead
+\hline \multicolumn{4}{|r|}{{Continued on next page}} \\ \hline
+\endfoot
+\hline
+\endlastfoot
+
+% Code-Level Maintainability (Static Code Analysis/Review)
+\multicolumn{4}{|l|}{\textbf{Sub-Section: Code-Level Maintainability (Static Analysis)}} \\ \hline
+TC\_MAINTAIN\_CODE\_001 & Verify Code Modularity and Structure & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Review the overall project structure, including the separation of client and server code.
+        \item Inspect the source code to assess if functionalities are encapsulated in distinct, well-defined modules or components.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The codebase is well-structured and modular.
+        \item Code exhibits high cohesion within modules and low coupling between them.
+    \end{itemize} \\ \hline
+TC\_MAINTAIN\_CODE\_002 & Verify Code Readability and Coding Standards & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item (Coders) Lead a technical review of the code for adherence to defined coding standards.
+        \item (Non-Coders) Participate in the review, focusing on overall readability and understandability.
+        \item Check for consistent naming conventions, formatting, and indentation.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The code is readable and easy to understand.
+        \item Agreed-upon coding standards are followed consistently throughout the project.
+        \item No variables with confusingly similar names are present.
+    \end{itemize} \\ \hline
+TC\_MAINTAIN\_CODE\_003 & Verify Adequacy and Clarity of Code Comments & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Identify complex logic, algorithms, or non-obvious code sections.
+        \item Review the comments associated with these sections.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Code is commented where necessary to explain complex logic.
+        \item Comments are clear, concise, and accurately describe the code's intent and functionality.
+    \end{itemize} \\ \hline
+TC\_MAINTAIN\_CODE\_004 & Verify Control Flow and Logic Integrity & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Inspect conditional statements (if-else, switch) to ensure all cases are handled.
+        \item Review all loops to verify they have clear termination conditions.
+        \item Check for off-by-one errors in loops or array indexing.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Multiway branches cover all cases or have a proper default case.
+        \item All loops will terminate under expected operating conditions.
+        \item No off-by-one errors are present in iterations or indexing.
+    \end{itemize} \\ \hline
+TC\_MAINTAIN\_CODE\_005 & Verify Inter-Module Interface Correctness & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Review function/API calls between different modules (e.g., client to server, server to database).
+        \item Check the number, data types, and order of parameters/arguments passed.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The number of input parameters equals the number of arguments passed.
+        \item The attributes (type, order) of parameters and arguments match.
+        \item Global variable definitions are consistent across modules that use them.
+    \end{itemize} \\ \hline
+TC\_MAINTAIN\_CODE\_006 & Verify Ease of Deployment and Environment Management & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item (Coders) Review the Docker configuration files and any deployment scripts.
+        \item Assess the process required to set up a new development or testing environment.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The use of Docker facilitates easier deployment and environment management.
+        \item Configuration of environment variables (e.g., database URI, session secret) is straightforward and well-documented.
+    \end{itemize} \\ \hline
+
+% Documentation-Level Maintainability (Review)
+\multicolumn{4}{|l|}{\textbf{Sub-Section: Documentation-Level Maintainability}} \\ \hline
+TC\_MAINTAIN\_DOC\_001 & Verify Quality of Requirements and Design Documentation & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item (Non-Coders) Lead a review of the SRS document.
+        \item Check for clarity, consistency, completeness, and lack of ambiguity in the requirements.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Project documentation is clear, consistent, complete, and accurate.
+        \item Requirements are testable and clearly defined.
+    \end{itemize} \\ \hline
+TC\_MAINTAIN\_DOC\_002 & Verify Quality of Test Documentation & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Review the master Test Plan and all associated test case documents (functional, non-functional, etc.).
+        \item Verify alignment between test cases and the SRS.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The Test Plan is comprehensive and outlines a clear strategy.
+        \item Each test case includes a clear definition of the expected output or result.
+        \item Test cases are traceable back to specific requirements in the SRS.
+    \end{itemize} \\ \hline
+TC\_MAINTAIN\_DOC\_003 & Verify Technical Accuracy of All Documentation & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item (Coders) Review all project documents (SRS, Test Plan, Final Report) for technical accuracy.
+        \item Pay special attention to descriptions of API endpoints, data models, and system architecture.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item All documentation is technically accurate.
+        \item Sections detailing technical testing efforts and system implementation are correct.
+    \end{itemize} \\ \hline
+
+\end{longtable}
+
+\end{document}

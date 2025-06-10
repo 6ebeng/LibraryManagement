@@ -1,0 +1,35 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-error.log*
+yarn.lock
+
+# Cypress specific
+cypress/data/
+cypress.json # if you manage configuration outside of the Docker image
+cypress.env.json # for environment variables, should be passed at runtime
+
+# Docker
+docker-compose.yml
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Build outputs (if any, adjust as needed)
+dist/
+build/

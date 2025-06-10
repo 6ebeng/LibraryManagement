@@ -45,8 +45,8 @@ const LoginForm = ({ loginUser }) => {
 
       {/* <Typography variant="body2" sx={{mb: 5, mt: 3}} textAlign="center" */}
       {/* > */}
-      {/*  Don’t have an account? {''} */}
-      {/*  <Link variant="subtitle2">Get started</Link> */}
+      {/* Don’t have an account? {''} */}
+      {/* <Link variant="subtitle2">Get started</Link> */}
       {/* </Typography> */}
 
       <LoadingButton
@@ -68,19 +68,19 @@ const LoginForm = ({ loginUser }) => {
           <strong>Librarian:</strong>
         </Typography>
         <Typography variant="caption" display="block" gutterBottom>
-          Email: mainLibrarian@example.com
+          Email: {process.env.REACT_APP_TEST_LIBRARIAN_EMAIL}
         </Typography>
         <Typography variant="caption" display="block" gutterBottom sx={{ mb: 1 }}>
-          Password: Password123!
+          Password: {process.env.REACT_APP_TEST_LIBRARIAN_PASSWORD}
         </Typography>
         <Typography variant="body2">
           <strong>Member:</strong>
         </Typography>
         <Typography variant="caption" display="block" gutterBottom>
-          Email: testmember@example.com
+          Email: {process.env.REACT_APP_TEST_MEMBER_EMAIL}
         </Typography>
         <Typography variant="caption" display="block" gutterBottom>
-          Password: MemberPass123!
+          Password: {process.env.REACT_APP_TEST_MEMBER_PASSWORD}
         </Typography>
       </Box>
     </>
