@@ -129,13 +129,13 @@ Your primary responsibility is to manage the Docker environment.
     \item \textbf{Navigate to Root Directory:} Open a terminal in the project's root folder.
     \item \textbf{Build and Run Containers:} Execute the command:
     \begin{lstlisting}[language=bash]
-docker-compose -f docker-compose.dev.yml up --build
+docker-compose -f docker-compose.test.yml up --build
     \end{lstlisting}
     This command starts the frontend, backend, and database services as defined in the development compose file.
     \item \textbf{Verify Services:}
     \begin{itemize}
         \item The React frontend should be accessible at \href{http://localhost:3000}{\texttt{http://localhost:3000}}.
-        \item The Node.js backend API will be running on \href{http://localhost:8080}{\texttt{http://localhost:5000}}.
+        \item The Node.js backend API will be running on \href{http://localhost:8080}{\texttt{http://localhost:8080}}.
     \end{itemize}
     \item \textbf{Troubleshooting:} If containers fail to start, check the Docker logs for errors. Common issues include port conflicts or configuration errors in the `.yml` files.
 \end{enumerate}
