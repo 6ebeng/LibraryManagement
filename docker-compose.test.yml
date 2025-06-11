@@ -51,7 +51,7 @@ services:
     environment:
       - NODE_ENV=test
       - CI=true
-    command: sh -c "npm test"
+    command: sh -c "npm run test-and-report"
     networks:
       - test-network
 
