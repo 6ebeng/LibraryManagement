@@ -90,9 +90,23 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.10",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "jest-html-reporter": "^4.1.0",
     "prettier": "^2.7.1"
   },
   "overrides": {
     "@svgr/webpack": "^6.5.0"
+  },
+  "jest": {
+    "reporters": [
+      "default",
+      [
+        "./node_modules/jest-html-reporter",
+        {
+          "pageTitle": "Component Test Report",
+          "outputPath": "./test-report/index.html",
+          "includeFailureMsg": true
+        }
+      ]
+    ]
   }
 }

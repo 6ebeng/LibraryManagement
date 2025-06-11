@@ -39,8 +39,22 @@
 	},
 	"devDependencies": {
 		"jest": "^29.7.0",
+		"jest-html-reporter": "^4.1.0",
 		"mongodb": "^4.11.0",
 		"nodemon": "^2.0.20",
 		"supertest": "^7.1.1"
+	},
+	"jest": {
+		"reporters": [
+			"default",
+			[
+				"./node_modules/jest-html-reporter",
+				{
+					"pageTitle": "API Test Report",
+					"outputPath": "./test-report/index.html",
+					"includeFailureMsg": true
+				}
+			]
+		]
 	}
 }
