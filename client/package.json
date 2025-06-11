@@ -21,7 +21,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --coverage --watchAll=false",
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js,.jsx ./src",
     "lint:fix": "eslint --fix --ext .js,.jsx ./src",
@@ -97,16 +97,15 @@
     "@svgr/webpack": "^6.5.0"
   },
   "jest": {
-    "reporters": [
-      "default",
-      [
-        "./node_modules/jest-html-reporter",
-        {
-          "pageTitle": "Component Test Report",
-          "outputPath": "./test-report/index.html",
-          "includeFailureMsg": true
-        }
-      ]
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "!src/index.js",
+      "!src/reportWebVitals.js",
+      "!src/serviceWorker.js"
+    ],
+    "coverageReporters": [
+      "text",
+      "html"
     ]
   }
 }
