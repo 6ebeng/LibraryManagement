@@ -51,7 +51,7 @@ services:
     environment:
       - NODE_ENV=test
       - CI=true
-    command: ['npm', 'run', 'test:coverage']
+    command: ['npm', 'run', 'test:coverage:report']
     networks:
       - test-network
 

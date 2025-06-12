@@ -21,9 +21,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "make-dirs": "if not exist .\\test-results mkdir .\\test-results",
-    "test": "npm run make-dirs && react-scripts test --watchAll=false --json --outputFile=.\\test-results\\jest-test-results.json --reporters=default --reporters=jest-html-reporters",
-    "test:coverage": "npm run make-dirs && react-scripts test --watchAll=false --coverage --coverageReporters=json --coverageReporters=lcov --coverageReporters=text --coverageReporters=clover --coverageReporters=html --json --outputFile=.\\test-results\\jest-test-results.json --reporters=default --reporters=jest-html-reporters",
+    "test": "react-scripts test --watchAll=false --json --outputFile=./test-results/results.json",
+    "test:coverage:report": "react-scripts test --watchAll=false --coverage --coverageReporters=json --coverageReporters=lcov --coverageReporters=text --coverageReporters=clover --coverageReporters=html --json --outputFile=./test-results/results.json --reporters=jest-html-reporters",
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js,.jsx ./src",
     "lint:fix": "eslint --fix --ext .js,.jsx ./src",
@@ -125,7 +124,7 @@
   },
   "jest-html-reporters": {
     "filename": "report.html",
-    "outputPath": "./test-results",
+    "outputPath": "./test-results/jest-html-report/",
     "pageTitle": "Library Management Client Test Report",
     "expand": true,
     "hideIcon": false,

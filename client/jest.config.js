@@ -5,7 +5,7 @@ module.exports = {
       'jest-html-reporters',
       {
         filename: 'report.html',
-        outputPath: './test-results/jest_html_report',
+        outputPath: './jest_html_report',
         pageTitle: 'Library Management Client Test Report',
         expand: true,
         openReport: true,

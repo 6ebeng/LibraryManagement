@@ -25,7 +25,7 @@ yarn-error.log*
 
 .eslintcache
 
-/test-results
+/test-results/results.json
 /coverage
 /jest-html-reporters-attach
 jest_html_reporters.html
