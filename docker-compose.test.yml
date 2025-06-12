@@ -47,11 +47,11 @@ services:
       - .env.test
     volumes:
       - ./client:/app
-      - /app/node_modules # Ensured this is active for consistency
+      - /app/node_modules # Exclude node_modules to ensure tests run with the correct dependencies
     environment:
       - NODE_ENV=test
       - CI=true
-    command: sh -c "npm run test-and-report"
+    command: ['npm', 'run', 'test:coverage']
     networks:
       - test-network
 
