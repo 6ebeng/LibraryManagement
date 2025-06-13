@@ -22,8 +22,9 @@
 		"dev": "nodemon index.js",
 		"start": "node index.js",
 		"seed": "node scripts/seedDatabase.js",
-		"test:api": "node --max-old-space-size=4096 node_modules/.bin/jest --coverage --runInBand --detectOpenHandles --forceExit",
-		"test:api:watch": "jest --watchAll"
+		"setup:test": "node scripts/seedDatabase.js",
+		"test:api": "npx jest --coverage --runInBand --detectOpenHandles --forceExit",
+		"test:api:watch": "npx jest --watchAll"
 	},
 	"license": "ISC",
 	"dependencies": {
@@ -38,6 +39,7 @@
 		"passport-local": "^1.0.0"
 	},
 	"devDependencies": {
+		"axios": "^1.9.0",
 		"jest": "^29.7.0",
 		"jest-html-reporters": "^3.1.7",
 		"mongodb": "^4.11.0",
@@ -45,6 +47,10 @@
 		"supertest": "^7.1.1"
 	},
 	"jest": {
+		"testEnvironment": "node",
+		"setupFilesAfterEnv": [
+			"<rootDir>/jest.setup.js"
+		],
 		"collectCoverageFrom": [
 			"**/*.js",
 			"!**/node_modules/**",

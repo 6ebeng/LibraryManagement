@@ -1,170 +1,800 @@
-\documentclass[10pt, a4paper]{report}
+\documentclass[12pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{geometry}
 \usepackage{longtable}
-\usepackage{array} % For better column definitions in longtable
-\usepackage{enumitem} % Required for itemize and enumerate options
-\usepackage{helvet} % Using a sans-serif font for better readability
+\usepackage{array}
+\usepackage{enumitem}
 \usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
 \usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
 
-\renewcommand{\familydefault}{\sfdefault}
+\geometry{left=2.5cm, right=2.5cm, top=3cm, bottom=3cm}
 
-\geometry{left=1cm, right=1cm, top=2cm, bottom=2cm}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{SE507 - Software Testing}
+\fancyhead[R]{Usability Testing}
+\fancyfoot[C]{\thepage}
 
-\hypersetup{
-    colorlinks=true,
-    linkcolor=blue,
-    filecolor=magenta,      
-    urlcolor=cyan,
-}
-
-\title{Non-Functional Test Cases: Usability Testing \\ \large Library Management System}
-\author{Test Design Team (Non-Coders/Specification Experts)}
-\date{June 5, 2025}
+\title{\textbf{Usability Testing} \\ \large Test Case Design Document \\ Library Management System}
+\author{SE507 Software Testing Assignment}
+\date{\today}
 
 \begin{document}
+
 \maketitle
-\begin{center}
-    \textbf{Note:} These test cases are designed from a black-box, user-centric perspective based on the SRS  and the testing plan. They are intended to be executed with representative users (Librarians and Members) , potentially using a think-aloud protocol to gather qualitative feedback. The primary goal is to evaluate the system's user-friendliness, efficiency, and overall user experience as outlined in the SRS usability requirements. Actual results and status are to be filled during test execution.
-\end{center}
 
-\section*{IV.B Non-Functional Test Cases: Usability Testing}
+\tableofcontents
+\newpage
 
-\begin{longtable}{|>{\small\raggedright\arraybackslash}p{4.8cm}|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{5cm}|>{\raggedright\arraybackslash}p{5cm}|}
-\caption{Usability Test Cases}\label{tab:usability_test_cases}\\
+\section{Introduction}
+
+\subsection{Purpose}
+This document outlines the comprehensive usability testing strategy for the Library Management System. Usability testing focuses on evaluating the user experience, interface design, accessibility, and overall ease of use to ensure the system meets user expectations and provides an intuitive experience.
+
+\subsection{Scope}
+The Usability Testing covers:
+\begin{itemize}
+    \item User interface design evaluation
+    \item User experience assessment
+    \item Accessibility compliance testing
+    \item Navigation and workflow analysis
+    \item Information architecture validation
+    \item Error handling and user feedback
+    \item Mobile responsiveness evaluation
+    \item Cross-browser compatibility from UX perspective
+\end{itemize}
+
+\subsection{Usability Testing Objectives}
+\begin{enumerate}
+    \item Evaluate ease of use and learnability
+    \item Identify usability issues and pain points
+    \item Assess user satisfaction and engagement
+    \item Validate information architecture
+    \item Ensure accessibility compliance
+    \item Optimize user workflows and task completion
+\end{enumerate}
+
+\section{Usability Testing Methodology}
+
+\subsection{Testing Approaches}
+\begin{enumerate}
+    \item \textbf{Heuristic Evaluation}: Expert review using established usability principles
+    \item \textbf{User Testing}: Observing real users performing tasks
+    \item \textbf{Accessibility Testing}: Compliance with WCAG guidelines
+    \item \textbf{Cognitive Walkthroughs}: Step-by-step task analysis
+    \item \textbf{A/B Testing}: Comparing design alternatives
+    \item \textbf{Analytics Review}: User behavior data analysis
+\end{enumerate}
+
+\subsection{User Personas}
+\begin{itemize}
+    \item \textbf{Librarian}: Primary system administrator, tech-savvy, efficiency-focused
+    \item \textbf{Library Member}: Casual user, varying tech skills, task-oriented
+    \item \textbf{New User}: First-time visitor, needs guidance and clear instructions
+    \item \textbf{Power User}: Frequent user, wants shortcuts and advanced features
+\end{itemize}
+
+\section{Heuristic Evaluation Test Cases}
+
+\subsection{Nielsen's 10 Usability Heuristics}
+
+\begin{longtable}{|p{3cm}|p{12cm}|}
+\caption{Heuristic Evaluation Test Cases} \\
 \hline
-\textbf{Test Case ID} & \textbf{Test Title / Heuristic} & \textbf{Test Scenario \& Steps} & \textbf{Expected Results / Success Criteria} \\
+\rowcolor{lightgray}
+\textbf{Test Case ID} & \textbf{TC\_USABILITY\_HEUR\_001} \\
 \hline
-\endfirsthead
-\multicolumn{4}{c}%
-{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\textbf{Test Case Name} & Visibility of System Status \\
 \hline
-\textbf{Test Case ID} & \textbf{Test Title / Heuristic} & \textbf{Test Scenario \& Steps} & \textbf{Expected Results / Success Criteria} \\
+\textbf{Heuristic} & The system should always keep users informed about what is going on \\
 \hline
-\endhead
-\hline \multicolumn{4}{|r|}{{Continued on next page}} \\ \hline
-\endfoot
+\textbf{Evaluation Areas} & 
+\begin{enumerate}[nosep]
+    \item Loading indicators during data fetch
+    \item Form submission feedback
+    \item Current page/section highlighting
+    \item Progress indicators for multi-step processes
+    \item System status messages
+    \item Real-time updates and notifications
+\end{enumerate} \\
 \hline
-\endlastfoot
-
-% Learnability & Intuitiveness
-\multicolumn{4}{|l|}{\textbf{Sub-Section: Learnability \& Intuitiveness}} \\ \hline
-TC\_USABILITY\_LEARN\_001 & First-time Librarian task completion (Add Book) & 
-    Provide a test Librarian account to a new user.
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item Ask the user to log in and add a new book with specific details (Title, Author, Genre), as per UC-002.
-        \item Do not provide instructions beyond the initial goal.
-        \item Observe the user's path and listen to their thought process.
-    \end{itemize} & 
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item The user can successfully navigate from the dashboard to the book management section and initiate the "Add Book" function without significant hesitation.
-        \item The form fields are self-explanatory and easy to fill out.
-        \item The user completes the task in a reasonable amount of time with a high degree of confidence.
-    \end{itemize} \\ \hline
-TC\_USABILITY\_LEARN\_002 & First-time Member task completion (Borrow Book) & 
-    Provide a test Member account to a new user.
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item Ask the user to log in, find a specific book, and borrow it, as per UC-003.
-        \item Observe the user's search and borrowal process.
-    \end{itemize} & 
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item The user can easily locate the book list and understand how to initiate a borrowal request.
-        \item The system's workflow for borrowing a book feels logical and straightforward.
-        \item The user expresses understanding of the outcome (i.e., that they have successfully borrowed the book).
-    \end{itemize} \\ \hline
-
-% Efficiency of Use
-\multicolumn{4}{|l|}{\textbf{Sub-Section: Efficiency of Use}} \\ \hline
-TC\_USABILITY\_EFF\_001 & Efficiency of bulk user creation for Librarian & 
-    Ask an experienced Librarian user to add five new Member accounts sequentially, as per UC-004.
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item Time the user.
-        \item Ask the user about the repetitiveness and ease of the task.
-    \end{itemize} & 
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item The process does not require an excessive number of clicks or redundant data entry for each new user.
-        \item The user feels the process is efficient for handling multiple entries.
-        \item The system loads quickly between user additions, not impeding the workflow.
-    \end{itemize} \\ \hline
-TC\_USABILITY\_EFF\_002 & Member's efficiency in viewing borrowal history & 
-    Ask a Member to log in and check the status of a previously borrowed book, as per UC-005.
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item Ask them to find their full borrowal history.
-    \end{itemize} & 
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item The "Borrowal History" or equivalent section is quickly accessible from the main navigation/dashboard.
-        \item The history list is clearly presented and easy to scan for key information (book title, due date, status).
-        \item The user does not have to navigate through multiple irrelevant pages to find the information.
-    \end{itemize} \\ \hline
-
-% Navigation & Consistency
-\multicolumn{4}{|l|}{\textbf{Sub-Section: Navigation \& Consistency}} \\ \hline
-TC\_USABILITY\_NAV\_001 & Consistent UI layout and controls & 
-    Ask a user (either role) to navigate through all major sections of the application:
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item Dashboard (Librarian) 
-        \item Book Management 
-        \item Author Management 
-        \item Genre Management 
-        \item User Management (Librarian) 
-        \item Borrowal Management 
-    \end{itemize} & 
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item Navigation menus, button styles, search bar placement, and table layouts are consistent across all pages.
-        \item Terminology used for actions (e.g., "New", "Edit", "Delete") is uniform throughout the application.
-        \item The logo or home link consistently returns the user to their main landing page (Dashboard for Librarian, Books for Member).
-    \end{itemize} \\ \hline
-TC\_USABILITY\_NAV\_002 & Intuitive information architecture & 
-    Present a user with a task that spans multiple entities, e.g., "Find all books by a specific author and see if any are currently available."
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item Observe how the user attempts to complete this task.
-    \end{itemize} & 
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item The user can logically deduce how to move between the 'Authors' list and the 'Books' list, or can use search/filter functions effectively.
-        \item The system provides clear pathways or links between related entities (e.g., clicking an author's name on a book page takes you to the author's detail page).
-    \end{itemize} \\ \hline
-
-% Feedback & Error Handling
-\multicolumn{4}{|l|}{\textbf{Sub-Section: Feedback \& Error Handling}} \\ \hline
-TC\_USABILITY\_FEEDBACK\_001 & Clarity of success and failure messages & 
-    Have a Librarian perform a series of actions:
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item Successfully delete a genre.
-        \item Attempt to delete an author who is currently linked to a book (should fail due to referential integrity).
-        \item Successfully update a user's phone number.
-    \end{itemize} & 
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item The system provides clear, immediate, and easily noticeable feedback for both successful and failed actions (e.g., "Genre deleted successfully," "Cannot delete author: Author is linked to existing books").
-        \item Confirmation dialogs for destructive actions like deletion are clear and prevent accidental data loss.
-        \item Error messages are constructive and tell the user *why* an action failed, not just *that* it failed.
-    \end{itemize} \\ \hline
-TC\_USABILITY\_FEEDBACK\_002 & Validation feedback on forms & 
-    Have a user attempt to submit a form with invalid data.
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item Example: Submit the "Add User" form with an invalid email format and a blank password field.
-    \end{itemize} & 
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item The system prevents form submission.
-        \item Clear, inline validation messages appear next to the specific fields that are incorrect (e.g., "Please enter a valid email address," "Password is required").
-        \item The user can easily correct the errors without having to re-enter all the data.
-    \end{itemize} \\ \hline
-
-% Responsiveness & Aesthetics
-\multicolumn{4}{|l|}{\textbf{Sub-Section: Responsiveness \& Aesthetics}} \\ \hline
-TC\_USABILITY\_AESTHETICS\_001 & Visual clarity and responsive design & 
-    Access the application on different screen sizes.
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item Standard desktop monitor.
-        \item Tablet (portrait and landscape).
-        \item Mobile phone (portrait).
-    \end{itemize} & 
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item The layout adapts gracefully to different screen sizes without horizontal scrolling or overlapping elements.
-        \item Font sizes remain readable and interactive elements (buttons, links) are easily tappable on touch screens.
-        \item The overall aesthetic is clean, modern, and uncluttered, contributing to a pleasant user experience.
-    \end{itemize} \\ \hline
-
+\textbf{Test Scenarios} & 
+\begin{itemize}[nosep]
+    \item Login process feedback
+    \item Book search loading states
+    \item Form validation messages
+    \item Data saving confirmations
+    \item Navigation breadcrumbs
+\end{itemize} \\
+\hline
+\textbf{Success Criteria} & 
+\begin{itemize}[nosep]
+    \item Users always know system status
+    \item Loading states are clear and informative
+    \item Feedback is immediate and relevant
+    \item Progress is visible for long operations
+\end{itemize} \\
+\hline
+\textbf{Priority} & High \\
+\hline
 \end{longtable}
+
+\begin{longtable}{|p{3cm}|p{12cm}|}
+\caption{Match Between System and Real World} \\
+\hline
+\rowcolor{lightgray}
+\textbf{Test Case ID} & \textbf{TC\_USABILITY\_HEUR\_002} \\
+\hline
+\textbf{Test Case Name} & Match Between System and Real World \\
+\hline
+\textbf{Heuristic} & System should speak users' language with familiar concepts \\
+\hline
+\textbf{Evaluation Areas} & 
+\begin{enumerate}[nosep]
+    \item Terminology and language used
+    \item Icons and symbols meaning
+    \item Information organization
+    \item Workflow alignment with real-world processes
+    \item Cultural and contextual appropriateness
+\end{enumerate} \\
+\hline
+\textbf{Test Scenarios} & 
+\begin{itemize}[nosep]
+    \item Library terminology usage (borrow vs. checkout)
+    \item Book categorization and organization
+    \item User role naming (Librarian vs. Member)
+    \item Date and time formats
+    \item Search and filtering metaphors
+\end{itemize} \\
+\hline
+\textbf{Success Criteria} & 
+\begin{itemize}[nosep]
+    \item Terminology matches library domain
+    \item Icons are universally understood
+    \item Workflows mirror real library processes
+    \item Language is clear and jargon-free
+\end{itemize} \\
+\hline
+\textbf{Priority} & High \\
+\hline
+\end{longtable}
+
+\begin{longtable}{|p{3cm}|p{12cm}|}
+\caption{User Control and Freedom} \\
+\hline
+\rowcolor{lightgray}
+\textbf{Test Case ID} & \textbf{TC\_USABILITY\_HEUR\_003} \\
+\hline
+\textbf{Test Case Name} & User Control and Freedom \\
+\hline
+\textbf{Heuristic} & Users need emergency exits and undo functionality \\
+\hline
+\textbf{Evaluation Areas} & 
+\begin{enumerate}[nosep]
+    \item Undo/redo functionality
+    \item Cancel operations capability
+    \item Back button functionality
+    \item Exit points from workflows
+    \item Data recovery options
+\end{enumerate} \\
+\hline
+\textbf{Test Scenarios} & 
+\begin{itemize}[nosep]
+    \item Cancel book addition mid-process
+    \item Undo accidental deletions
+    \item Exit from multi-step forms
+    \item Navigate back through pages
+    \item Recover unsaved changes
+\end{itemize} \\
+\hline
+\textbf{Success Criteria} & 
+\begin{itemize}[nosep]
+    \item Users can easily exit unwanted states
+    \item Undo functionality is available
+    \item Cancel options are clearly visible
+    \item No data loss during navigation
+\end{itemize} \\
+\hline
+\textbf{Priority} & High \\
+\hline
+\end{longtable}
+
+\begin{longtable}{|p{3cm}|p{12cm}|}
+\caption{Consistency and Standards} \\
+\hline
+\rowcolor{lightgray}
+\textbf{Test Case ID} & \textbf{TC\_USABILITY\_HEUR\_004} \\
+\hline
+\textbf{Test Case Name} & Consistency and Standards \\
+\hline
+\textbf{Heuristic} & Follow platform conventions and maintain internal consistency \\
+\hline
+\textbf{Evaluation Areas} & 
+\begin{enumerate}[nosep]
+    \item Visual design consistency
+    \item Interaction pattern consistency
+    \item Terminology consistency
+    \item Layout and navigation consistency
+    \item Platform convention adherence
+\end{enumerate} \\
+\hline
+\textbf{Test Scenarios} & 
+\begin{itemize}[nosep]
+    \item Button styles and behaviors
+    \item Form field layouts and validation
+    \item Navigation menu structure
+    \item Color scheme and typography
+    \item Icon usage and meaning
+\end{itemize} \\
+\hline
+\textbf{Success Criteria} & 
+\begin{itemize}[nosep]
+    \item Consistent visual design throughout
+    \item Predictable interaction patterns
+    \item Uniform terminology usage
+    \item Standard web conventions followed
+\end{itemize} \\
+\hline
+\textbf{Priority} & High \\
+\hline
+\end{longtable}
+
+\begin{longtable}{|p{3cm}|p{12cm}|}
+\caption{Error Prevention} \\
+\hline
+\rowcolor{lightgray}
+\textbf{Test Case ID} & \textbf{TC\_USABILITY\_HEUR\_005} \\
+\hline
+\textbf{Test Case Name} & Error Prevention \\
+\hline
+\textbf{Heuristic} & Prevent problems from occurring in the first place \\
+\hline
+\textbf{Evaluation Areas} & 
+\begin{enumerate}[nosep]
+    \item Input validation and constraints
+    \item Confirmation dialogs for destructive actions
+    \item Default values and suggestions
+    \item Progressive disclosure
+    \item Constraint-based design
+\end{enumerate} \\
+\hline
+\textbf{Test Scenarios} & 
+\begin{itemize}[nosep]
+    \item Form field validation
+    \item Delete confirmation dialogs
+    \item Date picker constraints
+    \item Required field indicators
+    \item Duplicate prevention
+\end{itemize} \\
+\hline
+\textbf{Success Criteria} & 
+\begin{itemize}[nosep]
+    \item Errors are prevented before they occur
+    \item Clear constraints and validation
+    \item Confirmation for destructive actions
+    \item Helpful defaults and suggestions
+\end{itemize} \\
+\hline
+\textbf{Priority} & High \\
+\hline
+\end{longtable}
+
+\section{User Experience Testing}
+
+\subsection{Task-Based Usability Testing}
+
+\begin{longtable}{|p{3cm}|p{12cm}|}
+\caption{User Task Testing} \\
+\hline
+\rowcolor{lightgray}
+\textbf{Test Case ID} & \textbf{TC\_USABILITY\_TASK\_001} \\
+\hline
+\textbf{Test Case Name} & New User Registration and First Login \\
+\hline
+\textbf{Objective} & Evaluate ease of account creation and initial system access \\
+\hline
+\textbf{User Persona} & New Library Member \\
+\hline
+\textbf{Task Scenario} & 
+"You want to join the library system to borrow books. Create an account and log in for the first time." \\
+\hline
+\textbf{Task Steps} & 
+\begin{enumerate}[nosep]
+    \item Navigate to registration page
+    \item Fill out registration form
+    \item Submit registration
+    \item Receive confirmation
+    \item Log in with new credentials
+    \item Complete profile if needed
+\end{enumerate} \\
+\hline
+\textbf{Success Metrics} & 
+\begin{itemize}[nosep]
+    \item Task completion rate > 90\%
+    \item Average completion time < 5 minutes
+    \item Error rate < 10\%
+    \item User satisfaction score > 4/5
+\end{itemize} \\
+\hline
+\textbf{Observation Points} & 
+\begin{itemize}[nosep]
+    \item Difficulty finding registration link
+    \item Form field confusion
+    \item Validation error understanding
+    \item Login process clarity
+\end{itemize} \\
+\hline
+\end{longtable}
+
+\begin{longtable}{|p{3cm}|p{12cm}|}
+\caption{Book Search and Discovery} \\
+\hline
+\rowcolor{lightgray}
+\textbf{Test Case ID} & \textbf{TC\_USABILITY\_TASK\_002} \\
+\hline
+\textbf{Test Case Name} & Book Search and Discovery \\
+\hline
+\textbf{Objective} & Evaluate book finding and browsing experience \\
+\hline
+\textbf{User Persona} & Library Member \\
+\hline
+\textbf{Task Scenario} & 
+"Find a specific book by title, then browse for similar books in the same genre." \\
+\hline
+\textbf{Task Steps} & 
+\begin{enumerate}[nosep]
+    \item Use search functionality
+    \item Apply filters if needed
+    \item View book details
+    \item Browse related books
+    \item Check availability
+    \item Add to wishlist or borrow
+\end{enumerate} \\
+\hline
+\textbf{Success Metrics} & 
+\begin{itemize}[nosep]
+    \item Task completion rate > 85\%
+    \item Average completion time < 3 minutes
+    \item Search success rate > 90\%
+    \item User satisfaction score > 4/5
+\end{itemize} \\
+\hline
+\textbf{Observation Points} & 
+\begin{itemize}[nosep]
+    \item Search box discoverability
+    \item Filter usage and understanding
+    \item Result relevance perception
+    \item Book detail information adequacy
+\end{itemize} \\
+\hline
+\end{longtable}
+
+\begin{longtable}{|p{3cm}|p{12cm}|}
+\caption{Librarian Book Management} \\
+\hline
+\rowcolor{lightgray}
+\textbf{Test Case ID} & \textbf{TC\_USABILITY\_TASK\_003} \\
+\hline
+\textbf{Test Case Name} & Librarian Book Management \\
+\hline
+\textbf{Objective} & Evaluate librarian workflow for managing books \\
+\hline
+\textbf{User Persona} & Librarian \\
+\hline
+\textbf{Task Scenario} & 
+"Add a new book to the system, then update information for an existing book." \\
+\hline
+\textbf{Task Steps} & 
+\begin{enumerate}[nosep]
+    \item Navigate to book management
+    \item Add new book with details
+    \item Assign author and genre
+    \item Set availability status
+    \item Search for existing book
+    \item Edit book information
+    \item Save changes
+\end{enumerate} \\
+\hline
+\textbf{Success Metrics} & 
+\begin{itemize}[nosep]
+    \item Task completion rate > 95\%
+    \item Average completion time < 4 minutes
+    \item Error rate < 5\%
+    \item Efficiency rating > 4/5
+\end{itemize} \\
+\hline
+\textbf{Observation Points} & 
+\begin{itemize}[nosep]
+    \item Form complexity and clarity
+    \item Required vs. optional field clarity
+    \item Bulk operation availability
+    \item Workflow efficiency
+\end{itemize} \\
+\hline
+\end{longtable}
+
+\section{Accessibility Testing}
+
+\subsection{WCAG 2.1 Compliance Testing}
+
+\begin{longtable}{|p{3cm}|p{12cm}|}
+\caption{Accessibility Testing Cases} \\
+\hline
+\rowcolor{lightgray}
+\textbf{Test Case ID} & \textbf{TC\_USABILITY\_A11Y\_001} \\
+\hline
+\textbf{Test Case Name} & Keyboard Navigation Accessibility \\
+\hline
+\textbf{Objective} & Ensure full keyboard accessibility compliance \\
+\hline
+\textbf{WCAG Guideline} & 2.1 Keyboard Accessible \\
+\hline
+\textbf{Test Scenarios} & 
+\begin{enumerate}[nosep]
+    \item Navigate entire application using only keyboard
+    \item Tab through all interactive elements
+    \item Use keyboard shortcuts where available
+    \item Access dropdown menus and modals
+    \item Submit forms using keyboard only
+    \item Escape from modal dialogs
+\end{enumerate} \\
+\hline
+\textbf{Success Criteria} & 
+\begin{itemize}[nosep]
+    \item All functionality accessible via keyboard
+    \item Logical tab order maintained
+    \item Focus indicators are visible
+    \item No keyboard traps exist
+    \item Shortcuts are documented
+\end{itemize} \\
+\hline
+\textbf{Testing Tools} & 
+\begin{itemize}[nosep]
+    \item Manual keyboard testing
+    \item Screen reader testing (NVDA/JAWS)
+    \item axe-core accessibility scanner
+    \item WAVE accessibility evaluator
+\end{itemize} \\
+\hline
+\end{longtable}
+
+\begin{longtable}{|p{3cm}|p{12cm}|}
+\caption{Visual Accessibility Testing} \\
+\hline
+\rowcolor{lightgray}
+\textbf{Test Case ID} & \textbf{TC\_USABILITY\_A11Y\_002} \\
+\hline
+\textbf{Test Case Name} & Color Contrast and Visual Accessibility \\
+\hline
+\textbf{Objective} & Ensure visual accessibility for users with visual impairments \\
+\hline
+\textbf{WCAG Guideline} & 1.4 Distinguishable \\
+\hline
+\textbf{Test Scenarios} & 
+\begin{enumerate}[nosep]
+    \item Check color contrast ratios
+    \item Test with color blindness simulation
+    \item Verify text scalability up to 200\%
+    \item Test with high contrast mode
+    \item Validate focus indicators
+    \item Check information conveyed by color alone
+\end{enumerate} \\
+\hline
+\textbf{Success Criteria} & 
+\begin{itemize}[nosep]
+    \item Contrast ratio ≥ 4.5:1 for normal text
+    \item Contrast ratio ≥ 3:1 for large text
+    \item Information not conveyed by color alone
+    \item Text remains readable at 200\% zoom
+    \item Focus indicators are clearly visible
+\end{itemize} \\
+\hline
+\textbf{Testing Tools} & 
+\begin{itemize}[nosep]
+    \item Colour Contrast Analyser
+    \item Sim Daltonism (color blindness)
+    \item Browser zoom functionality
+    \item High contrast mode testing
+\end{itemize} \\
+\hline
+\end{longtable}
+
+\begin{longtable}{|p{3cm}|p{12cm}|}
+\caption{Screen Reader Compatibility} \\
+\hline
+\rowcolor{lightgray}
+\textbf{Test Case ID} & \textbf{TC\_USABILITY\_A11Y\_003} \\
+\hline
+\textbf{Test Case Name} & Screen Reader Compatibility \\
+\hline
+\textbf{Objective} & Ensure compatibility with assistive technologies \\
+\hline
+\textbf{WCAG Guideline} & 4.1 Compatible \\
+\hline
+\textbf{Test Scenarios} & 
+\begin{enumerate}[nosep]
+    \item Navigate using NVDA screen reader
+    \item Test form completion with screen reader
+    \item Verify ARIA labels and descriptions
+    \item Check heading structure navigation
+    \item Test table navigation and headers
+    \item Validate landmark regions
+\end{enumerate} \\
+\hline
+\textbf{Success Criteria} & 
+\begin{itemize}[nosep]
+    \item All content is announced correctly
+    \item Form fields have proper labels
+    \item Headings provide logical structure
+    \item Tables have appropriate headers
+    \item ARIA attributes are used correctly
+\end{itemize} \\
+\hline
+\textbf{Testing Tools} & 
+\begin{itemize}[nosep]
+    \item NVDA screen reader
+    \item JAWS screen reader
+    \item VoiceOver (macOS)
+    \item Accessibility Insights
+\end{itemize} \\
+\hline
+\end{longtable}
+
+\section{Mobile Responsiveness Testing}
+
+\subsection{Mobile Usability Test Cases}
+
+\begin{longtable}{|p{3cm}|p{12cm}|}
+\caption{Mobile Responsiveness Testing} \\
+\hline
+\rowcolor{lightgray}
+\textbf{Test Case ID} & \textbf{TC\_USABILITY\_MOBILE\_001} \\
+\hline
+\textbf{Test Case Name} & Mobile Interface Usability \\
+\hline
+\textbf{Objective} & Evaluate usability on mobile devices \\
+\hline
+\textbf{Test Devices} & 
+\begin{itemize}[nosep]
+    \item iPhone (various sizes)
+    \item Android phones (various sizes)
+    \item Tablets (iPad, Android tablets)
+    \item Different orientations
+\end{itemize} \\
+\hline
+\textbf{Test Scenarios} & 
+\begin{enumerate}[nosep]
+    \item Login on mobile device
+    \item Search for books using mobile interface
+    \item Navigate through book details
+    \item Use forms on mobile
+    \item Test touch interactions
+    \item Verify responsive layout
+\end{enumerate} \\
+\hline
+\textbf{Success Criteria} & 
+\begin{itemize}[nosep]
+    \item All content is accessible on mobile
+    \item Touch targets are appropriately sized
+    \item Text is readable without zooming
+    \item Navigation is intuitive
+    \item Performance is acceptable
+\end{itemize} \\
+\hline
+\textbf{Evaluation Points} & 
+\begin{itemize}[nosep]
+    \item Touch target size (minimum 44px)
+    \item Text readability
+    \item Navigation ease
+    \item Form usability
+    \item Loading performance
+\end{itemize} \\
+\hline
+\end{longtable}
+
+\section{Information Architecture Testing}
+
+\subsection{Navigation and Information Structure}
+
+\begin{longtable}{|p{3cm}|p{12cm}|}
+\caption{Information Architecture Testing} \\
+\hline
+\rowcolor{lightgray}
+\textbf{Test Case ID} & \textbf{TC\_USABILITY\_IA\_001} \\
+\hline
+\textbf{Test Case Name} & Navigation Structure and Findability \\
+\hline
+\textbf{Objective} & Evaluate information organization and findability \\
+\hline
+\textbf{Test Methods} & 
+\begin{itemize}[nosep]
+    \item Card sorting exercise
+    \item Tree testing
+    \item First-click testing
+    \item Navigation path analysis
+\end{itemize} \\
+\hline
+\textbf{Test Scenarios} & 
+\begin{enumerate}[nosep]
+    \item Find specific functionality without guidance
+    \item Navigate to different sections
+    \item Use breadcrumb navigation
+    \item Understand current location
+    \item Return to previous pages
+    \item Use search functionality
+\end{enumerate} \\
+\hline
+\textbf{Success Criteria} & 
+\begin{itemize}[nosep]
+    \item Users can find information quickly
+    \item Navigation is intuitive and logical
+    \item Current location is always clear
+    \item Search functionality is effective
+    \item Information hierarchy is clear
+\end{itemize} \\
+\hline
+\textbf{Metrics} & 
+\begin{itemize}[nosep]
+    \item Task success rate > 80\%
+    \item Average time to find information < 2 minutes
+    \item Navigation error rate < 15\%
+    \item User satisfaction with navigation > 4/5
+\end{itemize} \\
+\hline
+\end{longtable}
+
+\section{Error Handling and User Feedback}
+
+\subsection{Error Message Usability}
+
+\begin{longtable}{|p{3cm}|p{12cm}|}
+\caption{Error Handling Usability Testing} \\
+\hline
+\rowcolor{lightgray}
+\textbf{Test Case ID} & \textbf{TC\_USABILITY\_ERROR\_001} \\
+\hline
+\textbf{Test Case Name} & Error Message Clarity and Helpfulness \\
+\hline
+\textbf{Objective} & Evaluate error message effectiveness and user recovery \\
+\hline
+\textbf{Test Scenarios} & 
+\begin{enumerate}[nosep]
+    \item Trigger form validation errors
+    \item Attempt invalid login credentials
+    \item Try to access restricted content
+    \item Submit incomplete forms
+    \item Encounter network errors
+    \item Experience session timeouts
+\end{enumerate} \\
+\hline
+\textbf{Evaluation Criteria} & 
+\begin{itemize}[nosep]
+    \item Error message clarity
+    \item Actionable guidance provided
+    \item Error location indication
+    \item Recovery path availability
+    \item Tone and language appropriateness
+\end{itemize} \\
+\hline
+\textbf{Success Criteria} & 
+\begin{itemize}[nosep]
+    \item Users understand what went wrong
+    \item Clear guidance on how to fix errors
+    \item Errors are located precisely
+    \item Recovery is straightforward
+    \item Messages are user-friendly
+\end{itemize} \\
+\hline
+\textbf{User Recovery Rate} & Target > 90\% successful error recovery \\
+\hline
+\end{longtable}
+
+\section{Usability Testing Execution}
+
+\subsection{Test Environment Setup}
+\begin{itemize}
+    \item Controlled testing environment
+    \item Screen recording software
+    \item Think-aloud protocol setup
+    \item Multiple device configurations
+    \item Accessibility testing tools
+\end{itemize}
+
+\subsection{Participant Recruitment}
+\begin{itemize}
+    \item Representative user groups
+    \item Varying technical skill levels
+    \item Different age demographics
+    \item Users with disabilities
+    \item Both new and experienced users
+\end{itemize}
+
+\subsection{Data Collection Methods}
+\begin{itemize}
+    \item Task completion rates
+    \item Time to completion
+    \item Error rates and types
+    \item User satisfaction surveys
+    \item Post-test interviews
+    \item Behavioral observations
+\end{itemize}
+
+\section{Usability Metrics and Reporting}
+
+\subsection{Key Performance Indicators}
+\begin{longtable}{|p{4cm}|p{11cm}|}
+\caption{Usability KPIs} \\
+\hline
+\rowcolor{lightgray}
+\textbf{Metric} & \textbf{Target and Measurement} \\
+\hline
+\textbf{Task Success Rate} & 
+\begin{itemize}[nosep]
+    \item Target: > 85\% for critical tasks
+    \item Measurement: Percentage of completed tasks
+    \item Benchmark: Industry standard 80\%
+\end{itemize} \\
+\hline
+\textbf{Time on Task} & 
+\begin{itemize}[nosep]
+    \item Target: Within expected time ranges
+    \item Measurement: Average completion time
+    \item Benchmark: Previous version or competitors
+\end{itemize} \\
+\hline
+\textbf{Error Rate} & 
+\begin{itemize}[nosep]
+    \item Target: < 10\% for critical tasks
+    \item Measurement: Errors per task attempt
+    \item Types: Navigation, input, conceptual errors
+\end{itemize} \\
+\hline
+\textbf{User Satisfaction} & 
+\begin{itemize}[nosep]
+    \item Target: > 4.0/5.0 average rating
+    \item Measurement: Post-task surveys (SUS, CSUQ)
+    \item Qualitative: User feedback and comments
+\end{itemize} \\
+\hline
+\textbf{Learnability} & 
+\begin{itemize}[nosep]
+    \item Target: Improvement on repeated tasks
+    \item Measurement: Time reduction on second attempt
+    \item Benchmark: 20\% improvement expected
+\end{itemize} \\
+\hline
+\end{longtable}
+
+\section{Recommendations and Improvements}
+
+\subsection{Usability Enhancement Priorities}
+\begin{enumerate}
+    \item \textbf{Critical Issues}: Must fix before release
+    \item \textbf{Major Issues}: Should fix in current iteration
+    \item \textbf{Minor Issues}: Consider for future releases
+    \item \textbf{Enhancements}: Nice-to-have improvements
+\end{enumerate}
+
+\subsection{Continuous Usability Improvement}
+\begin{itemize}
+    \item Regular usability testing cycles
+    \item User feedback collection mechanisms
+    \item Analytics-driven improvements
+    \item A/B testing for design decisions
+    \item Accessibility compliance monitoring
+\end{itemize}
+
+\section{Conclusion}
+
+Usability testing is essential for ensuring the Library Management System provides an excellent user experience. Through comprehensive heuristic evaluation, user testing, accessibility compliance, and continuous improvement processes, we can create a system that is not only functional but also intuitive, accessible, and satisfying to use.
+
+The systematic approach outlined in this document ensures that usability considerations are integrated throughout the development process, resulting in a system that truly meets user needs and expectations while maintaining high standards of accessibility and user experience design.
 
 \end{document}

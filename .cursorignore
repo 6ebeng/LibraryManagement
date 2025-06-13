@@ -1,0 +1,6 @@
+# .cursorignore
+# Block every .env by default
+.env*
+# Except the safe one we want AI help with
+!/.env.dev
+!/.env.test
