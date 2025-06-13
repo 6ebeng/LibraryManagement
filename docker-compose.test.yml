@@ -217,6 +217,8 @@ services:
       - .env.test
     environment:
       - BASE_URL=http://backend-e2e:8080 # Still need to pass BASE_URL as it's a service-specific variable
+      - USER_EMAIL=${TEST_LIBRARIAN_EMAIL}
+      - USER_PASSWORD=${TEST_LIBRARIAN_PASSWORD}
     command: run /home/k6/performance-test.js
     networks:
       - test-network
