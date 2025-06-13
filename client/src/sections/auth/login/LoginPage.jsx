@@ -42,31 +42,87 @@ export default function LoginPage() {
   }
 
   const loginUser = (email, password) => {
-    if (email === '' || password === '') {
-      toast.error('Please enter email and password');
-    } else {
-      axios
-        .post(apiUrl(routes.AUTH, methods.LOGIN), { email, password }, { withCredentials: false })
-        .then((response) => {
-          // handle success
-          if (response.status === 200) {
-            console.log(response.data);
-            toast.success(`Successfully logged in as ${response.data.user.name}`);
-            login(response.data.user);
-          }
-        })
-        .catch((error) => {
-          // handle error
-          toast.error(error.response.data.message);
-          console.log(error);
-        });
+    // Client-side validation with specific messages
+    if (!email || email.trim() === '') {
+      toast.error('Please enter your email address');
+      return;
     }
+    
+    if (!password || password.trim() === '') {
+      toast.error('Please enter your password');
+      return;
+    }
+
+    // Basic email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
+    // Show loading toast
+    const loadingToast = toast.loading('Logging in...');
+
+    axios
+      .post(apiUrl(routes.AUTH, methods.LOGIN), { email, password }, { withCredentials: false })
+      .then((response) => {
+        // Dismiss loading toast
+        toast.dismiss(loadingToast);
+        
+        // handle success
+        if (response.status === 200) {
+          console.log(response.data);
+          const successMessage = response.data.message || `Successfully logged in as ${response.data.user.name}`;
+          toast.success(successMessage);
+          login(response.data.user);
+        }
+      })
+      .catch((error) => {
+        // Dismiss loading toast
+        toast.dismiss(loadingToast);
+        
+        // Handle different error scenarios with specific messages
+        if (error.response) {
+          // Server responded with an error
+          const errorMessage = error.response.data?.message;
+          
+          switch (error.response.status) {
+            case 400:
+              // Bad request - validation errors
+              toast.error(errorMessage || 'Please check your input and try again');
+              break;
+            case 401:
+              // Unauthorized - wrong password
+              toast.error(errorMessage || 'Invalid credentials. Please check your password');
+              break;
+            case 404:
+              // Not found - user doesn't exist
+              toast.error(errorMessage || 'No account found with this email address');
+              break;
+            case 500:
+              // Server error
+              toast.error('Server error. Please try again later or contact support');
+              break;
+            default:
+              // Other errors
+              toast.error(errorMessage || 'An unexpected error occurred. Please try again');
+          }
+        } else if (error.request) {
+          // Request was made but no response received
+          toast.error('Cannot connect to server. Please check your internet connection');
+        } else {
+          // Something else went wrong
+          toast.error('An unexpected error occurred. Please try again');
+        }
+        
+        console.error('Login error:', error);
+      });
   };
 
   return (
     <>
       <Helmet>
-        <title> Login | Library</title>
+        <title> Login | Library Management System</title>
       </Helmet>
 
       <StyledRoot>
@@ -87,10 +143,10 @@ export default function LoginPage() {
               gutterBottom
               paddingBottom={0}
             >
-              Library System
+              Library Management System
             </Typography>
             <Typography variant="h3" textAlign="center" gutterBottom paddingBottom={3}>
-              Sign in
+              Sign in to your account
             </Typography>
 
             <LoginForm loginUser={loginUser} />
