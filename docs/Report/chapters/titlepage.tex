@@ -1,0 +1,43 @@
+% chapters/titlepage.tex
+% This file creates the title page for the report.
+
+\begin{titlepage}
+    \centering % Center all content on the title page
+    \makeatletter
+    \vspace*{1cm}
+
+    % --- LOGO ---
+    \IfFileExists{ukh-logo.png}{
+        \includegraphics[width=0.2\textwidth]{ukh-logo.png}
+        \vspace{2cm}
+    }{} % Do nothing if file doesn't exist
+
+    % --- TITLE PAGE CONTENT ---
+    {\scshape\Large \projectsubtitle \par} % Course/Subtitle
+    \vspace{1cm}
+
+    % --- TITLE ---
+    {\Huge\bfseries \projectTitle \par} % Main Title (from \title command in report.tex)
+    \vspace{1.5cm}
+
+    % --- AUTHOR ---
+    {\Large \projectauthor \par} % Author 
+    \vspace{4cm}
+
+    % --- DATE ---
+    {\Large \projectdate \par} % Date
+    \vspace{3cm}
+
+    % --- INSTITUTION ---
+    {\projectinstitute \\ \projectdepartment \par}
+    {\projectlocation \par}
+
+    \vfill % Fill the rest of the page vertically
+
+    % Optional: Supervisor Name
+    % {\large Supervisor: Dr. [Supervisor's Name] \par}
+    % \vspace{0.5cm}
+    \makeatother
+
+\end{titlepage}
+\clearpage % Ensure the next content starts on a new page
