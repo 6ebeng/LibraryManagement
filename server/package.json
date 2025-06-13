@@ -45,14 +45,38 @@
 		"supertest": "^7.1.1"
 	},
 	"jest": {
+		"collectCoverageFrom": [
+			"**/*.js",
+			"!**/node_modules/**",
+			"!**/__tests__/**",
+			"!index.js",
+			"!scripts/**",
+			"!passport-config.js"
+		],
+		"coverageReporters": [
+			"json",
+			"lcov",
+			"text",
+			"clover",
+			"html"
+		],
+		"coverageThreshold": {
+			"global": {
+				"statements": 50,
+				"branches": 50,
+				"functions": 50,
+				"lines": 50
+			}
+		},
 		"reporters": [
 			"default",
 			[
-				"./node_modules/jest-html-reporter",
+				"jest-html-reporters",
 				{
+					"publicPath": "./test-report",
+					"filename": "report.html",
 					"pageTitle": "API Test Report",
-					"outputPath": "./test-report/index.html",
-					"includeFailureMsg": true
+					"expand": true
 				}
 			]
 		]
