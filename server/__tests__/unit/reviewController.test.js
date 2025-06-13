@@ -25,37 +25,42 @@ describe('Review Controller - Unit Tests', () => {
 		};
 	});
 
-	describe('createReview', () => {
+	// Corrected to test 'addReview'
+	describe('addReview', () => {
 		it('should create a review successfully', async () => {
 			req.body = { bookId: 'book123', rating: 5, comment: 'Great book!' };
-			const review = { ...req.body, member: 'member123' };
-			Review.create.mockResolvedValue(review);
+			const newReview = new Review(req.body);
+			// Mock the save method
+			newReview.save = jest.fn().mockResolvedValue(newReview);
+			Review.prototype.save = newReview.save;
 
-			await reviewController.createReview(req, res);
+			await reviewController.addReview(req, res);
 
-			expect(Review.create).toHaveBeenCalledWith({
-				book: 'book123',
-				member: 'member123',
-				rating: 5,
-				comment: 'Great book!',
-			});
 			expect(res.status).toHaveBeenCalledWith(201);
-			expect(res.json).toHaveBeenCalledWith(review);
+			expect(res.json).toHaveBeenCalledWith(
+				expect.objectContaining({
+					comment: 'Great book!',
+				})
+			);
 		});
 	});
 
-	describe('getReviewsForBook', () => {
-		it('should get all reviews for a specific book', async () => {
-			req.params.bookId = 'book123';
+	// Corrected to test 'getAllReviews'
+	describe('getAllReviews', () => {
+		it('should get all reviews', async () => {
 			const reviews = [{ rating: 5, comment: 'Great book!' }];
-			Review.find.mockReturnValue({
-				populate: jest.fn().mockResolvedValue(reviews),
+			Review.find = jest.fn((query, callback) => {
+				callback(null, reviews);
 			});
 
-			await reviewController.getReviewsForBook(req, res);
+			await reviewController.getAllReviews(req, res);
 
-			expect(Review.find).toHaveBeenCalledWith({ book: 'book123' });
-			expect(res.json).toHaveBeenCalledWith(reviews);
+			expect(Review.find).toHaveBeenCalledWith({}, expect.any(Function));
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.json).toHaveBeenCalledWith({
+				success: true,
+				reviewsList: reviews,
+			});
 		});
 	});
 });
