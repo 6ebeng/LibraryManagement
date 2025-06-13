@@ -202,7 +202,7 @@ describe('API: Authentication & Authorization Endpoints', () => {
 			expect(response.body.message).toMatch(/Password incorrect/i);
 		}, 15000);
 
-		it.skip('TC_AUTH_LOGIN_007_API: Attempt login with password field missing', async () => {
+		it('TC_AUTH_LOGIN_007_API: Attempt login with password field missing', async () => {
 			const response = await request(app).post('/api/auth/login').send({ email: apiLibrarianCredentials.email });
 			expect(response.statusCode).toBe(401);
 			expect(response.body.success).toBe(false);

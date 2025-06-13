@@ -18,12 +18,13 @@
 	],
 	"main": "index.js",
 	"scripts": {
-		"test": "npm run test:api",
-		"dev": "nodemon index.js",
 		"start": "node index.js",
+		"dev": "nodemon index.js",
 		"seed": "node scripts/seedDatabase.js",
-		"test:api": "node --max-old-space-size=4096 node_modules/.bin/jest --coverage --runInBand --detectOpenHandles --forceExit",
-		"test:api:watch": "jest --watchAll"
+		"test": "npm run test:api:coverage",
+		"test:api": "jest --runInBand --detectOpenHandles --forceExit",
+		"test:api:watch": "jest --watchAll --verbose",
+		"test:api:coverage": "node --max-old-space-size=4096 node_modules/.bin/jest --coverage --runInBand --detectOpenHandles --forceExit"
 	},
 	"license": "ISC",
 	"dependencies": {
@@ -51,7 +52,8 @@
 			"!**/__tests__/**",
 			"!index.js",
 			"!scripts/**",
-			"!passport-config.js"
+			"!passport-config.js",
+			"!test-result/**"
 		],
 		"coverageReporters": [
 			"json",

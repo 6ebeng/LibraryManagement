@@ -149,10 +149,10 @@ services:
       - .env.test
     environment:
       - NODE_ENV=test
-      - SESSION_SECRET=${SESSION_SECRET}
-      # - CHOKIDAR_USEPOLLING=true # Optional: Add if file watching is unreliable
-    entrypoint: ['/bin/sh', '-c']
-    command: 'node /app/scripts/seedDatabase.js && npm run test:api:watch'
+      - CHOKIDAR_USEPOLLING=true
+    command: ['sh', '-c', 'npm install && node /app/scripts/seedDatabase.js && npm run test:api:watch']
+    stdin_open: true # Keep STDIN open for interactive watch mode
+    tty: true # Allocate a TTY for interactive watch mode
     networks:
       - test-network
 
