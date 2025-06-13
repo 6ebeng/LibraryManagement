@@ -254,6 +254,28 @@ TC\_REV\_DEL\_001 & Successful deletion of a review by Librarian &
         \item The review is removed from the book's list of reviews.
     \end{itemize} \\ \hline
 
+\multicolumn{4}{|l|}{\textbf{Feature Area: Book Reviews (new feat)}} \\ \hline
+TC\_REV\_ADD\_001 & Verify Librarian can add a review (new feat) &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Navigate to a book's detail page.
+        \item Use an administrative function to add a review for the book.
+        \item Enter a star rating and review text.
+        \item Submit the review.
+    \end{itemize} &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item A success message is displayed.
+        \item The new review appears in the list of reviews for that book.
+    \end{itemize} \\ \hline
+TC\_REV\_VIEW\_001 & Verify any user can view reviews for a book (new feat) &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item As any logged-in user (or guest, if public).
+        \item Navigate to the detail page of a book that has reviews.
+    \end{itemize} &
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The list of reviews for the book is displayed correctly.
+    \end{itemize} \\ \hline
+
 \end{longtable}
 
 \end{document}

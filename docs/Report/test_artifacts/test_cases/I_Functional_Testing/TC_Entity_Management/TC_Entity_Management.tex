@@ -305,6 +305,38 @@ TC\_REVIEW\_DELETE\_001 & Successful review deletion by Librarian &
         \item The review is no longer visible.
     \end{itemize} \\ \hline
 
+\multicolumn{4}{|l|}{\textbf{Entity: Review Management (new feat)}} \\ \hline
+TC\_REVIEW_CREATE\_001 & Successful review creation by Member (new feat) & 
+	\begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+		\item Login as Member.
+		\item Navigate to a specific book's detail page.
+		\item Submit a new review with a star rating and text.
+	\end{itemize} & 
+	\begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+		\item A success message is displayed.
+		\item The new review is visible on the book's page.
+	\end{itemize} \\ \hline
+TC\_REVIEW\_CREATE\_002 & Attempt to create a review with invalid data (new feat) & 
+	\begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+		\item Login as Member.
+		\item Attempt to submit a review with a required field missing (e.g., star rating) or an invalid value (e.g., 6 stars).
+	\end{itemize} & 
+	\begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+		\item System rejects the submission.
+		\item An appropriate error message is displayed.
+	\end{itemize} \\ \hline
+TC\_REVIEW\_DELETE\_001 & Successful review deletion by Librarian (new feat) & 
+	\begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+		\item Pre-condition: A review exists for a book.
+		\item Login as Librarian.
+		\item Navigate to the book or a review management section.
+		\item Select a review and delete it.
+	\end{itemize} & 
+	\begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+		\item The review is removed from the system.
+		\item A success confirmation message is shown.
+	\end{itemize} \\ \hline
+
 \end{longtable}
 
 \end{document}
