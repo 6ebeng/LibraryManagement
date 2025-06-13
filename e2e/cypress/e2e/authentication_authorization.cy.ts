@@ -191,5 +191,55 @@ describe('E2E: Authentication & Authorization', () => {
       cy.url().should('not.include', '/users')
       cy.url().should('include', '/404')
     })
+
+    it('TC_INT_005: should restrict member access to admin features', () => {
+      // **Librarian setup**
+      cy.loginAsLibrarian(fixtureUserData.librarian.email, fixtureUserData.librarian.password);
+
+      const newMember = {
+        name: `TestRbacMember${testTimestamp}`,
+        email: `e2e_member_rbac_${testTimestamp}@example.com`,
+        password: 'password123!',
+        isAdmin: false,
+      };
+
+      cy.visit('/users');
+      cy.contains('button', 'New User').click();
+      cy.fillRegistrationForm(newMember);
+      cy.get('button[type="submit"]').click();
+      cy.contains(newMember.name).should('be.visible');
+      cy.logout();
+
+      // **Member actions & verifications**
+      cy.loginAsMember(newMember.email, newMember.password);
+
+      // Attempt to access User Management page
+      cy.visit('/users', { failOnStatusCode: false });
+      cy.contains('h4', 'Hi, Welcome back').should('be.visible'); // Should be redirected to dashboard
+
+      // Navigate to Books list and check for admin controls
+      cy.visit('/books');
+      cy.contains('button', 'New Book').should('not.exist');
+      cy.get('.MuiCard-root').first().within(() => {
+        cy.contains('button', 'Edit').should('not.exist');
+        cy.contains('button', 'Delete').should('not.exist');
+      });
+
+      // Attempt to add a book via API
+      cy.request({
+        method: 'POST',
+        url: '/api/book/add',
+        body: {
+          name: 'Illegal Book',
+          isbn: 'ILLEGAL-ISBN',
+          author: 'any_author_id',
+          genre: 'any_genre_id',
+        },
+        failOnStatusCode: false,
+      }).then((response) => {
+        expect(response.status).to.be.oneOf([401, 403]);
+      });
+    });
+    
   })
 })

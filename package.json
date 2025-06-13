@@ -4,11 +4,14 @@
 	"description": "Root for Library Management client, server, and tests",
 	"scripts": {
 		"test:api": "docker-compose --env-file .env.test -f docker-compose.test.yml up --build --exit-code-from api-tester api-tester mongo-test && docker-compose --env-file .env.test -f docker-compose.test.yml down --remove-orphans",
+		"test:api:watch": "docker-compose --env-file .env.test -f docker-compose.test.yml run --rm --service-ports api-tester-watch",
+		"test:api:performance": "docker-compose --env-file .env.test -f docker-compose.test.yml up --build --exit-code-from performance-tester performance-tester backend-e2e mongo-test && docker-compose --env-file .env.test -f docker-compose.test.yml down --remove-orphans",
 		"test:component": "docker-compose --env-file .env.test -f docker-compose.test.yml up --build --exit-code-from component-tester component-tester && docker-compose --env-file .env.test -f docker-compose.test.yml down -v --remove-orphans",
 		"test:component:fast": "docker-compose --env-file .env.test -f docker-compose.test.yml up --exit-code-from component-tester component-tester && docker-compose --env-file .env.test -f docker-compose.test.yml down -v --remove-orphans",
 		"test:component:watch": "docker-compose --env-file .env.test -f docker-compose.test.yml run --rm --service-ports component-tester-watch",
 		"test:component:watch:build": "docker-compose --env-file .env.test -f docker-compose.test.yml build component-tester-watch && docker-compose -f docker-compose.test.yml run --rm --service-ports component-tester-watch",
-		"test:e2e": "docker-compose --env-file .env.test -f docker-compose.test.yml up --build --exit-code-from e2e-runner --abort-on-container-exit e2e-runner frontend-e2e backend-e2e mongo-test",
+		"test:e2e": "docker-compose --env-file .env.test -f docker-compose.test.yml up --build --exit-code-from e2e-runner --abort-on-container-exit e2e-runner -- --exclude-spec 'cypress/e2e/performance.cy.ts' frontend-e2e backend-e2e mongo-test",
+		"test:e2e:performance": "docker-compose --env-file .env.test -f docker-compose.test.yml up --build --exit-code-from e2e-runner --abort-on-container-exit e2e-runner -- --spec 'cypress/e2e/performance.cy.ts' frontend-e2e backend-e2e mongo-test",
 		"test:e2e:watch": "docker-compose --env-file .env.test -f docker-compose.test.yml up e2e-runner-watch --build",
 		"report:e2e:merge": "mochawesome-merge e2e/cypress/data/reports/*.json -o e2e/cypress/data/reports/combined-report.json",
 		"report:e2e:generate": "marge e2e/cypress/data/reports/combined-report.json -f combined-report -o e2e/cypress/data/reports --inline",
@@ -17,7 +20,7 @@
 		"test:clean": "docker-compose -f docker-compose.test.yml down -v --remove-orphans",
 		"dev:watch:up": "docker-compose --env-file .env.dev -f docker-compose.dev.yml up -d --build ",
 		"dev:watch:down": "docker-compose -f docker-compose.dev.yml down -v --remove-orphans",
-		"clean-latex": "powershell -Command \"Get-ChildItem -Path docs -Recurse -File | Where-Object { $_.Extension -notin @('.tex', '.pdf', '.bib', '.png', '.jpg', '.docx') } | Remove-Item -Force\""
+		"clean-latex": "powershell -Command \"Get-ChildItem -Path docs -Recurse -File | Where-Object { $_.Extension -notin @('.tex', '.bib', '.png', '.jpg', '.docx') } | Remove-Item -Force\""
 	},
 	"devDependencies": {
 		"@types/cypress": "^0.1.6",

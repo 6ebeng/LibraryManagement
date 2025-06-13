@@ -159,113 +159,113 @@ const testBooksTemplate = [
 	},
 ];
 
+/**
+ * Seeds additional books for performance testing.
+ * @param {number} count - The number of additional books to create.
+ */
+const seedPerformanceBooks = async (count) => {
+	if (count === 0) return;
+
+	console.log(`Creating ${count} additional books for performance testing...`);
+	const authors = [];
+	for (let i = 0; i < Math.ceil(count / 100); i++) {
+		authors.push({ name: `Perf Test Author ${i + 1}`, description: 'Perf test author' });
+	}
+	const createdAuthors = await Author.insertMany(authors);
+
+	const genres = [];
+	for (let i = 0; i < Math.ceil(count / 100); i++) {
+		genres.push({ name: `Perf Test Genre ${i + 1}`, description: 'Perf test genre' });
+	}
+	const createdGenres = await Genre.insertMany(genres);
+
+	const books = [];
+	for (let i = 0; i < count; i++) {
+		books.push({
+			name: `Perf Test Book ${i + 1}`,
+			authorId: createdAuthors[i % createdAuthors.length]._id,
+			genreId: createdGenres[i % createdGenres.length]._id,
+			isbn: `${9781000000000 + i}`,
+			isAvailable: true,
+			summary: `Summary for performance test book ${i + 1}`,
+			photoUrl: 'https://images.unsplash.com/photo-1543002588-b9b656603c86?w=200&h=300&fit=crop',
+		});
+	}
+	await Book.insertMany(books);
+	console.log(`✓ Created ${count} additional books.`);
+};
+
 const seedDatabase = async () => {
-	let connectionClosed = false; // Renamed from connectionClosedBySeeder for clarity within this script
-
-	// Helper to close the Mongoose connection initiated by this script
-	const closeCurrentConnection = async () => {
-		if (mongoose.connection.readyState === 1 && !connectionClosed) {
-			try {
-				await mongoose.connection.close();
-				console.log('Database connection closed by seeder script.');
-				connectionClosed = true;
-			} catch (error) {
-				console.error('Error closing connection in seeder script:', error);
-				// Decide if to throw, but usually logging is sufficient here
-			}
-		}
-	};
-
 	try {
 		if (mongoose.connection.readyState !== 1) {
-			await mongoose.connect(process.env.MONGO_URI, {
+			await mongoose.connect(process.env.MONGO_URI || 'mongodb://mongodb:27017/library', {
 				useNewUrlParser: true,
 				useUnifiedTopology: true,
 			});
 			console.log(`Connected to MongoDB for seeding: ${process.env.MONGO_URI}`);
-		} else {
-			console.log(`Using existing MongoDB connection for seeding: ${mongoose.connection.name}`);
 		}
-		connectionClosed = false; // Reset flag for current execution
 
-		const existingUsers = await User.countDocuments();
-		const existingBooks = await Book.countDocuments();
+		// Clear all existing data
+		await Promise.all([User.deleteMany({}), Book.deleteMany({}), Author.deleteMany({}), Genre.deleteMany({})]);
+		console.log('Cleared existing data...');
 
-		if (existingUsers > 0 || existingBooks > 0) {
-			console.log('Database already contains data. Skipping seeding...');
-			// No explicit return here, allow finally block to close connection
-		} else {
-			await Promise.all([User.deleteMany({}), Book.deleteMany({}), Author.deleteMany({}), Genre.deleteMany({})]);
-			console.log('Cleared existing data...');
+		// Seed core data
+		console.log('Seeding genres...');
+		const createdGenres = await Genre.insertMany(testGenres);
+		console.log(`✓ Created ${createdGenres.length} genres`);
 
-			console.log('Seeding genres...');
-			const createdGenres = await Genre.insertMany(testGenres);
-			console.log(`✓ Created ${createdGenres.length} genres`);
+		console.log('Seeding authors...');
+		const createdAuthors = await Author.insertMany(testAuthors);
+		console.log(`✓ Created ${createdAuthors.length} authors`);
 
-			console.log('Seeding authors...');
-			const createdAuthors = await Author.insertMany(testAuthors);
-			console.log(`✓ Created ${createdAuthors.length} authors`);
-
-			console.log('Seeding users...');
-			for (const userData of testUsers) {
-				const user = new User({
-					name: userData.name,
-					email: userData.email,
-					isAdmin: userData.isAdmin,
-					photoUrl: userData.photoUrl,
-				});
-				user.setPassword(userData.password);
-				await user.save();
-			}
-			console.log(`✓ Created ${testUsers.length} users`);
-
-			console.log('Seeding books...');
-			const booksToSeed = testBooksTemplate.map((bookTemplate) => {
-				const author = createdAuthors.find((a) => a.name === bookTemplate.authorName);
-				const genre = createdGenres.find((g) => g.name === bookTemplate.genreName);
-				return {
-					name: bookTemplate.name,
-					isbn: bookTemplate.isbn,
-					authorId: author ? author._id : null,
-					genreId: genre ? genre._id : null,
-					isAvailable: bookTemplate.isAvailable,
-					summary: bookTemplate.summary,
-					photoUrl: bookTemplate.photoUrl,
-				};
+		console.log('Seeding users...');
+		for (const userData of testUsers) {
+			const user = new User({
+				name: userData.name,
+				email: userData.email,
+				isAdmin: userData.isAdmin,
+				photoUrl: userData.photoUrl,
 			});
-			const createdBooks = await Book.insertMany(booksToSeed);
-			console.log(`✓ Created ${createdBooks.length} books`);
-
-			console.log('\n🎉 Database seeding completed successfully!');
-			console.log('\nTest Users Created (ensure .env passwords match):');
-			console.log(`- Librarian: ${process.env.TEST_LIBRARIAN_EMAIL || 'mainLibrarian@example.com'}`);
-			console.log(`- Member: ${process.env.TEST_MEMBER_EMAIL || 'testmember@example.com'}`);
-			console.log(`\nCreated ${createdBooks.length} books with authors and genres`);
+			user.setPassword(userData.password);
+			await user.save();
 		}
+		console.log(`✓ Created ${testUsers.length} users`);
+
+		console.log('Seeding books...');
+		const booksToSeed = testBooksTemplate.map((bookTemplate) => {
+			const author = createdAuthors.find((a) => a.name === bookTemplate.authorName);
+			const genre = createdGenres.find((g) => g.name === bookTemplate.genreName);
+			return {
+				...bookTemplate,
+				authorId: author ? author._id : null,
+				genreId: genre ? genre._id : null,
+			};
+		});
+		const createdBooks = await Book.insertMany(booksToSeed);
+		console.log(`✓ Created ${createdBooks.length} books`);
+
+		// Check for volume argument for performance testing
+		const volume = process.argv[2]; // Get 'small' or 'large' from command line
+		if (volume === 'small') {
+			await seedPerformanceBooks(50);
+		} else if (volume === 'large') {
+			await seedPerformanceBooks(5000);
+		}
+
+		console.log('\n🎉 Database seeding completed successfully!');
 	} catch (error) {
 		console.error('Error during database seeding process:', error);
-		// Allow finally block to close connection and then re-throw
-		throw error;
+		process.exit(1);
 	} finally {
-		// Always attempt to close the connection made by this script before exiting.
-		// The main server (index.js) will establish its own separate connection.
-		await closeCurrentConnection();
+		if (mongoose.connection.readyState === 1) {
+			await mongoose.connection.close();
+			console.log('Database connection closed by seeder script.');
+		}
 	}
 };
 
-// Handling direct execution:
-// This block allows the script to be run directly (e.g., `node seedDatabase.js`).
-// It ensures the script exits with an appropriate code after completion or error.
 if (require.main === module) {
-	seedDatabase()
-		.then(() => {
-			console.log(`Seeding script finished operation (E2E_TESTING: ${process.env.E2E_TESTING}). Script will now exit naturally.`);
-			// Node.js will exit with code 0 by default if the promise resolves.
-		})
-		.catch((error) => {
-			console.error('Seeding script failed:', error.message);
-			process.exitCode = 1; // Set exit code to 1 for errors. Node.js will exit with this code.
-		});
+	seedDatabase();
 }
 
 module.exports = seedDatabase;

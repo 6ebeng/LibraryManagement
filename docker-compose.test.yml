@@ -149,10 +149,11 @@ services:
       - .env.test
     environment:
       - NODE_ENV=test
-      - SESSION_SECRET=${SESSION_SECRET}
-      # - CHOKIDAR_USEPOLLING=true # Optional: Add if file watching is unreliable
-    entrypoint: ['/bin/sh', '-c']
-    command: 'node /app/scripts/seedDatabase.js && npm run test:api:watch'
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    command: ['sh', '-c', 'npm install && node /app/scripts/seedDatabase.js && npm run test:api:watch']
+    stdin_open: true # Keep STDIN open for interactive watch mode
+    tty: true # Allocate a TTY for interactive watch mode
     networks:
       - test-network
 
@@ -201,6 +202,24 @@ services:
       - ./e2e/cypress/data:/app/cypress/data
       - /mnt/wslg/.X11-unix:/tmp/.X11-unix #cd /mnt/c/Users/Tishko/Desktop/LibraryManagement
     entrypoint: ['sh', 'entrypoint-e2e-watch.sh']
+    networks:
+      - test-network
+
+  # --- Performance Testing Service ---
+  performance-tester:
+    container_name: performance-tester
+    build:
+      context: ./performance
+    depends_on:
+      backend-e2e:
+        condition: service_healthy # Waits for the backend to be up and seeded
+    env_file: # Changed to env_file
+      - .env.test
+    environment:
+      - BASE_URL=http://backend-e2e:8080 # Still need to pass BASE_URL as it's a service-specific variable
+      - USER_EMAIL=${TEST_LIBRARIAN_EMAIL}
+      - USER_PASSWORD=${TEST_LIBRARIAN_PASSWORD}
+    command: run /home/k6/performance-test.js
     networks:
       - test-network
 

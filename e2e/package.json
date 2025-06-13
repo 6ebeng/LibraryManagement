@@ -1,6 +1,6 @@
 {
   "name": "cypress",
-  "description": "Examples of end-to-end tests for Spryker Marketplace B2B demoshop",
+  "description": "Examples of end-to-end tests for Library Management System",
   "version": "1.0.0",
   "private": true,
   "devDependencies": {
@@ -24,6 +24,7 @@
     "cy:open": "npx cypress open",
     "cy:run": "npx cypress run",
     "cy:run:docker": "npx cypress run --env docker=true",
+    "cy:run:performance": "npx cypress run --env docker=true --spec 'cypress/e2e/performance.cy.ts'",
     "lint:check": "eslint . ",
     "prettier:check": "prettier . --check",
     "code:check": "eslint . ; prettier . --check",

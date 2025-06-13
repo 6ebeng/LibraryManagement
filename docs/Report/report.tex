@@ -1,0 +1,149 @@
+\documentclass[11pt, a4paper]{report}
+
+% --- Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{verbatim}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{lmodern}
+\usepackage{pgfgantt} % For Gantt chart in Test Management
+\usepackage{pdflscape} % For landscape pages if needed
+
+% --- TikZ Packages ---
+\usepackage{tikz}
+\usetikzlibrary{
+    shapes.geometric,
+    shapes.symbols,
+    arrows.meta,
+    positioning,
+    calc,
+    shadows,
+    decorations.pathreplacing,
+    external,
+    fit,
+    shapes.multipart
+}
+
+% --- Biblatex Setup ---
+\usepackage[
+    backend=biber,
+    style=ieee,
+    sorting=none
+]{biblatex}
+\addbibresource{references.bib}
+
+\usepackage{hyperref} % Load AFTER biblatex
+
+% --- Listings Setup ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize\ttfamily,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    language=Python,
+    xleftmargin=1.5em,
+    xrightmargin=1em,
+    frame=single,
+    frameround=tttt,
+    rulesepcolor=\color{gray!20}
+}
+\lstset{style=mystyle}
+
+% --- Geometry ---
+\geometry{a4paper, margin=1in, headheight=1.5cm, footskip=1cm}
+
+% --- Title Formatting ---
+\titleformat{\chapter}[display]
+    {\normalfont\huge\bfseries\centering}{}{0pt}{\Huge}
+\titleformat{\section}
+    {\normalfont\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}
+    {\normalfont\large\bfseries}{\thesubsection}{1em}{}
+
+% --- Hyperref Setup ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=teal,
+    citecolor=red,
+    pdftitle={SE507 Final Report: Library Management System Testing},
+    pdfpagemode=UseOutlines,
+    pdfauthor={Tishko Salah, Sara Zuhair, Yassin Hussein, Ravyar Barzan}
+}
+
+% --- Project Metadata ---
+\newcommand{\projectgroup}{\small\textbf{Team Members:} \\ \vspace{0.5cm} \large Tishko Salah \normalsize\texttt{(Team Leader)} \\ \large Sara Zuhair \normalsize\texttt{(Code specifier)} \\ \large Yassin Hussein \normalsize\texttt{(Code reviewer)} \\ \large Ravyar Barzan \normalsize\texttt{(Document inspector)} }
+\newcommand{\lecturername}{Module Leader: \textbf{Dr. Hossein Hassani}}
+\newcommand{\projectsubtitle}{SE507 - Software Testing and Evaluation}
+\newcommand{\projectTitle}{A Comprehensive Testing Strategy for a Library Management System}
+\newcommand{\projectdepartment}{Department of Computer Science and Engineering}
+\newcommand{\projectinstitute}{University of Kurdistan Hewlêr}
+\newcommand{\projectlocation}{Erbil, Kurdistan Region, Iraq}
+\newcommand{\projectdate}{\today} 
+% \author{\projectauthor} 
+% \title{\projectTitle} 
+% \date{\projectdate} 
+
+
+\begin{document}
+
+% --- Title Page ---
+\input{chapters/titlepage.tex}
+
+% --- Table of Contents ---
+\tableofcontents
+\listoffigures
+\listoftables
+\newpage
+
+% --- Main Content ---
+% \input{chapters/01_introduction.tex}
+% \input{chapters/02_background.tex}
+% \input{chapters/03_test_management.tex}
+% \input{chapters/04_testing_process.tex}
+% \input{chapters/05_functional_testing.tex}
+% \input{chapters/06_api_testing.tex}
+% \input{chapters/07_white_box_testing.tex}
+% \input{chapters/08_non_functional_testing.tex}
+% \input{chapters/09_integration_regression.tex}
+% \input{chapters/10_system_changes.tex}
+% \input{chapters/11_conclusion.tex}
+
+% % --- Bibliography ---
+% \input{chapters/12_references_content.tex}
+
+% % --- Appendix ---
+% \appendix
+% \input{chapters/appendix_members_summary.tex}
+
+\end{document}
