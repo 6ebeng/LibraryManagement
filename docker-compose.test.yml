@@ -150,6 +150,7 @@ services:
     environment:
       - NODE_ENV=test
       - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
     command: ['sh', '-c', 'npm install && node /app/scripts/seedDatabase.js && npm run test:api:watch']
     stdin_open: true # Keep STDIN open for interactive watch mode
     tty: true # Allocate a TTY for interactive watch mode
