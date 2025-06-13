@@ -16,6 +16,7 @@
 		"test:e2e:report": "npm run test:e2e && npm run report:e2e:merge && npm run report:e2e:generate && npm run test:clean",
 		"test": "npm run test:api && npm run test:component && npm run test:e2e:report",
 		"test:clean": "docker-compose -f docker-compose.test.yml down -v --remove-orphans",
+		"test:performance:backend": "docker-compose --env-file .env.test -f docker-compose.test.yml up --build --exit-code-from performance-tester performance-tester backend-e2e mongo-test && docker-compose --env-file .env.test -f docker-compose.test.yml down --remove-orphans",
 		"dev:watch:up": "docker-compose --env-file .env.dev -f docker-compose.dev.yml up -d --build ",
 		"dev:watch:down": "docker-compose -f docker-compose.dev.yml down -v --remove-orphans",
 		"clean-latex": "powershell -Command \"Get-ChildItem -Path docs -Recurse -File | Where-Object { $_.Extension -notin @('.tex', '.pdf', '.bib', '.png', '.jpg', '.docx') } | Remove-Item -Force\""

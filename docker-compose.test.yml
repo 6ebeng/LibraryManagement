@@ -213,11 +213,10 @@ services:
     depends_on:
       backend-e2e:
         condition: service_healthy # Waits for the backend to be up and seeded
+    env_file: # Changed to env_file
+      - .env.test
     environment:
-      # Updated to use variables from .env.test
-      - BASE_URL=http://backend-e2e:8080
-      - USER_EMAIL=${TEST_LIBRARIAN_EMAIL}
-      - USER_PASSWORD=${TEST_LIBRARIAN_PASSWORD}
+      - BASE_URL=http://backend-e2e:8080 # Still need to pass BASE_URL as it's a service-specific variable
     command: run /home/k6/performance-test.js
     networks:
       - test-network
