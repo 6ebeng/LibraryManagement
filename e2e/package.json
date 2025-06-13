@@ -1,6 +1,6 @@
 {
   "name": "cypress",
-  "description": "Examples of end-to-end tests for Spryker Marketplace B2B demoshop",
+  "description": "Examples of end-to-end tests for Library Management System",
   "version": "1.0.0",
   "private": true,
   "devDependencies": {
@@ -27,9 +27,7 @@
     "lint:check": "eslint . ",
     "prettier:check": "prettier . --check",
     "code:check": "eslint . ; prettier . --check",
-    "code:fix": "eslint . --fix ; prettier . --write",
-    "seed:small": "node ../server/scripts/seedDatabase.js --volume=small",
-    "seed:large": "node ../server/scripts/seedDatabase.js --volume=large"
+    "code:fix": "eslint . --fix ; prettier . --write"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
