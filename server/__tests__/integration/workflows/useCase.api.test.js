@@ -4,14 +4,14 @@
  * This new test file covers test cases from 'TC_Use_Case_Testing.pdf'.
  */
 const request = require('supertest');
-const app = require('../../index');
+const app = require('../../../index');
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
-const Book = require('../../models/book');
-const Author = require('../../models/author');
-const Genre = require('../../models/genre');
-const User = require('../../models/user');
-const Borrowal = require('../../models/borrowal');
+const Book = require('../../../models/book');
+const Author = require('../../../models/author');
+const Genre = require('../../../models/genre');
+const User = require('../../../models/user');
+const Borrowal = require('../../../models/borrowal');
 
 let mongoServer;
 let librarianAgent;

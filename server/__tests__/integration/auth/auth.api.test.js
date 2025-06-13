@@ -3,9 +3,9 @@
  */
 
 const request = require('supertest');
-const app = require('../../index.js'); // Path to your main Express app file
+const app = require('../../../index.js'); // Path to your main Express app file
 const mongoose = require('mongoose');
-const User = require('../../models/user'); // Adjust path to User model
+const User = require('../../../models/user.js'); // Adjust path to User model
 
 // Test credentials sourced from environment variables
 // These are set by docker-compose.test.yml from .env.test

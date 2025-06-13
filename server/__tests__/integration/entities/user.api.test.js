@@ -5,10 +5,10 @@
  * Corresponds to cases from 'TC_Specific_Feature_Testing.pdf'.
  */
 const request = require('supertest');
-const app = require('../../index');
+const app = require('../../../index');
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
-const User = require('../../models/user');
+const User = require('../../../models/user');
 
 let mongoServer;
 let librarianAgent;

@@ -5,14 +5,14 @@
  * Corresponds to cases from 'TC_Entity_Management.pdf' and 'TC_Specific_Feature_Testing.pdf'.
  */
 const request = require('supertest');
-const app = require('../../index');
+const app = require('../../../index');
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
-const Book = require('../../models/book');
-const Review = require('../../models/review');
-const User = require('../../models/user');
-const Author = require('../../models/author');
-const Genre = require('../../models/genre');
+const Book = require('../../../models/book');
+const Review = require('../../../models/review');
+const User = require('../../../models/user');
+const Author = require('../../../models/author');
+const Genre = require('../../../models/genre');
 
 let mongoServer;
 let librarianAgent, memberAgent;
