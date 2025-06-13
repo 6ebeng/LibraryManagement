@@ -7,6 +7,7 @@ import BorrowalPage from "./sections/@dashboard/borrowal/BorrowalPage";
 import BookPage from "./sections/@dashboard/book/BookPage";
 import DashboardAppPage from "./sections/@dashboard/app/DashboardAppPage";
 import UsersPage from "./sections/@dashboard/user/UserPage";
+import ReviewPage from "./sections/@dashboard/reviews/ReviewPage";
 import GenrePage from "./sections/@dashboard/genre/GenrePage";
 import { useAuth } from "./hooks/useAuth";
 
@@ -25,7 +26,8 @@ export default function Router() {
         { path: "books", element: <BookPage /> },
         { path: "borrowals", element: <BorrowalPage /> },
         { path: "genres", element: <GenrePage /> },
-        { path: "users", element: <UsersPage /> }
+        { path: "users", element: <UsersPage /> },
+        { path: "reviews", element: <ReviewPage /> },
       ]
     },
     {
@@ -51,7 +53,8 @@ export default function Router() {
         { path: "books", element: <BookPage /> },
         { path: "authors", element: <AuthorPage /> },
         { path: "genres", element: <GenrePage /> },
-        { path: "borrowals", element: <BorrowalPage /> }
+        { path: "borrowals", element: <BorrowalPage /> },
+        { path: "reviews", element: <ReviewPage /> },
       ]
     },
     {
