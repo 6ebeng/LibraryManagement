@@ -7,8 +7,8 @@
     \vspace*{1cm}
 
     % --- LOGO ---
-    \IfFileExists{ukh-logo.png}{
-        \includegraphics[width=0.2\textwidth]{ukh-logo.png}
+    \IfFileExists{assets/ukh-logo.png}{
+        \includegraphics[width=0.2\textwidth]{assets/ukh-logo.png} % Adjust width as needed
         \vspace{2cm}
     }{} % Do nothing if file doesn't exist
 
@@ -20,13 +20,19 @@
     {\Huge\bfseries \projectTitle \par} % Main Title (from \title command in report.tex)
     \vspace{1.5cm}
 
+
+
     % --- AUTHOR ---
-    {\Large \projectauthor \par} % Author 
-    \vspace{4cm}
+    {\Large \projectgroup \par} % Author 
+    \vspace{2cm}
+
+    % --- MODULE LEADER ---
+    {\large \lecturername \par} 
+    \vspace{1cm}
 
     % --- DATE ---
     {\Large \projectdate \par} % Date
-    \vspace{3cm}
+    \vspace{2cm}
 
     % --- INSTITUTION ---
     {\projectinstitute \\ \projectdepartment \par}

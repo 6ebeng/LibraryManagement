@@ -1,0 +1,233 @@
+\documentclass{article}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Library Management System}
+\lhead{Test Design Document}
+\cfoot{\thepage}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+\begin{document}
+
+\title{
+    \textbf{Library Management System}\\
+    \large{Software Test Design Document}
+}
+\author{Tishko}
+\date{\today}
+\maketitle
+
+\section{Authentication Controller (authController)}
+\subsection{Overview}
+The Auth Controller is responsible for user authentication, including registration (by a librarian), login, and logout. These tests ensure that access control and user session management are functioning correctly, as specified in the SRS.
+
+\begin{longtable}{|p{0.1\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|p{0.20\textwidth}|p{0.25\textwidth}|}
+    \caption{Test Cases for authController}\\
+    \hline
+    \textbf{Test Case ID} & \textbf{Related Requirement (SRS)} & \textbf{Test Scenario} & \textbf{Test Steps} & \textbf{Expected Result} \\
+    \hline
+    \endfirsthead
+    \multicolumn{5}{c}%
+    {{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+    \hline
+    \textbf{Test Case ID} & \textbf{Related Requirement (SRS)} & \textbf{Test Scenario} & \textbf{Test Steps} & \textbf{Expected Result} \\
+    \hline
+    \endhead
+    \hline \multicolumn{5}{|r|}{{Continued on next page}} \\ \hline
+    \endfoot
+    \hline
+    \endlastfoot
+
+    % Test Cases for registerUser
+    TC-AUTH-001 & 3.1.1 User Registration , UC-004  & Successful user registration & 1. Mock \texttt{User.findOne} to resolve as null. \newline 2. Mock \texttt{User.create} to resolve with a new user object. \newline 3. Call \texttt{registerUser} with valid new user data. & 1. Response status is 201. \newline 2. Response JSON indicates successful registration. \\
+    \hline
+    TC-AUTH-002 & UC-004 (A1: Email Already Exists)  & Attempt to register a user that already exists & 1. Mock \texttt{User.findOne} to resolve with an existing user object. \newline 2. Call \texttt{registerUser} with data of an existing user. & 1. Response status is 400. \newline 2. Response JSON indicates that the username or email already exists. \\
+    \hline
+
+    % Test Cases for loginUser
+    TC-AUTH-003 & 3.1.2 User Login , UC-001  & Successful user login with valid credentials & 1. Mock \texttt{passport.authenticate} to succeed and return a user object. \newline 2. Call \texttt{loginUser} middleware with correct username and password. & 1. \texttt{req.logIn} is called. \newline 2. Response status is 200. \newline 3. Response JSON indicates successful login and includes user data. \\
+    \hline
+    TC-AUTH-004 & UC-001 (A1: Invalid Credentials)  & Attempt to login with invalid credentials & 1. Mock \texttt{passport.authenticate} to fail (returns false). \newline 2. Call \texttt{loginUser} middleware with an incorrect username or password. & 1. Response status is 401. \newline 2. Response JSON indicates incorrect credentials. \\
+    \hline
+
+    % Test Cases for logoutUser
+    TC-AUTH-005 & 3.1.3 User Logout  & Successful user logout & 1. Mock \texttt{req.logout}. \newline 2. Call \texttt{logoutUser}. & 1. \texttt{req.logout} is called. \newline 2. Response status is 200. \newline 3. Response JSON indicates successful logout. \\
+    \hline
+\end{longtable}
+
+\section{Author Controller (authorController)}
+\subsection{Overview}
+The Author Controller manages CRUD operations for author entities. These tests validate the creation and retrieval of authors.
+
+\begin{longtable}{|p{0.1\textwidth}|p{0.2\textwidth}|p{0.2\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|}
+    \caption{Test Cases for authorController}\\
+    \hline
+    \textbf{Test Case ID} & \textbf{Related Requirement (SRS)} & \textbf{Test Scenario} & \textbf{Test Steps} & \textbf{Expected Result} \\
+    \hline
+    \endfirsthead
+    \multicolumn{5}{c}%
+    {{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+    \hline
+    \textbf{Test Case ID} & \textbf{Related Requirement (SRS)} & \textbf{Test Scenario} & \textbf{Test Steps} & \textbf{Expected Result} \\
+    \hline
+    \endhead
+    \hline \multicolumn{5}{|r|}{{Continued on next page}} \\ \hline
+    \endfoot
+    \hline
+    \endlastfoot
+
+    % Test Cases for createAuthor
+    TC-ATHR-001 & 3.4 Author Management (POST /api/author/add)  & Successfully create a new author & 1. Provide author details in \texttt{req.body}. \newline 2. Mock \texttt{Author.create} to resolve with the new author data. \newline 3. Call \texttt{createAuthor}. & 1. Response status is 201. \newline 2. Response JSON contains the newly created author. \\
+    \hline
+
+    % Test Cases for getAllAuthors
+    TC-ATHR-002 & 3.4 Author Management (GET /api/author/getAll)  & Successfully retrieve all authors & 1. Mock \texttt{Author.find} to resolve with an array of author objects. \newline 2. Call \texttt{getAllAuthors}. & 1. Response status is 200. \newline 2. Response JSON contains the array of all authors. \\
+    \hline
+\end{longtable}
+
+\section{Book Controller (bookController)}
+\subsection{Overview}
+The Book Controller handles all CRUD operations for book entities. The tests ensure that books can be created, retrieved (all and by ID), updated, and deleted as per the requirements.
+
+\begin{longtable}{|p{0.1\textwidth}|p{0.2\textwidth}|p{0.2\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|}
+    \caption{Test Cases for bookController}\\
+    \hline
+    \textbf{Test Case ID} & \textbf{Related Requirement (SRS)} & \textbf{Test Scenario} & \textbf{Test Steps} & \textbf{Expected Result} \\
+    \hline
+    \endfirsthead
+    \multicolumn{5}{c}%
+    {{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+    \hline
+    \textbf{Test Case ID} & \textbf{Related Requirement (SRS)} & \textbf{Test Scenario} & \textbf{Test Steps} & \textbf{Expected Result} \\
+    \hline
+    \endhead
+    \hline \multicolumn{5}{|r|}{{Continued on next page}} \\ \hline
+    \endfoot
+    \hline
+    \endlastfoot
+
+    % Test Cases
+    TC-BOOK-001 & 3.3 Book Management (POST /api/book/add) , UC-002  & Successfully create a new book & 1. Provide book details in \texttt{req.body}. \newline 2. Mock \texttt{Book.create} to resolve successfully. \newline 3. Call \texttt{createBook}. & 1. Response status is 201. \newline 2. Response JSON contains the new book. \\
+    \hline
+    TC-BOOK-002 & UC-002 (A2: API Error)  & Fail to create a book due to a database error & 1. Mock \texttt{Book.create} to reject with an error. \newline 2. Call \texttt{createBook}. & 1. Response status is 500. \newline 2. Response JSON contains an error message. \\
+    \hline
+    TC-BOOK-003 & 3.3 Book Management (GET /api/book/getAll)  & Successfully retrieve all books & 1. Mock \texttt{Book.find().populate()} to resolve with an array of books. \newline 2. Call \texttt{getAllBooks}. & 1. Response status is 200. \newline 2. Response JSON contains the array of books. \\
+    \hline
+    TC-BOOK-004 & 3.3 Book Management (GET /api/book/get/:id)  & Successfully retrieve a single book by its ID & 1. Provide a book ID in \texttt{req.params}. \newline 2. Mock \texttt{Book.findById().populate()} to resolve with a book object. \newline 3. Call \texttt{getBookById}. & 1. Response status is 200. \newline 2. Response JSON contains the specific book. \\
+    \hline
+    TC-BOOK-005 & 3.3 Book Management (GET /api/book/get/:id)  & Attempt to retrieve a book with a non-existent ID & 1. Provide a non-existent book ID in \texttt{req.params}. \newline 2. Mock \texttt{Book.findById().populate()} to resolve as null. \newline 3. Call \texttt{getBookById}. & 1. Response status is 404. \newline 2. Response JSON contains a 'Book not found' message. \\
+    \hline
+    TC-BOOK-006 & 3.3 Book Management (PUT /api/book/update/:id) & Successfully update an existing book & 1. Provide a book ID and update data. \newline 2. Mock \texttt{Book.findByIdAndUpdate} to resolve with the updated book. \newline 3. Call \texttt{updateBook}. & 1. Response status is 200. \newline 2. Response JSON contains the updated book data. \\
+    \hline
+    TC-BOOK-007 & 3.3 Book Management (DELETE /api/book/delete/:id)  & Successfully delete a book & 1. Provide a book ID to be deleted. \newline 2. Mock \texttt{Book.findByIdAndDelete} to resolve successfully. \newline 3. Call \texttt{deleteBook}. & 1. Response status is 200. \newline 2. Response JSON contains a 'Book removed' message. \\
+    \hline
+\end{longtable}
+
+\section{Borrowal Controller (borrowalController)}
+\subsection{Overview}
+This controller manages borrowal records. Tests cover creating a borrowal (and updating book availability), updating a borrowal's status, and retrieving borrowals based on user roles (Librarian vs. Member).
+
+\begin{longtable}{|p{0.1\textwidth}|p{0.2\textwidth}|p{0.2\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|}
+    \caption{Test Cases for borrowalController}\\
+    \hline
+    \textbf{Test Case ID} & \textbf{Related Requirement (SRS)} & \textbf{Test Scenario} & \textbf{Test Steps} & \textbf{Expected Result} \\
+    \hline
+    \endfirsthead
+    \multicolumn{5}{c}%
+    {{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+    \hline
+    \textbf{Test Case ID} & \textbf{Related Requirement (SRS)} & \textbf{Test Scenario} & \textbf{Test Steps} & \textbf{Expected Result} \\
+    \hline
+    \endhead
+    \hline \multicolumn{5}{|r|}{{Continued on next page}} \\ \hline
+    \endfoot
+    \hline
+    \endlastfoot
+
+    % Test Cases
+    TC-BORR-001 & 3.6 Borrowal Management , UC-003  & Create a borrowal for an available book & 1. Mock \texttt{Book.findById} to return an available book. \newline 2. Mock \texttt{Borrowal.create} to succeed. \newline 3. Call \texttt{createBorrowal}. & 1. Book's availability is set to false. \newline 2. Response status is 201. \newline 3. Response JSON contains the new borrowal record. \\
+    \hline
+    TC-BORR-002 & UC-003 (A1: Book Not Available)  & Attempt to create a borrowal for an unavailable book & 1. Mock \texttt{Book.findById} to return an unavailable book. \newline 2. Call \texttt{createBorrowal}. & 1. Response status is 400. \newline 2. Response JSON has a "Book is not available" message. \\
+    \hline
+    TC-BORR-003 & 3.6 Borrowal Management (PUT /api/borrowal/update/:id)  & Update borrowal status to 'Returned' & 1. Mock \texttt{Borrowal.findById} to find a borrowal. \newline 2. Mock \texttt{Book.findByIdAndUpdate} to succeed. \newline 3. Call \texttt{updateBorrowal} with status 'Returned'. & 1. Book's availability is set to true. \newline 2. Response status is 200. \newline 3. Response JSON contains the updated borrowal. \\
+    \hline
+    TC-BORR-004 & 3.6 Borrowal Management (GET /api/borrowal/getAll)  & Get all borrowals as a Librarian & 1. Set \texttt{req.user.role} to 'Librarian'. \newline 2. Mock \texttt{Borrowal.find} to return all borrowals. \newline 3. Call \texttt{getBorrowals}. & 1. \texttt{Borrowal.find} is called with an empty filter. \newline 2. Response contains all borrowal records. \\
+    \hline
+    TC-BORR-005 & 3.6 Borrowal Management , UC-005  & Get own borrowals as a Member & 1. Set \texttt{req.user.role} to 'Member'. \newline 2. Mock \texttt{Borrowal.find} to return member-specific borrowals. \newline 3. Call \texttt{getBorrowals}. & 1. \texttt{Borrowal.find} is called with a filter for the member's ID. \newline 2. Response contains only the member's borrowals. \\
+    \hline
+\end{longtable}
+
+\section{Genre Controller (genreController)}
+\subsection{Overview}
+The Genre Controller manages CRUD operations for genre entities. These tests validate the creation and retrieval of genres.
+
+\begin{longtable}{|p{0.1\textwidth}|p{0.2\textwidth}|p{0.2\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|}
+    \caption{Test Cases for genreController}\\
+    \hline
+    \textbf{Test Case ID} & \textbf{Related Requirement (SRS)} & \textbf{Test Scenario} & \textbf{Test Steps} & \textbf{Expected Result} \\
+    \hline
+    \endfirsthead
+    \multicolumn{5}{c}%
+    {{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+    \hline
+    \textbf{Test Case ID} & \textbf{Related Requirement (SRS)} & \textbf{Test Scenario} & \textbf{Test Steps} & \textbf{Expected Result} \\
+    \hline
+    \endhead
+    \hline \multicolumn{5}{|r|}{{Continued on next page}} \\ \hline
+    \endfoot
+    \hline
+    \endlastfoot
+
+    % Test Cases for createGenre
+    TC-GENR-001 & 3.5 Genre Management (POST /api/genre/add)  & Successfully create a new genre & 1. Provide genre details in \texttt{req.body}. \newline 2. Mock \texttt{Genre.create} to resolve with the new genre data. \newline 3. Call \texttt{createGenre}. & 1. Response status is 201. \newline 2. Response JSON contains the newly created genre. \\
+    \hline
+
+    % Test Cases for getAllGenres
+    TC-GENR-002 & 3.5 Genre Management (GET /api/genre/getAll)  & Successfully retrieve all genres & 1. Mock \texttt{Genre.find} to resolve with an array of genre objects. \newline 2. Call \texttt{getAllGenres}. & 1. Response status is 200. \newline 2. Response JSON contains the array of all genres. \\
+    \hline
+\end{longtable}
+
+\section{Review Controller (reviewController)}
+\subsection{Overview}
+The Review Controller is responsible for managing book reviews. The tests cover the creation of reviews and fetching all reviews for a specific book.
+
+\begin{longtable}{|p{0.1\textwidth}|p{0.2\textwidth}|p{0.2\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|}
+    \caption{Test Cases for reviewController}\\
+    \hline
+    \textbf{Test Case ID} & \textbf{Related Requirement (SRS)} & \textbf{Test Scenario} & \textbf{Test Steps} & \textbf{Expected Result} \\
+    \hline
+    \endfirsthead
+    \multicolumn{5}{c}%
+    {{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+    \hline
+    \textbf{Test Case ID} & \textbf{Related Requirement (SRS)} & \textbf{Test Scenario} & \textbf{Test Steps} & \textbf{Expected Result} \\
+    \hline
+    \endhead
+    \hline \multicolumn{5}{|r|}{{Continued on next page}} \\ \hline
+    \endfoot
+    \hline
+    \endlastfoot
+
+    % Test Cases for createReview
+    TC-REV-001 & 3.8 Review Management (POST /api/review/add)  & Successfully create a review for a book & 1. Provide review details (bookId, rating, comment) in \texttt{req.body}. \newline 2. Mock \texttt{Review.create} to resolve with the new review object. \newline 3. Call \texttt{createReview}. & 1. Response status is 201. \newline 2. Response JSON contains the newly created review. \\
+    \hline
+
+    % Test Cases for getReviewsForBook
+    TC-REV-002 & 3.8 Review Management  & Get all reviews for a specific book & 1. Provide a book ID in \texttt{req.params.bookId}. \newline 2. Mock \texttt{Review.find().populate()} to resolve with an array of reviews. \newline 3. Call \texttt{getReviewsForBook}. & 1. \texttt{Review.find} is called with a filter for the book ID. \newline 2. Response status is 200. \newline 3. Response JSON contains the array of reviews for that book. \\
+    \hline
+\end{longtable}
+
+\end{document}

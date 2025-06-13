@@ -4,48 +4,47 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{geometry}
-\usepackage{graphicx} % Needed for \includegraphics (kept in case needed elsewhere)
+\usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
-\usepackage{booktabs} % For professional looking tables
-\usepackage{listings} % For code listings
-\usepackage{xcolor}     % For colored text/boxes (optional)
-\usepackage{caption}    % For captions on tables/figures
-\usepackage{float}      % For better control over figure/table placement [H] option
-\usepackage{verbatim} % For verbatim environment
-\usepackage{titlesec} % For title formatting
-\usepackage{enumitem} % For customizing lists
-\usepackage{longtable} % For tables that span multiple pages
-\usepackage{array} % For more advanced table column formatting
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{verbatim}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{array}
 \usepackage{lmodern}
+\usepackage{pgfgantt} % For Gantt chart in Test Management
+\usepackage{pdflscape} % For landscape pages if needed
 
 % --- TikZ Packages ---
 \usepackage{tikz}
 \usetikzlibrary{
     shapes.geometric,
     shapes.symbols,
-    arrows.meta,        % For arrow styles
-    positioning,        % For node placement (node distance, above of=, etc.)
-    calc,               % For coordinate calculations
-    shadows,            % For visual effects
-    decorations.pathreplacing, % For braces if needed later
-    external, % For TikZ externalization
-    positioning, % For node positioning
-    fit, % For fitting nodes
-    shapes.multipart % For multi-part shapes
+    arrows.meta,
+    positioning,
+    calc,
+    shadows,
+    decorations.pathreplacing,
+    external,
+    fit,
+    shapes.multipart
 }
-% Configure TikZ externalization
-% \tikzexternalize[prefix=tikz_cache/] % Uncomment to enable TikZ externalization. Ensure the 'tikz_cache' directory exists.
 
 % --- Biblatex Setup ---
 \usepackage[
-    backend=biber,      % Use biber backend for modern features
-    style=ieee,         % Use IEEE citation style
-    sorting=none        % Use order of appearance sorting for IEEE
+    backend=biber,
+    style=ieee,
+    sorting=none
 ]{biblatex}
-\addbibresource{references.bib} % Specify the bibliography file name
+\addbibresource{references.bib}
 
-\usepackage{hyperref} % For clickable links and references - Load AFTER biblatex
+\usepackage{hyperref} % Load AFTER biblatex
 
 % --- Listings Setup ---
 \definecolor{codegreen}{rgb}{0,0.6,0}
@@ -59,7 +58,7 @@
     keywordstyle=\color{magenta},
     numberstyle=\tiny\color{codegray},
     stringstyle=\color{codepurple},
-    basicstyle=\footnotesize\ttfamily, % Use ttfamily for monospaced font
+    basicstyle=\footnotesize\ttfamily,
     breakatwhitespace=false,
     breaklines=true,
     captionpos=b,
@@ -70,53 +69,43 @@
     showstringspaces=false,
     showtabs=false,
     tabsize=2,
-    language=Python, % Default language, can be changed
+    language=Python,
     xleftmargin=1.5em,
     xrightmargin=1em,
     frame=single,
     frameround=tttt,
-    rulesepcolor=\color{gray!20},
-    framexleftmargin=1.5em,
-    framexrightmargin=1em,
-    framextopmargin=1ex,
-    framexbottommargin=1ex
+    rulesepcolor=\color{gray!20}
 }
 \lstset{style=mystyle}
 
 % --- Geometry ---
-\geometry{
-    a4paper, % A4 paper size
-    margin=0.5in, % Standard 1 inch margin
-    headheight=1.5cm, % Height of the header
-    footskip=0cm
-}
+\geometry{a4paper, margin=1in, headheight=1.5cm, footskip=1cm}
 
 % --- Title Formatting ---
 \titleformat{\chapter}[display]
-    {\normalfont\huge\bfseries}{}{0pt}{\Huge} % Centered chapter titles
+    {\normalfont\huge\bfseries\centering}{}{0pt}{\Huge}
 \titleformat{\section}
     {\normalfont\Large\bfseries}{\thesection}{1em}{}
 \titleformat{\subsection}
     {\normalfont\large\bfseries}{\thesubsection}{1em}{}
-\titleformat{\subsubsection}
-    {\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
 
 % --- Hyperref Setup ---
 \hypersetup{
     colorlinks=true,
-    linkcolor=black, % Changed link color for better visibility
+    linkcolor=blue,
     filecolor=magenta,
-    urlcolor=cyan, % Changed URL color
-    citecolor=red, % Changed cite color
-    pdftitle={Software Architecture Design Document: Quiz Web Application},
+    urlcolor=teal,
+    citecolor=red,
+    pdftitle={SE507 Final Report: Library Management System Testing},
     pdfpagemode=UseOutlines,
-    pdfauthor={Your Name Here} % Placeholder for author name
+    pdfauthor={Tishko Salah, Sara Zuhair, Yassin Hussein, Ravyar Barzan}
 }
 
-% --- Metadata (can also be moved to a separate file if desired) ---
-\newcommand{\projectauthor}{\textit{by} \\ Tishko Salah\\ Sara Zuhair \\ Yassin Hussein \\ Ravyar Barzan}
-\newcommand{\projectsubtitle}{SE507 Software Testing and Evaluation}
-\newcommand{\projectTitle}{Title:}
+% --- Project Metadata ---
+\newcommand{\projectgroup}{ \textit{by} \\ Tishko Salah \\ Sara Zuhair \\ Yassin Hussein \\ Ravyar Barzan}
+\newcommand{\lecturername}{Module Leader: \textbf{Dr. Hossein Hassani}}
+\newcommand{\projectsubtitle}{SE507 - Software Testing and Evaluation}
+\newcommand{\projectTitle}{A Comprehensive Testing Strategy for a Library Management System}
 \newcommand{\projectdepartment}{Department of Computer Science and Engineering}
 \newcommand{\projectinstitute}{University of Kurdistan Hewlêr}
 \newcommand{\projectlocation}{Erbil, Kurdistan Region, Iraq}
@@ -125,28 +114,36 @@
 % \title{\projectTitle} 
 % \date{\projectdate} 
 
+
 \begin{document}
 
 % --- Title Page ---
-\input{chapters/titlepage.tex} % Using \input for titlepage
+\input{chapters/titlepage.tex}
 
 % --- Table of Contents ---
 \tableofcontents
+\listoffigures
+\listoftables
 \newpage
 
-% --- Main Content Starts Here ---
-% \include{chapters/introduction}
-% .
-% .
-% .
-% \include{chapters/conclusion}
+% --- Main Content ---
+% \input{chapters/01_introduction.tex}
+% \input{chapters/02_background.tex}
+% \input{chapters/03_test_management.tex}
+% \input{chapters/04_testing_process.tex}
+% \input{chapters/05_functional_testing.tex}
+% \input{chapters/06_api_testing.tex}
+% \input{chapters/07_white_box_testing.tex}
+% \input{chapters/08_non_functional_testing.tex}
+% \input{chapters/09_integration_regression.tex}
+% \input{chapters/10_system_changes.tex}
+% \input{chapters/11_conclusion.tex}
 
-% --- Bibliography ---
-% \input{chapters/references_content.tex} % Using \input for references
+% % --- Bibliography ---
+% \input{chapters/12_references_content.tex}
 
-% --- Appendix (Optional) ---
+% % --- Appendix ---
 % \appendix
-% \chapter{Appendix Title}
-% \include{chapters/appendix_a} % Example if you had an appendix
+% \input{chapters/appendix_members_summary.tex}
 
 \end{document}

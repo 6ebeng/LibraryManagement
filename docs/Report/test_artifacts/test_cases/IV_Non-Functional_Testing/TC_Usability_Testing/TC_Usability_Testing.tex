@@ -1,0 +1,170 @@
+\documentclass[10pt, a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{longtable}
+\usepackage{array} % For better column definitions in longtable
+\usepackage{enumitem} % Required for itemize and enumerate options
+\usepackage{helvet} % Using a sans-serif font for better readability
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\renewcommand{\familydefault}{\sfdefault}
+
+\geometry{left=1cm, right=1cm, top=2cm, bottom=2cm}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+\title{Non-Functional Test Cases: Usability Testing \\ \large Library Management System}
+\author{Test Design Team (Non-Coders/Specification Experts)}
+\date{June 5, 2025}
+
+\begin{document}
+\maketitle
+\begin{center}
+    \textbf{Note:} These test cases are designed from a black-box, user-centric perspective based on the SRS  and the testing plan. They are intended to be executed with representative users (Librarians and Members) , potentially using a think-aloud protocol to gather qualitative feedback. The primary goal is to evaluate the system's user-friendliness, efficiency, and overall user experience as outlined in the SRS usability requirements. Actual results and status are to be filled during test execution.
+\end{center}
+
+\section*{IV.B Non-Functional Test Cases: Usability Testing}
+
+\begin{longtable}{|>{\small\raggedright\arraybackslash}p{4.8cm}|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{5cm}|>{\raggedright\arraybackslash}p{5cm}|}
+\caption{Usability Test Cases}\label{tab:usability_test_cases}\\
+\hline
+\textbf{Test Case ID} & \textbf{Test Title / Heuristic} & \textbf{Test Scenario \& Steps} & \textbf{Expected Results / Success Criteria} \\
+\hline
+\endfirsthead
+\multicolumn{4}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline
+\textbf{Test Case ID} & \textbf{Test Title / Heuristic} & \textbf{Test Scenario \& Steps} & \textbf{Expected Results / Success Criteria} \\
+\hline
+\endhead
+\hline \multicolumn{4}{|r|}{{Continued on next page}} \\ \hline
+\endfoot
+\hline
+\endlastfoot
+
+% Learnability & Intuitiveness
+\multicolumn{4}{|l|}{\textbf{Sub-Section: Learnability \& Intuitiveness}} \\ \hline
+TC\_USABILITY\_LEARN\_001 & First-time Librarian task completion (Add Book) & 
+    Provide a test Librarian account to a new user.
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Ask the user to log in and add a new book with specific details (Title, Author, Genre), as per UC-002.
+        \item Do not provide instructions beyond the initial goal.
+        \item Observe the user's path and listen to their thought process.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The user can successfully navigate from the dashboard to the book management section and initiate the "Add Book" function without significant hesitation.
+        \item The form fields are self-explanatory and easy to fill out.
+        \item The user completes the task in a reasonable amount of time with a high degree of confidence.
+    \end{itemize} \\ \hline
+TC\_USABILITY\_LEARN\_002 & First-time Member task completion (Borrow Book) & 
+    Provide a test Member account to a new user.
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Ask the user to log in, find a specific book, and borrow it, as per UC-003.
+        \item Observe the user's search and borrowal process.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The user can easily locate the book list and understand how to initiate a borrowal request.
+        \item The system's workflow for borrowing a book feels logical and straightforward.
+        \item The user expresses understanding of the outcome (i.e., that they have successfully borrowed the book).
+    \end{itemize} \\ \hline
+
+% Efficiency of Use
+\multicolumn{4}{|l|}{\textbf{Sub-Section: Efficiency of Use}} \\ \hline
+TC\_USABILITY\_EFF\_001 & Efficiency of bulk user creation for Librarian & 
+    Ask an experienced Librarian user to add five new Member accounts sequentially, as per UC-004.
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Time the user.
+        \item Ask the user about the repetitiveness and ease of the task.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The process does not require an excessive number of clicks or redundant data entry for each new user.
+        \item The user feels the process is efficient for handling multiple entries.
+        \item The system loads quickly between user additions, not impeding the workflow.
+    \end{itemize} \\ \hline
+TC\_USABILITY\_EFF\_002 & Member's efficiency in viewing borrowal history & 
+    Ask a Member to log in and check the status of a previously borrowed book, as per UC-005.
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Ask them to find their full borrowal history.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The "Borrowal History" or equivalent section is quickly accessible from the main navigation/dashboard.
+        \item The history list is clearly presented and easy to scan for key information (book title, due date, status).
+        \item The user does not have to navigate through multiple irrelevant pages to find the information.
+    \end{itemize} \\ \hline
+
+% Navigation & Consistency
+\multicolumn{4}{|l|}{\textbf{Sub-Section: Navigation \& Consistency}} \\ \hline
+TC\_USABILITY\_NAV\_001 & Consistent UI layout and controls & 
+    Ask a user (either role) to navigate through all major sections of the application:
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Dashboard (Librarian) 
+        \item Book Management 
+        \item Author Management 
+        \item Genre Management 
+        \item User Management (Librarian) 
+        \item Borrowal Management 
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Navigation menus, button styles, search bar placement, and table layouts are consistent across all pages.
+        \item Terminology used for actions (e.g., "New", "Edit", "Delete") is uniform throughout the application.
+        \item The logo or home link consistently returns the user to their main landing page (Dashboard for Librarian, Books for Member).
+    \end{itemize} \\ \hline
+TC\_USABILITY\_NAV\_002 & Intuitive information architecture & 
+    Present a user with a task that spans multiple entities, e.g., "Find all books by a specific author and see if any are currently available."
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Observe how the user attempts to complete this task.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The user can logically deduce how to move between the 'Authors' list and the 'Books' list, or can use search/filter functions effectively.
+        \item The system provides clear pathways or links between related entities (e.g., clicking an author's name on a book page takes you to the author's detail page).
+    \end{itemize} \\ \hline
+
+% Feedback & Error Handling
+\multicolumn{4}{|l|}{\textbf{Sub-Section: Feedback \& Error Handling}} \\ \hline
+TC\_USABILITY\_FEEDBACK\_001 & Clarity of success and failure messages & 
+    Have a Librarian perform a series of actions:
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Successfully delete a genre.
+        \item Attempt to delete an author who is currently linked to a book (should fail due to referential integrity).
+        \item Successfully update a user's phone number.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The system provides clear, immediate, and easily noticeable feedback for both successful and failed actions (e.g., "Genre deleted successfully," "Cannot delete author: Author is linked to existing books").
+        \item Confirmation dialogs for destructive actions like deletion are clear and prevent accidental data loss.
+        \item Error messages are constructive and tell the user *why* an action failed, not just *that* it failed.
+    \end{itemize} \\ \hline
+TC\_USABILITY\_FEEDBACK\_002 & Validation feedback on forms & 
+    Have a user attempt to submit a form with invalid data.
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Example: Submit the "Add User" form with an invalid email format and a blank password field.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The system prevents form submission.
+        \item Clear, inline validation messages appear next to the specific fields that are incorrect (e.g., "Please enter a valid email address," "Password is required").
+        \item The user can easily correct the errors without having to re-enter all the data.
+    \end{itemize} \\ \hline
+
+% Responsiveness & Aesthetics
+\multicolumn{4}{|l|}{\textbf{Sub-Section: Responsiveness \& Aesthetics}} \\ \hline
+TC\_USABILITY\_AESTHETICS\_001 & Visual clarity and responsive design & 
+    Access the application on different screen sizes.
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Standard desktop monitor.
+        \item Tablet (portrait and landscape).
+        \item Mobile phone (portrait).
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The layout adapts gracefully to different screen sizes without horizontal scrolling or overlapping elements.
+        \item Font sizes remain readable and interactive elements (buttons, links) are easily tappable on touch screens.
+        \item The overall aesthetic is clean, modern, and uncluttered, contributing to a pleasant user experience.
+    \end{itemize} \\ \hline
+
+\end{longtable}
+
+\end{document}

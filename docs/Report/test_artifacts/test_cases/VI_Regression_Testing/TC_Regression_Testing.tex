@@ -1,0 +1,165 @@
+\documentclass[10pt, a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{longtable}
+\usepackage{array} % For better column definitions in longtable
+\usepackage{enumitem} % Required for itemize and enumerate options
+\usepackage{helvet} % Using a sans-serif font for better readability
+\renewcommand{\familydefault}{\sfdefault}
+
+\geometry{left=1.5cm, right=1.5cm, top=2cm, bottom=2cm}
+
+\title{VI. Regression Test Suite \\ \large Library Management System}
+\author{Test Team}
+\date{June 10, 2025}
+
+\begin{document}
+\maketitle
+\begin{center}
+    \textbf{Note:} This regression test suite is designed to verify that recent code changes have not adversely affected existing core functionalities. It focuses on the primary "happy path" scenarios and critical features identified in the SRS. These tests should be executed after every bug fix or feature implementation. 
+\end{center}
+
+\section*{VI. Regression Test Cases}
+
+\begin{longtable}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{5cm}|>{\raggedright\arraybackslash}p{5cm}|}
+\caption{Regression Test Suite}\label{tab:regression_test_cases}\\
+\hline
+\textbf{Test Case ID} & \textbf{Test Title} & \textbf{Test Steps} & \textbf{Expected Results} \\
+\hline
+\endfirsthead
+\multicolumn{4}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline
+\textbf{Test Case ID} & \textbf{Test Title} & \textbf{Test Steps} & \textbf{Expected Results} \\
+\hline
+\endhead
+\hline \multicolumn{4}{|r|}{{Continued on next page}} \\ \hline
+\endfoot
+\hline
+\endlastfoot
+
+% --- Authentication and Core Access ---
+\multicolumn{4}{|l|}{\textbf{Sub-Section: Authentication \& Core Access (Smoke Tests)}} \\ \hline
+TC\_REG\_AUTH\_001 & Successful login with valid Librarian credentials & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Navigate to the login page.
+        \item Enter valid Librarian email and password. 
+        \item Click the 'Login' button.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item User is authenticated successfully. 
+        \item User is redirected to the Librarian dashboard. 
+        \item Librarian-specific functionalities (e.g., 'User Management') are visible. 
+    \end{itemize} \\ \hline
+TC\_REG\_AUTH\_002 & Successful login with valid Member credentials & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Navigate to the login page.
+        \item Enter valid Member email and password. 
+        \item Click the 'Login' button.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item User is authenticated successfully. 
+        \item User is redirected to the books page. 
+        \item Librarian-specific functionalities are not visible. 
+    \end{itemize} \\ \hline
+TC\_REG\_AUTH\_003 & Verify Member cannot access Librarian-specific URLs & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as a Member.
+        \item Attempt to navigate directly to the User Management URL (e.g., /users). 
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Access is denied.
+        \item User is redirected to an error page or the member dashboard. 
+    \end{itemize} \\ \hline
+TC\_REG\_AUTH\_004 & Successful logout for a logged-in user & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as any user (Librarian or Member).
+        \item Click the 'Logout' button/link. 
+        \item Attempt to use the browser's "back" button to access a protected page.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item User is logged out successfully and redirected to the login page. 
+        \item The user session is terminated, and access to protected pages is denied. 
+    \end{itemize} \\ \hline
+
+% --- Core CRUD Functionality (Librarian) ---
+\multicolumn{4}{|l|}{\textbf{Sub-Section: Core CRUD Functionality (Librarian)}} \\ \hline
+TC\_REG\_CRUD\_001 & Librarian can add a new book & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Navigate to Book Management (/books). 
+        \item Click "New Book" and fill in all required fields (Name, ISBN) with valid, unique data. 
+        \item Submit the form.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item A success message is displayed. 
+        \item The new book record is created and appears in the book list. 
+    \end{itemize} \\ \hline
+TC\_REG\_CRUD\_002 & Librarian can view and update an existing book & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian and navigate to Book Management.
+        \item Select an existing book and choose to edit it.
+        \item Change a field (e.g., update the summary).
+        \item Save the changes.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The book details are displayed correctly in the edit form.
+        \item A success message is displayed after saving.
+        \item The book list or detail view reflects the updated information.
+    \end{itemize} \\ \hline
+TC\_REG\_CRUD\_003 & Librarian can register a new user & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Login as Librarian.
+        \item Navigate to User Management (/users). 
+        \item Click "New User" and fill in required fields (Name, Email, Password, Role) for a new Member. 
+        \item Submit the form.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item A success message is displayed. 
+        \item The new user appears in the user list. 
+        \item The newly created user can log in successfully.
+    \end{itemize} \\ \hline
+
+% --- Core Use Cases / User Workflows ---
+\multicolumn{4}{|l|}{\textbf{Sub-Section: Core Use Cases / User Workflows}} \\ \hline
+TC\_REG\_FLOW\_001 & Member can borrow an available book & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Precondition: A book exists and is marked as available. 
+        \item Login as Member.
+        \item Navigate to Borrowal Management (/borrowals). 
+        \item Click "New Borrowal".
+        \item Select the available book. 
+        \item Submit the form.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item A new borrowal record is created successfully with 'Borrowed' status. 
+        \item A success message is displayed. 
+        \item The availability status of the book is updated to 'false' (unavailable). 
+    \end{itemize} \\ \hline
+TC\_REG\_FLOW\_002 & Member can view their own borrowal history & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Precondition: A member has at least one active or past borrowal record.
+        \item Login as the Member.
+        \item Navigate to the Borrowal Management page (/borrowals). 
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The page displays a list of borrowal records.
+        \item The list contains ONLY the borrowals belonging to the logged-in member. 
+    \end{itemize} \\ \hline
+TC\_REG\_FLOW\_003 & Librarian can update a borrowal status (e.g., return a book) & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item Precondition: A book has been borrowed by a member.
+        \item Login as Librarian.
+        \item Navigate to Borrowal Management.
+        \item Find the active borrowal record and edit it.
+        \item Change the status from 'Borrowed' to 'Returned'. 
+        \item Save the changes.
+    \end{itemize} & 
+    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
+        \item The borrowal record's status is successfully updated to 'Returned'.
+        \item The corresponding book's availability status is updated back to 'true' (available).
+    \end{itemize} \\ \hline
+
+\end{longtable}
+
+\end{document}
