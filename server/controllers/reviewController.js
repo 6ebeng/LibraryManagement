@@ -1,83 +1,87 @@
-const Review = require('../models/review')
+const Review = require('../models/review');
 
 const getReview = async (req, res) => {
-    const reviewId = req.params.id;
+	const reviewId = req.params.id;
 
-    Review.findById(reviewId, (err, review) => {
-        if (err) {
-            return res.status(400).json({ success: false, err });
-        }
+	Review.findById(reviewId, (err, review) => {
+		if (err) {
+			return res.status(400).json({ success: false, err });
+		}
 
-        return res.status(200).json({
-            success: true,
-            review
-        });
-    });
-}
+		return res.status(200).json({
+			success: true,
+			review,
+		});
+	});
+};
 
 const getAllReviews = async (req, res) => {
-    Review.find({}, (err, reviews)=>{
-        if (err) {
-            return res.status(400).json({ success: false, err });
-        }
+	Review.find({}, (err, reviews) => {
+		if (err) {
+			return res.status(400).json({ success: false, err });
+		}
 
-        return res.status(200).json({
-            success: true,
-            reviewsList: reviews
-        });
-    })
-}
+		return res.status(200).json({
+			success: true,
+			reviewsList: reviews,
+		});
+	});
+};
 
 const addReview = async (req, res) => {
-    const newReview = req.body
+	try {
+		const { bookId, rating, comment } = req.body;
+		const memberId = req.user._id;
 
-    Review.create(newReview, (err, review) => {
-        if (err) {
-            return res.status(400).json({ success: false, err });
-        }
+		const review = new Review({
+			bookId,
+			memberId,
+			rating,
+			comment,
+		});
 
-        return res.status(200).json({
-            success: true,
-            newReview: review
-        });
-    })
-}
+		await review.save();
+		res.status(201).json(review);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
 
 const updateReview = async (req, res) => {
-    const reviewId = req.params.id
-    const updatedReview = req.body
+	const reviewId = req.params.id;
+	const { rating, comment } = req.body;
 
-    Review.findByIdAndUpdate(reviewId,updatedReview, (err, review) => {
-        if (err) {
-            return res.status(400).json({ success: false, err });
-        }
+	Review.findByIdAndUpdate(reviewId, { rating, comment }, { new: true }, (err, review) => {
+		if (err) {
+			return res.status(400).json({ success: false, err });
+		}
 
-        return res.status(200).json({
-            success: true,
-            updatedReview: review
-        });
-    })
-}
+		return res.status(200).json({
+			success: true,
+			review,
+		});
+	});
+};
 
 const deleteReview = async (req, res) => {
-    const reviewId = req.params.id
+	const reviewId = req.params.id;
 
-    Review.findByIdAndDelete(reviewId, (err, review) => {
-        if (err) {
-            return res.status(400).json({ success: false, err });
-        }
+	Review.findByIdAndDelete(reviewId, (err, review) => {
+		if (err) {
+			return res.status(400).json({ success: false, err });
+		}
 
-        return res.status(200).json({
-            success: true,
-            deletedReview: review
-        });
-    })
-}
+		return res.status(200).json({
+			success: true,
+			review,
+		});
+	});
+};
 
 module.exports = {
-    getReview,
-    getAllReviews,
-    addReview,
-    updateReview,
-    deleteReview
-}
+	getReview,
+	getAllReviews,
+	addReview,
+	updateReview,
+	deleteReview,
+};
