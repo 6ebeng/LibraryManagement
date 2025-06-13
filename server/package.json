@@ -21,6 +21,8 @@
 		"start": "node index.js",
 		"dev": "nodemon index.js",
 		"seed": "node scripts/seedDatabase.js",
+		"seed:small": "node scripts/seedDatabase.js small",
+		"seed:large": "node scripts/seedDatabase.js large",
 		"test": "npm run test:api:coverage",
 		"test:api": "jest --runInBand --detectOpenHandles --forceExit",
 		"test:api:watch": "jest --watchAll --verbose",
