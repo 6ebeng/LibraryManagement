@@ -10,7 +10,7 @@
 		"test:component:fast": "docker-compose --env-file .env.test -f docker-compose.test.yml up --exit-code-from component-tester component-tester && docker-compose --env-file .env.test -f docker-compose.test.yml down -v --remove-orphans",
 		"test:component:watch": "docker-compose --env-file .env.test -f docker-compose.test.yml run --rm --service-ports component-tester-watch",
 		"test:component:watch:build": "docker-compose --env-file .env.test -f docker-compose.test.yml build component-tester-watch && docker-compose -f docker-compose.test.yml run --rm --service-ports component-tester-watch",
-		"test:e2e": "docker-compose --env-file .env.test -f docker-compose.test.yml up --build --exit-code-from e2e-runner --abort-on-container-exit e2e-runner frontend-e2e backend-e2e mongo-test",
+		"test:e2e": "docker-compose --env-file .env.test -f docker-compose.test.yml up --build --exit-code-from e2e-runner --abort-on-container-exit e2e-runner -- --exclude-spec 'cypress/e2e/performance.cy.ts' frontend-e2e backend-e2e mongo-test",
 		"test:e2e:performance": "docker-compose --env-file .env.test -f docker-compose.test.yml up --build --exit-code-from e2e-runner --abort-on-container-exit e2e-runner -- --spec 'cypress/e2e/performance.cy.ts' frontend-e2e backend-e2e mongo-test",
 		"test:e2e:watch": "docker-compose --env-file .env.test -f docker-compose.test.yml up e2e-runner-watch --build",
 		"report:e2e:merge": "mochawesome-merge e2e/cypress/data/reports/*.json -o e2e/cypress/data/reports/combined-report.json",
