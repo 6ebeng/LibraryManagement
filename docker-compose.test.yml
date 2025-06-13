@@ -205,6 +205,23 @@ services:
     networks:
       - test-network
 
+  # --- Performance Testing Service ---
+  performance-tester:
+    container_name: performance-tester
+    build:
+      context: ./performance
+    depends_on:
+      backend-e2e:
+        condition: service_healthy # Waits for the backend to be up and seeded
+    environment:
+      # Updated to use variables from .env.test
+      - BASE_URL=http://backend-e2e:8080
+      - USER_EMAIL=${TEST_LIBRARIAN_EMAIL}
+      - USER_PASSWORD=${TEST_LIBRARIAN_PASSWORD}
+    command: run /home/k6/performance-test.js
+    networks:
+      - test-network
+
 networks:
   test-network:
     driver: bridge
