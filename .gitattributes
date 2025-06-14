@@ -1,0 +1,30 @@
+# Force Unix line endings for shell scripts
+*.sh text eol=lf
+
+# Force Unix line endings for Dockerfiles
+Dockerfile* text eol=lf
+
+# Force Unix line endings for docker-compose files  
+docker-compose*.yml text eol=lf
+docker-compose*.yaml text eol=lf
+
+# Other common files that should have Unix line endings
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+
+# Ensure Windows batch files use Windows line endings
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Treat images as binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg text eol=lf 
