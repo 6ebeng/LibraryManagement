@@ -1,0 +1,129 @@
+\chapter{Background}
+\label{cha:background}
+
+This chapter provides a comprehensive overview of the Library Management System, the System Under Test (SUT). It details the system's purpose, architecture, user roles, core functionalities, and underlying data model. This context is essential for understanding the scope, strategy, and execution of the testing activities detailed in subsequent chapters.
+
+\section{System Under Test (SUT) Overview}
+\label{sec:sut_overview}
+
+The Library Management System is a full-stack web application designed to modernize and streamline library operations \cite{srs}. Its primary purpose is to provide a digital platform for managing library resources, including books, authors, and genres, while also managing user accounts for both librarians and library members \cite{srs}. The system aims to replace or supplement traditional, manual library management methods with an efficient, accessible, and user-friendly web-based solution \cite{srs}.
+
+The project's scope encompasses a complete, self-contained system featuring a backend API, a database, and a frontend client application \cite{srs}. Key capabilities include:
+\begin{itemize}
+    \item \textbf{User Authentication:} Secure user registration, login, and logout functionalities with role-based access control for two distinct user types: Librarians and Members \cite{srs}.
+    \item \textbf{Inventory Management:} Comprehensive CRUD (Create, Read, Update, Delete) operations for the core library entities: books, authors, and genres \cite{srs}.
+    \item \textbf{Borrowal Tracking:} Management of book borrowals and returns, allowing librarians to oversee lending activities and members to view their history \cite{srs}.
+    \item \textbf{User Administration:} Tools for librarians to manage all user accounts within the system \cite{srs}.
+    \item \textbf{Review System:} A newly introduced feature allowing members to submit reviews for books, which can then be managed by librarians \cite{srs}.
+\end{itemize}
+
+\section{System Architecture}
+\label{sec:system_architecture}
+
+The system is built on a modern, multi-tier architecture, which separates concerns between the client, server, and database. This design promotes modularity, scalability, and maintainability.
+
+\begin{itemize}
+    \item \textbf{Frontend (Client-Side):} The user interface is a single-page application (SPA) developed using \textbf{React} and the \textbf{Material-UI (MUI)} component library. It is responsible for rendering the UI and interacting with the backend via API calls. It runs in any modern web browser \cite{srs}.
+    \item \textbf{Backend (Server-Side):} The backend is a RESTful API built with \textbf{Node.js} and the \textbf{Express.js} framework. It handles all business logic, data processing, and user authentication using Passport.js \cite{srs}.
+    \item \textbf{Database:} Data persistence is managed by a \textbf{MongoDB} database, a NoSQL database that stores data in flexible, JSON-like documents. The backend interacts with MongoDB via the Mongoose ODM library \cite{srs}.
+\end{itemize}
+
+The entire application is containerized using \textbf{Docker}, ensuring consistent development, testing, and deployment environments \cite{srs}. Figure \ref{fig:system_architecture} illustrates the high-level architecture.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        node distance=2.5cm,
+        auto,
+        font=\sffamily,
+        block/.style={rectangle, draw, thick, rounded corners, fill=blue!10,
+                      text width=8em, text centered, minimum height=3em, drop shadow},
+        line/.style={draw, -{Stealth[length=3mm]}},
+        cloud/.style={ellipse, draw, thick, fill=gray!10, minimum height=4em,
+                      text width=6em, text centered, drop shadow}
+    ]
+        % Nodes
+        \node[block, text width=10em] (client) {\textbf{Client (Browser)} \\ React \& Material-UI};
+        \node[block, right=of client, text width=10em] (server) {\textbf{Backend Server (Node.js)} \\ Express.js \& Passport.js};
+        \node[cloud, right=of server] (db) {\textbf{Database} \\ MongoDB};
+        \node[block, below=of client, text width=10em, fill=green!10] (user) {\textbf{User} \\ (Librarian / Member)};
+
+        % Arrows
+        \path [line] (user) -- (client);
+        \path [line] (client) edge[bend left] node[midway, above] {REST API (HTTPS)} (server);
+        \path [line] (server) edge[bend left] node[midway, below] {Mongoose} (db);
+        
+        % Explanatory Text Box
+        \node [rectangle, draw=gray, dashed, fit=(client) (server) (db), label={[yshift=0.2cm]above:\textbf{System Components}}] {};
+    \end{tikzpicture}
+    \caption{High-Level System Architecture.}
+    \label{fig:system_architecture}
+\end{figure}
+
+\section{User Roles and Functionalities}
+\label{sec:user_roles}
+The system defines two distinct user roles, each with a specific set of permissions and responsibilities as outlined in the SRS \cite{srs}.
+
+\subsection{Librarian (Admin)}
+Librarians are the administrators of the system with full control over all its aspects. Their primary responsibilities include:
+\begin{itemize}
+    \item Managing the library's entire inventory, including adding, updating, and deleting books, authors, and genres \cite{srs}.
+    \item Overseeing all user accounts, which involves creating new accounts for both members and other librarians, as well as updating and deleting existing accounts \cite{srs}.
+    \item Managing the complete lifecycle of book borrowals, from creation to marking returns \cite{srs}.
+    \item Viewing system-wide statistics and data on a dedicated dashboard \cite{srs}.
+    \item Moderating book reviews submitted by members \cite{srs}.
+\end{itemize}
+
+\subsection{Member}
+Members are the standard users of the library. Their access is generally limited to viewing data and managing their own activities. Their functions include:
+\begin{itemize}
+    \item Browse the library's catalog of books, authors, and genres \cite{srs}.
+    \item Requesting to borrow available books \cite{srs}.
+    \item Viewing their personal borrowal history \cite{srs}.
+    \item Submitting, viewing, and managing their own reviews for books \cite{srs}.
+\end{itemize}
+
+\section{Data Model}
+\label{sec:data_model}
+The system's data is structured around several core entities, whose relationships define the application's functionality. The main entities are \textbf{User}, \textbf{Book}, \textbf{Author}, \textbf{Genre}, \textbf{Borrowal}, and \textbf{Review} \cite{srs}. The relationships between these entities are a key focus of integration testing to ensure data integrity. For instance, a \textit{Borrowal} record links a \textit{User} to a \textit{Book}, and a \textit{Book} can have one \textit{Author} and one \textit{Genre} \cite{srs}.
+
+Figure \ref{fig:er_diagram} provides a conceptual Entity-Relationship Diagram (ERD) illustrating these connections.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        node distance=2.2cm and 1.5cm,
+        font=\sffamily,
+        entity/.style={rectangle, draw, thick, rounded corners, fill=green!10,
+                       text centered, minimum height=2.5em, text width=7em, drop shadow},
+        relation/.style={diamond, aspect=2, draw, thick, fill=orange!20,
+                         text centered, drop shadow}
+    ]
+        % Entities
+        \node[entity] (user) {\textbf{User}};
+        \node[entity, right=of user] (borrowal) {\textbf{Borrowal}};
+        \node[entity, right=of borrowal] (book) {\textbf{Book}};
+        \node[entity, below=of book] (author) {\textbf{Author}};
+        \node[entity, above=of book] (genre) {\textbf{Genre}};
+        \node[entity, above=of borrowal] (review) {\textbf{Review}};
+
+        % Lines connecting entities
+        \draw (user) -- node[above] {1..*} (borrowal);
+        \draw (borrowal) -- node[above] {1} (book);
+        \draw (book) -- node[left, pos=0.4] {1} (author);
+        \draw (book) -- node[left, pos=0.4] {1} (genre);
+        \draw (review) -- node[above, pos=0.4] {1..*} (book);
+        \draw (review) -- node[above, pos=0.6] {1} (user);
+
+        % Labels for relationships
+        \node at ($(user)!0.5!(borrowal)$) [above=0.3cm] {\textit{has}};
+        \node at ($(borrowal)!0.5!(book)$) [above=0.3cm] {\textit{for}};
+        \node at ($(book)!0.5!(author)$) [right=0.3cm] {\textit{written by}};
+        \node at ($(book)!0.5!(genre)$) [right=0.3cm] {\textit{belongs to}};
+        \node at ($(review)!0.5!(book)$) [right=0.3cm, yshift=0.1cm] {\textit{reviews}};
+        \node at ($(review)!0.5!(user)$) [above=0.3cm] {\textit{written by}};
+
+    \end{tikzpicture}
+    \caption{Conceptual Entity-Relationship Diagram (ERD).}
+    \label{fig:er_diagram}
+\end{figure}

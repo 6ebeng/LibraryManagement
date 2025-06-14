@@ -1,0 +1,212 @@
+\chapter{Test Management}
+\label{chap:TestManagement}
+
+\section{Introduction}
+This chapter outlines the comprehensive management plan for the testing of the Library Management System. The plan is designed to ensure that all software components are rigorously tested, meet the requirements specified in the Software Requirements Specification (SRS), and achieve the highest standards of quality. This document details the test strategy, scope, team roles, environment, schedule, deliverables, risk management, and success criteria for the project.
+
+\section{Test Strategy}
+Our test strategy employs a multi-layered approach, integrating various testing levels to ensure comprehensive coverage and early defect detection. The strategy is aligned with the V-Model, ensuring that testing activities are planned in parallel with development phases.
+
+\subsection{Overall Approach}
+The testing process is structured across multiple levels:
+\begin{itemize}
+    \item \textbf{Static Testing:} Performed without executing the code, focusing on reviews and analysis of documentation and source code to find defects early.
+    \item \textbf{Unit Testing:} Developers will test individual components (functions, classes) in isolation to verify their correctness.
+    \item \textbf{Integration Testing:} Focuses on testing the interfaces and interactions between integrated components, such as the communication between the frontend client and the backend API.
+    \item \textbf{System \& E2E Testing:} The complete, integrated system is tested from end-to-end to validate that it meets all specified requirements from a user's perspective.
+    \item \textbf{Non-Functional Testing:} Ensures the system meets requirements for performance, security, usability, and compatibility.
+    \item \textbf{Regression Testing:} Conducted after modifications to ensure that new changes have not introduced new defects into existing functionality.
+\end{itemize}
+
+\subsection{Test Levels}
+\begin{itemize}
+    \item \textbf{Unit Testing:} Implemented using \textbf{Jest}. For the backend, this involves testing Node.js controllers, models, and utility functions. For the frontend, this includes testing React components, hooks, and utility functions using Jest and the React Testing Library.
+    \item \textbf{API \& Integration Testing:} Backend API endpoints are tested using \textbf{Jest} and \textbf{Supertest} to verify CRUD operations, authentication flows, and business logic. This also covers the integration points between different services.
+    \item \textbf{End-to-End (E2E) Testing:} Real user workflows are simulated using \textbf{Cypress}. These tests cover complete user journeys, such as logging in, searching for a book, borrowing it, and logging out.
+    \item \textbf{Non-Functional Testing:}
+        \begin{itemize}
+            \item \textbf{Performance Testing:} \textbf{K6} is used to script and execute load tests against the API to measure response times, throughput, and stability under load.
+            \item \textbf{Security Testing:} Manual and automated checks are performed to identify common vulnerabilities (e.g., SQL injection, XSS, insecure direct object references). Cypress tests are used to check for authorization flaws.
+            \item \textbf{Usability \& Compatibility Testing:} Manual testing and Cypress scripts ensure the application is user-friendly and renders correctly across major web browsers (Chrome, Firefox, Safari).
+        \end{itemize}
+\end{itemize}
+
+\section{Test Scope}
+\subsection{In Scope}
+The following features and functionalities, as defined in the SRS, are within the scope of testing:
+\begin{itemize}
+    \item User Authentication (Login, Logout, Role-based Access Control)
+    \item Librarian Dashboard and statistical widgets
+    \item Full CRUD (Create, Read, Update, Delete) operations for Books, Authors, and Genres
+    \item Borrowal Management (borrowing, returning, and tracking books)
+    \item User Management (Librarian managing member accounts)
+    \item Book Review and Rating system
+    \item API endpoint functionality and security
+    \item Database referential integrity
+\end{itemize}
+
+\subsection{Out of Scope}
+The following are considered out of scope for testing:
+\begin{itemize}
+    \item Testing of third-party libraries and frameworks (e.g., React, Express, Mongoose).
+    \item Performance of the underlying hardware, network infrastructure, or MongoDB database engine itself.
+    \item Exhaustive testing of every possible combination of user inputs.
+    \item Usability testing on mobile operating systems (unless specified).
+\end{itemize}
+
+\section{Team Roles and Responsibilities}
+The testing process involves the entire team, with specific roles and responsibilities as defined in the project's task distribution plan.
+
+\begin{table}[H]
+    \centering
+    \caption{Team Roles and Primary Responsibilities}
+    \label{tab:team_roles}
+    \begin{tabular}{|l|l|p{8cm}|}
+        \hline
+        \textbf{Member} & \textbf{Role} & \textbf{Primary Testing Responsibilities} \\
+        \hline
+        Tishko Salah & Test Manager & Oversees the entire testing process, manages the test plan and schedule, coordinates team efforts, and is the final authority on test completion. \\
+        \hline
+        Sara Zuhair & Code Specifier & Focuses on non-coder testing activities, including functional validation against SRS, documentation review, and usability testing. Leads the execution of user-centric test cases. \\
+        \hline
+        Yassin Hussein & Code Reviewer & Leads technical testing activities, including unit testing, API testing, and code reviews. Ensures code quality, performance, and adherence to standards. \\
+        \hline
+        Ravyar Barzan & Document Inspector & Leads the review and inspection of all project documentation (SRS, Test Plan, Test Cases, Final Report) for clarity, consistency, and completeness. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\section{Test Environment and Tools}
+All testing is conducted within containerized environments managed by Docker to ensure consistency and reproducibility.
+
+\begin{itemize}
+    \item \textbf{Operating Systems:} Windows, macOS, and Linux (for development and execution).
+    \item \textbf{Test Environments:} Defined in \texttt{docker-compose.dev.yml}, \texttt{docker-compose.test.yml}, and \texttt{docker-compose.prod.yml} to simulate development, testing, and production setups.
+    \item \textbf{Version Control:} Git, with GitHub for repository hosting and collaboration.
+\end{itemize}
+
+\begin{table}[H]
+    \centering
+    \caption{Testing Tools and Frameworks}
+    \label{tab:testing_tools}
+    \begin{tabular}{|l|l|p{6cm}|}
+        \hline
+        \textbf{Category} & \textbf{Tool/Framework} & \textbf{Purpose} \\
+        \hline
+        Backend Testing & Node.js, Jest, Supertest & Unit and integration testing of API endpoints and services. \\
+        \hline
+        Frontend Testing & Jest, React Testing Library & Unit and component testing of React components and logic. \\
+        \hline
+        E2E Testing & Cypress & Automated end-to-end testing of user workflows in a browser. \\
+        \hline
+        Performance & K6, Docker & Load testing the backend API to measure performance metrics. \\
+        \hline
+        Code Quality & ESLint, Prettier & Static code analysis to enforce coding standards and find bugs. \\
+        \hline
+        Documentation & LaTeX, Draw.io & Creating project reports, diagrams, and test artifacts. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\section{Test Schedule}
+The project timeline spans approximately 14 weeks, from early March to mid-June 2025. The schedule is visualized in the Gantt chart below (Figure \ref{fig:gantt_chart}).
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{ganttchart}[
+    vgrid,
+    hgrid,
+    bar/.append style={fill=blue!50},
+    milestone/.append style={fill=red!70},
+    progress label text=\textcolor{white}{\pgfmathprintnumber[precision=0]{\ganttvalueof{progress}}\%},
+    y unit title=0.5cm,
+    y unit chart=0.6cm,
+    x unit=0.25cm
+ ]{1}{60}
+    \gantttitle{March}{12} \gantttitle{April}{12} \gantttitle{May}{12} \gantttitle{June}{12} \gantttitle{July}{12} \\
+    \ganttgroup{Phase 1: Planning \& Setup}{1}{10} \\
+    \ganttbar{Test Planning}{1}{6} \\
+    \ganttbar{Environment Setup}{4}{10} \\
+    \ganttmilestone{Plan Complete}{10} \\
+
+    \ganttgroup{Phase 2: Unit \& Integration Testing}{11}{30} \\
+    \ganttbar{Backend Unit/API Tests (Jest)}{11}{25} \\
+    \ganttbar{Frontend Unit Tests (Jest)}{15}{30} \\
+
+    \ganttgroup{Phase 3: E2E \& System Testing}{26}{45} \\
+    \ganttbar{E2E Test Scripting (Cypress)}{26}{40} \\
+    \ganttbar{System Test Execution}{35}{45} \\
+
+    \ganttgroup{Phase 4: Non-Functional Testing}{40}{52} \\
+    \ganttbar{Performance Testing (K6)}{40}{48} \\
+    \ganttbar{Security \& Compatibility}{44}{52} \\
+
+    \ganttgroup{Phase 5: Regression \& Reporting}{46}{60} \\
+    \ganttbar{Regression Testing Cycles}{46}{58} \\
+    \ganttbar{Final Report Preparation}{55}{60} \\
+    \ganttmilestone{Project Submission}{60}
+\end{ganttchart}%
+}
+\caption{Project Testing Schedule Gantt Chart}
+\label{fig:gantt_chart}
+\end{figure}
+
+\section{Deliverables}
+The following artifacts will be produced as part of the testing process:
+\begin{itemize}
+    \item \textbf{Test Plan:} This comprehensive document (of which this chapter is a part).
+    \item \textbf{Test Case Documentation:} Detailed test cases for all levels of testing, located in \texttt{/docs/Report/test\_artifacts/test\_cases/}.
+    \item \textbf{Test Scripts:} All automated test scripts written using Jest, Cypress, and K6.
+    \item \textbf{Defect Reports:} Bugs and issues will be tracked, prioritized, and managed. (A system like GitHub Issues will be used).
+    \item \textbf{Test Execution Reports:} Automated reports generated by Jest (\texttt{/server/test-report/report.html}) and Cypress (videos/screenshots) after test runs.
+    \item \textbf{Final Test Summary Report:} The complete final report detailing all testing activities, results, and conclusions.
+\end{itemize}
+
+\section{Risk Management}
+Potential risks that could impact the testing schedule and quality are identified and managed proactively.
+
+\begin{table}[H]
+    \centering
+    \caption{Risk Assessment and Mitigation Plan}
+    \label{tab:risk_management}
+    \begin{tabular}{|p{4cm}|l|l|p{5cm}|}
+        \hline
+        \textbf{Risk Description} & \textbf{Likelihood} & \textbf{Impact} & \textbf{Mitigation Strategy} \\
+        \hline
+        Delays in development phases impact testing start dates. & Medium & High & Maintain close communication between developers and testers. Adapt the test plan and prioritize testing of critical features. \\
+        \hline
+        Test environment is unstable or differs from production. & Low & High & Use Docker to ensure consistent environments. Perform smoke tests on deployment to validate environment stability. \\
+        \hline
+        Critical defects are discovered late in the project timeline. & Medium & High & Emphasize early testing (unit, integration). Prioritize test cases based on risk and critical user workflows. \\
+        \hline
+        Team member unavailability due to unforeseen circumstances. & Low & Medium & Ensure knowledge is shared across the team. Cross-train members on critical testing tasks and tools. \\
+        \hline
+        Underestimation of time required for test case creation or execution. & Medium & Medium & Base estimates on feature complexity. Regularly review progress and re-allocate resources as needed. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\section{Entry and Exit Criteria}
+Clear criteria define the start and end points for the formal testing process.
+
+\subsection{Entry Criteria}
+Testing on a feature or build can begin when:
+\begin{itemize}
+    \item The SRS and relevant design documents are complete and approved.
+    \item The code has been developed, peer-reviewed, and successfully built.
+    \item All developer-written unit tests for the feature are passing.
+    \item The required test environment and test data are available and stable.
+    \item Test cases have been written, reviewed, and approved by the test manager.
+\end{itemize}
+
+\subsection{Exit Criteria}
+The overall testing phase will be considered complete when:
+\begin{itemize}
+    \item All planned test cases have been executed.
+    \item A pass rate of 100\% for all critical and major test cases is achieved.
+    \item A pass rate of over 95\% for minor test cases is achieved.
+    \item No outstanding Severity-1 (blocker) or Severity-2 (critical) defects remain open.
+    \item All major functional and non-functional requirements are verified and met.
+    \item The final test report is completed and approved by all team members.
+\end{itemize}
