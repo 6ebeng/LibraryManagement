@@ -6,6 +6,7 @@ const request = require('supertest');
 const app = require('../../../index.js'); // Path to your main Express app file
 const mongoose = require('mongoose');
 const User = require('../../../models/user.js'); // Adjust path to User model
+const { errorMessages } = require('../../../utils/errorMessages');
 
 // Test credentials sourced from environment variables
 // These are set by docker-compose.test.yml from .env.test
@@ -37,7 +38,6 @@ beforeAll(async () => {
 				`Ensure the librarian is correctly seeded by seedDatabase.js with credentials from .env.test.`
 		);
 	}
-	// Removed: console.log('Main librarian logged in successfully via agent for all tests.');
 });
 
 beforeEach(() => {
@@ -69,9 +69,7 @@ afterAll(async () => {
 });
 
 describe('API: Authentication & Authorization Endpoints', () => {
-	describe('User Registration (by Librarian) - API: POST /api/admin/users/register', () => {
-		// NOTE: These tests expect 404 because the '/api/admin/users/register' route is missing based on logs.
-		// To pass with 201/400, the route must be implemented on the server.
+	describe('User Registration (by Librarian) - API: POST /api/auth/register', () => {
 		it('TC_AUTH_REG_001_API: Successful new user (Member) registration by Librarian', async () => {
 			const newApiMemberName = `api_member_${testTimestamp}`;
 			const newUserPayload = {
@@ -81,8 +79,10 @@ describe('API: Authentication & Authorization Endpoints', () => {
 				isAdmin: false,
 				photoUrl: 'http://example.com/default_member.jpg',
 			};
-			const response = await agent.post('/api/admin/users/register').send(newUserPayload);
-			expect(response.statusCode).toBe(404);
+			const response = await agent.post('/api/auth/register').send(newUserPayload);
+			expect(response.statusCode).toBe(201);
+			expect(response.body.success).toBe(true);
+			expect(response.body.message).toBe('User account created successfully');
 		});
 
 		it('TC_AUTH_REG_002_API: Attempt to register a new user with an existing email by Librarian', async () => {
@@ -96,11 +96,13 @@ describe('API: Authentication & Authorization Endpoints', () => {
 				photoUrl: 'http://example.com/default_member.jpg',
 			};
 
-			await agent.post('/api/admin/users/register').send(firstUserPayload);
+			await agent.post('/api/auth/register').send(firstUserPayload);
 
 			const secondUserPayload = { ...firstUserPayload, name: `another_${existingName}` };
-			const response = await agent.post('/api/admin/users/register').send(secondUserPayload);
-			expect(response.statusCode).toBe(404);
+			const response = await agent.post('/api/auth/register').send(secondUserPayload);
+			expect(response.statusCode).toBe(403);
+			expect(response.body.success).toBe(false);
+			expect(response.body.message).toBe(errorMessages.auth.userAlreadyExists);
 		});
 
 		it('TC_AUTH_REG_003_API: Attempt to register a new user with missing required fields (e.g., password) by Librarian', async () => {
@@ -110,8 +112,10 @@ describe('API: Authentication & Authorization Endpoints', () => {
 				isAdmin: false,
 				photoUrl: 'http://example.com/default_member.jpg',
 			};
-			const response = await agent.post('/api/admin/users/register').send(payloadMissingPassword);
-			expect(response.statusCode).toBe(404);
+			const response = await agent.post('/api/auth/register').send(payloadMissingPassword);
+			expect(response.statusCode).toBe(400);
+			expect(response.body.success).toBe(false);
+			expect(response.body.message).toBe(errorMessages.user.passwordRequired);
 		});
 
 		it('TC_AUTH_REG_004_API: Attempt to register a new user with invalid data format (e.g., email) by Librarian', async () => {
@@ -122,8 +126,8 @@ describe('API: Authentication & Authorization Endpoints', () => {
 				isAdmin: false,
 				photoUrl: 'http://example.com/default_member.jpg',
 			};
-			const response = await agent.post('/api/admin/users/register').send(payloadInvalidEmail);
-			expect(response.statusCode).toBe(404);
+			const response = await agent.post('/api/auth/register').send(payloadInvalidEmail);
+			expect(response.statusCode).toBe(400);
 		});
 	});
 
@@ -150,33 +154,17 @@ describe('API: Authentication & Authorization Endpoints', () => {
 				isAdmin: false,
 				photoUrl: 'http://example.com/login_member.jpg',
 			};
-			const regResponse = await agent.post('/api/admin/users/register').send(regPayload);
-
-			if (regResponse.statusCode !== 201 && regResponse.statusCode !== 404) {
-				console.warn(
-					`TC_AUTH_LOGIN_002_API: Prerequisite member registration expected 404 (due to missing route) or 201 (if route existed), but got: ${
-						regResponse.statusCode
-					}, body: ${JSON.stringify(regResponse.body)}`
-				);
-			} else if (regResponse.statusCode === 404) {
-				// This warning is useful for understanding test context, can be removed for ultra-clean logs
-				// console.warn(`TC_AUTH_LOGIN_002_API: Prerequisite member registration failed as expected (route missing /api/admin/users/register), status: 404`);
-			}
-
-			const response = await request(app).post('/api/auth/login').send({
-				email: memberEmailForLogin,
-				password: memberPasswordForLogin,
-			});
-			expect(response.statusCode).toBe(404);
-			if (response.statusCode === 404) {
-				expect(response.body.success).toBe(false);
-				expect(response.body.message).toMatch(/User not found/i);
-			}
+			await agent.post('/api/auth/register').send(regPayload);
+			const response = await request(app).post('/api/auth/login').send({ email: memberEmailForLogin, password: memberPasswordForLogin });
+			expect(response.statusCode).toBe(200);
+			expect(response.body.success).toBe(true);
+			expect(response.body.user.email).toBe(memberEmailForLogin);
+			expect(response.body.user.isAdmin).toBe(false);
 		});
 
 		it('TC_AUTH_LOGIN_003_API: Attempt login with invalid email', async () => {
 			const response = await request(app).post('/api/auth/login').send({ email: 'nonexistent_user@example.com', password: 'anypassword' });
-			expect(response.statusCode).toBe(404);
+			expect(response.statusCode).toBe(401);
 			expect(response.body.success).toBe(false);
 			expect(response.body.message).toMatch(/User not found/i);
 		});
@@ -190,23 +178,23 @@ describe('API: Authentication & Authorization Endpoints', () => {
 
 		it('TC_AUTH_LOGIN_005_API: Attempt login with empty email field', async () => {
 			const response = await request(app).post('/api/auth/login').send({ password: 'anypassword' });
-			expect(response.statusCode).toBe(404);
+			expect(response.statusCode).toBe(400);
 			expect(response.body.success).toBe(false);
-			expect(response.body.message).toMatch(/User not found/i);
+			expect(response.body.message).toBe(errorMessages.auth.emailRequired);
 		});
 
 		it('TC_AUTH_LOGIN_006_API: Attempt login with empty password field (expecting server error or specific handling)', async () => {
 			const response = await request(app).post('/api/auth/login').send({ email: apiLibrarianCredentials.email, password: '' });
-			expect(response.statusCode).toBe(401);
+			expect(response.statusCode).toBe(400);
 			expect(response.body.success).toBe(false);
-			expect(response.body.message).toMatch(/Password incorrect/i);
+			expect(response.body.message).toBe(errorMessages.auth.passwordRequired);
 		}, 15000);
 
 		it('TC_AUTH_LOGIN_007_API: Attempt login with password field missing', async () => {
 			const response = await request(app).post('/api/auth/login').send({ email: apiLibrarianCredentials.email });
-			expect(response.statusCode).toBe(401);
+			expect(response.statusCode).toBe(400);
 			expect(response.body.success).toBe(false);
-			expect(response.body.message).toMatch(/Password incorrect/i);
+			expect(response.body.message).toBe(errorMessages.auth.passwordRequired);
 		}, 15000);
 	});
 
@@ -214,20 +202,10 @@ describe('API: Authentication & Authorization Endpoints', () => {
 		it('TC_AUTH_LOGOUT_001_API & TC_AUTH_LOGOUT_002_API: Successful logout for a logged-in user', async () => {
 			const loginPayload = { email: apiLibrarianCredentials.email, password: apiLibrarianCredentials.password };
 			await agent.post('/api/auth/login').send(loginPayload);
-
 			const response = await agent.get('/api/auth/logout');
 			expect(response.statusCode).toBe(200);
 			expect(response.body.success).toBe(true);
-			expect(response.body.message).toMatch(/User logged out/i);
-
-			const protectedResponse = await agent.get('/api/admin/users');
-			expect(protectedResponse.statusCode).toBe(404);
-			if (protectedResponse.statusCode === 404) {
-				// This warning is useful for understanding test context, can be removed for ultra-clean logs
-				// console.warn(
-				//	'TC_AUTH_LOGOUT: Protected route /api/admin/users is 404 (as expected due to missing route). Cannot fully verify session invalidation against it for 401/403.'
-				// );
-			}
+			expect(response.body.message).toMatch(/logged out successfully/i);
 		});
 	});
 
@@ -235,7 +213,7 @@ describe('API: Authentication & Authorization Endpoints', () => {
 		it('TC_AUTH_RBAC_001_API: Verify Librarian can access Librarian-specific API features', async () => {
 			const loginPayload = { email: apiLibrarianCredentials.email, password: apiLibrarianCredentials.password };
 			await agent.post('/api/auth/login').send(loginPayload);
-
+			// This endpoint does not exist, so we expect a 404
 			const response = await agent.get('/api/admin/users');
 			expect(response.statusCode).toBe(404);
 		});
@@ -252,31 +230,20 @@ describe('API: Authentication & Authorization Endpoints', () => {
 				isAdmin: false,
 				photoUrl: 'http://example.com/rbac_member.jpg',
 			};
-			await agent.post('/api/admin/users/register').send(regPayloadRbac);
+			await agent.post('/api/auth/register').send(regPayloadRbac);
 
 			const memberAgent = request.agent(app);
-			const memberLoginRes = await memberAgent.post('/api/auth/login').send({
-				email: memberEmailForRbac,
-				password: memberPasswordForRbac,
-			});
-			expect(memberLoginRes.statusCode).toBe(404);
+			const memberLoginRes = await memberAgent.post('/api/auth/login').send({ email: memberEmailForRbac, password: memberPasswordForRbac });
+			expect(memberLoginRes.statusCode).toBe(200);
 
-			if (memberLoginRes.statusCode === 200) {
-				const rbacResponse = await memberAgent.get('/api/admin/users');
-				expect(rbacResponse.statusCode).toBe(404);
-			} else if (memberLoginRes.statusCode === 404) {
-				// This warning is useful for understanding test context, can be removed for ultra-clean logs
-				// console.warn(`TC_AUTH_RBAC_002_API: Member login failed (404) as user likely not registered due to missing registration route.`);
-				const rbacResponse = await memberAgent.get('/api/admin/users');
-				expect(rbacResponse.statusCode).toBe(404);
-			}
+			const rbacResponse = await memberAgent.get('/api/users');
+			expect(rbacResponse.statusCode).toBe(403);
 		});
 
 		it('TC_AUTH_RBAC_003_API: Verify Member can access Member-specific API features', async () => {
 			const memberNameForRbacFeature = `api_member_${testTimestamp}_rbac_member_feature`;
 			const memberEmailForRbacFeature = `${memberNameForRbacFeature}@example.com`;
 			const memberPasswordForRbacFeature = 'MemberPassRbacFeature123!';
-
 			const regPayloadRbacFeature = {
 				name: memberNameForRbacFeature,
 				password: memberPasswordForRbacFeature,
@@ -284,33 +251,16 @@ describe('API: Authentication & Authorization Endpoints', () => {
 				isAdmin: false,
 				photoUrl: 'http://example.com/rbac_feature_member.jpg',
 			};
-			await agent.post('/api/admin/users/register').send(regPayloadRbacFeature);
-
+			await agent.post('/api/auth/register').send(regPayloadRbacFeature);
 			const memberFeatureAgent = request.agent(app);
-			const memberLoginRes = await memberFeatureAgent.post('/api/auth/login').send({
-				email: memberEmailForRbacFeature,
-				password: memberPasswordForRbacFeature,
-			});
-			expect(memberLoginRes.statusCode).toBe(404);
-
-			if (memberLoginRes.statusCode === 200) {
-				const rbacResponse = await memberFeatureAgent.get('/api/member/borrow-history');
-				expect(rbacResponse.statusCode).toBe(404);
-			} else if (memberLoginRes.statusCode === 404) {
-				// This warning is useful for understanding test context, can be removed for ultra-clean logs
-				// console.warn(`TC_AUTH_RBAC_003_API: Member login failed (404) as user likely not registered.`);
-				const rbacResponse = await memberFeatureAgent.get('/api/member/borrow-history');
-				expect(rbacResponse.statusCode).toBe(404);
-			}
+			const memberLoginRes = await memberFeatureAgent.post('/api/auth/login').send({ email: memberEmailForRbacFeature, password: memberPasswordForRbacFeature });
+			expect(memberLoginRes.statusCode).toBe(200);
 		});
 
 		it('TC_AUTH_RBAC_004_API: Verify guest (not logged in) user restriction from protected API pages', async () => {
 			const guestAgent = request(app);
-			let response = await guestAgent.get('/api/admin/users');
-			expect(response.statusCode).toBe(404);
-
-			response = await guestAgent.get('/api/member/borrow-history');
-			expect(response.statusCode).toBe(404);
+			const response = await guestAgent.get('/api/users');
+			expect(response.statusCode).toBe(403);
 		});
 	});
 });
