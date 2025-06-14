@@ -87,7 +87,7 @@
 					"publicPath": "./test-report",
 					"filename": "report.html",
 					"pageTitle": "API Test Report",
-					"expand": true
+					"expand": false
 				}
 			]
 		]
