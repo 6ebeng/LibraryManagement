@@ -5,12 +5,12 @@ const backendBaseUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
 const backendApiEndpoint = `${backendBaseUrl}/api`;
 
 const routes = {
-  AUTHOR: "author",
+  AUTHOR: "authors",
   AUTH: "auth",
-  BOOK: "book",
-  BORROWAL: "borrowal",
-  GENRE: "genre",
-  USER: "user"
+  BOOK: "books",
+  BORROWAL: "borrowals",
+  GENRE: "genres",
+  USER: "users"
 };
 
 const methods = {
@@ -20,7 +20,8 @@ const methods = {
   PUT: "update",
   DELETE: "delete",
   LOGIN: "login",
-  REGISTER: "register"
+  REGISTER: "register",
+  REVIEW: "reviews"
 };
 
 const apiUrl = (route, method, id = "") => {
@@ -35,9 +36,7 @@ const apiUrl = (route, method, id = "") => {
   return path;
 };
 
-// The AUTH_LOGIN_URL, AUTH_REGISTER_URL, and backendApiUrl exports are removed.
-
-module.exports = {
+export {
   routes,
   methods,
   apiUrl,
