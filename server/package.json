@@ -1,7 +1,7 @@
 {
 	"name": "library_management_system_backend",
 	"version": "1.1.0",
-	"description": "Backend of  a simple Library Management System for RAD MERN project, built using Express and MongoDB",
+	"description": "Backend of a simple Library Management System for RAD MERN project, built using Express and MongoDB",
 	"keywords": [
 		"rad",
 		"mern",
@@ -21,18 +21,13 @@
 		"start": "node index.js",
 		"dev": "nodemon index.js",
 		"seed": "node scripts/seedDatabase.js",
-<<<<<<< HEAD
-		"setup:test": "node scripts/seedDatabase.js",
-		"test:api": "npx jest --coverage --runInBand --detectOpenHandles --forceExit",
-		"test:api:watch": "npx jest --watchAll"
-=======
 		"seed:small": "node scripts/seedDatabase.js small",
 		"seed:large": "node scripts/seedDatabase.js large",
+		"setup:test": "node scripts/seedDatabase.js",
 		"test": "npm run test:api:coverage",
 		"test:api": "jest --runInBand --detectOpenHandles --forceExit",
 		"test:api:watch": "jest --watchAll --verbose",
 		"test:api:coverage": "node --max-old-space-size=4096 node_modules/.bin/jest --coverage --runInBand --detectOpenHandles --forceExit"
->>>>>>> 0ce77d0d4d38205a3cc88c6b11dea5f7b10e5002
 	},
 	"license": "ISC",
 	"dependencies": {
