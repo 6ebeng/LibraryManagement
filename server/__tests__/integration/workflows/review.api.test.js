@@ -66,11 +66,18 @@ describe('Review Management API', () => {
 		expect(res.statusCode).toEqual(400);
 	});
 
-	it('TC_REV_VIEW_001: should allow any user to view all reviews', async () => {
-		const res = await request(app).get(`/api/review/getAll`); // Corrected endpoint
+	it('TC_REV_VIEW_001: should allow any user to view all reviews with populated fields', async () => {
+		const res = await request(app).get(`/api/review/getAll`);
 		expect(res.statusCode).toEqual(200);
 		expect(res.body.reviewsList.length).toBeGreaterThan(0);
-		expect(res.body.reviewsList[0]).toHaveProperty('comment', 'Good read!');
+		
+		// Assert that populated fields exist
+		const firstReview = res.body.reviewsList[0];
+		expect(firstReview).toHaveProperty('comment', 'Good read!');
+		expect(firstReview).toHaveProperty('bookId');
+		expect(firstReview.bookId).toHaveProperty('name', 'Review Book'); // Check populated book name
+		expect(firstReview).toHaveProperty('memberId');
+		expect(firstReview.memberId).toHaveProperty('name'); // Check that member name exists
 	});
 
 	it('TC_REVIEW_DELETE_001: should allow a librarian to delete a review', async () => {

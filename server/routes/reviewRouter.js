@@ -7,7 +7,6 @@ const {
     getReview,
     getAllReviews,
     addReview,
-    updateReview,
     deleteReview
 } = require('../controllers/reviewController')
 
@@ -17,7 +16,6 @@ router.get("/get/:id", (req, res) => getReview(req, res))
 
 router.post("/add", (req, res) => addReview(req, res))
 
-router.put("/update/:id", (req, res) => updateReview(req, res))
 
 router.delete("/delete/:id", (req, res) => deleteReview(req, res))
 
