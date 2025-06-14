@@ -59,8 +59,56 @@ This containerized architecture, illustrated in Figure \ref{fig:docker_test_env}
 
 \begin{figure}[H]
     \centering
-    % Placeholder for the Docker environment diagram
-    \includegraphics[width=0.8\textwidth]{path/to/your/docker\_environment\_diagram.png}
+    \begin{tikzpicture}[
+        node distance=2.5cm and 3cm,
+        container/.style={
+            rectangle, 
+            draw, 
+            thick, 
+            rounded corners, 
+            fill=blue!5, 
+            minimum height=2.5cm, 
+            minimum width=3.5cm,
+            text width=3cm, 
+            align=center,
+            drop shadow
+        },
+        env_box/.style={
+            rectangle, 
+            draw, 
+            dashed, 
+            thick,
+            color=gray,
+            rounded corners,
+            inner sep=1cm
+        },
+        arrow_label/.style={
+            midway,
+            fill=white,
+            inner sep=1pt,
+            font=\footnotesize
+        },
+        line/.style={draw, -{Stealth[length=3mm]}, thick}
+    ]
+        % Service Nodes
+        \node[container] (cypress) {\textbf{Cypress E2E Container} \\ \texttt{cypress-e2e}};
+        \node[container, right=of cypress] (client) {\textbf{React Client Container} \\ \texttt{client-test}};
+        \node[container, right=of client] (server) {\textbf{Node.js Server Container} \\ \texttt{server-test}};
+        \node[container, right=of server] (mongo) {\textbf{MongoDB Container} \\ \texttt{mongo-test}};
+        
+        % Environment Bounding Box
+        \node[env_box, fit=(cypress) (mongo), label={[yshift=0.4cm]above:\textbf{Docker Network (Orchestrated by \texttt{docker-compose.test.yml})}}] (docker_env) {};
+
+        % Arrows with labels
+        \path [line] (cypress) -- (client) node[arrow_label] {User Interaction};
+        \path [line] (client) -- (server) node[arrow_label] {API Calls (HTTP/S)};
+        \path [line] (server) -- (mongo) node[arrow_label] {DB Queries};
+        
+        % Internal Test Runner Labels
+        \node[below, font=\small\itshape, text width=3cm, align=center, yshift=-1cm] at (client.south) {(Runs React Testing Library / Jest)};
+        \node[below, font=\small\itshape, text width=3cm, align=center, yshift=-1cm] at (server.south) {(Runs Jest / Supertest)};
+
+    \end{tikzpicture}
     \caption{Docker-Based Test Environment Architecture}
     \label{fig:docker_test_env}
 \end{figure}

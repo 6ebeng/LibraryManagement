@@ -21,6 +21,26 @@
 \usepackage{pgfgantt} % For Gantt chart in Test Management
 \usepackage{pdflscape} % For landscape pages if needed
 
+% --- JavaScript Listings Support ---
+\lstdefinelanguage{JavaScript}{
+    keywords={break, case, catch, class, const, continue, debugger, default, delete, do, 
+        else, export, extends, false, finally, for, function, if, import, in, instanceof, 
+        new, null, return, super, switch, this, throw, true, try, typeof, var, void, while, with, let, 
+        async, await, of, static, get, set, yield},
+    keywordstyle=\color{magenta}\bfseries,
+    ndkeywords={boolean, byte, char, double, float, int, long, short, string, Object, Array, Promise},
+    ndkeywordstyle=\color{blue}\bfseries,
+    identifierstyle=\color{black},
+    sensitive=false,
+    comment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    commentstyle=\color{codegreen}\ttfamily,
+    stringstyle=\color{codepurple}\ttfamily,
+    morestring=[b]',
+    morestring=[b]"
+}
+\lstalias{js}{JavaScript}
+
 % --- TikZ Packages ---
 \usepackage{tikz}
 \usetikzlibrary{
