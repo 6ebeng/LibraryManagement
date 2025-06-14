@@ -62,7 +62,7 @@
 			"!index.js",
 			"!scripts/**",
 			"!passport-config.js",
-			"!test-result/**"
+			"!test-report/**"
 		],
 		"coverageReporters": [
 			"json",

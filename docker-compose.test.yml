@@ -40,7 +40,7 @@ services:
       - NODE_ENV=test
       - CI=true
     # The command string is passed to sh -c for proper execution of shell operators like &&
-    command: ['sh', '-c', 'npm install && node /app/scripts/seedDatabase.js && npm run test:api']
+    command: ['sh', '-c', 'npm install && node /app/scripts/seedDatabase.js && npm run test:api:coverage']
     networks:
       - test-network
 
