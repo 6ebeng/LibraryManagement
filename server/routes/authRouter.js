@@ -11,10 +11,5 @@ router.post('/register', (req, res) => registerUser(req, res));
 
 router.get('/logout', (req, res) => logoutUser(req, res));
 
+// This should be the ONLY export in the file.
 module.exports = router;
-
-module.exports = {
-	loginUser,
-	registerUser,
-	logoutUser,
-};
