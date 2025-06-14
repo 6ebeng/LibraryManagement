@@ -1,7 +1,7 @@
 {
 	"name": "library_management_system_backend",
 	"version": "1.1.0",
-	"description": "Backend of a simple Library Management System for RAD MERN project, built using Express and MongoDB",
+	"description": "Backend of  a simple Library Management System for RAD MERN project, built using Express and MongoDB",
 	"keywords": [
 		"rad",
 		"mern",
