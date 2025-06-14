@@ -16,6 +16,11 @@ services:
       - .env.test
     networks:
       - test-network
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # --- CI/Single-Run Test Services ---
   api-tester:
@@ -24,7 +29,8 @@ services:
       context: ./server
       target: development # Assumes this target in server/Dockerfile uses /app/entrypoint.sh
     depends_on:
-      - mongo-test
+      mongo-test:
+        condition: service_healthy
     volumes:
       - ./server:/app
       - /app/node_modules
