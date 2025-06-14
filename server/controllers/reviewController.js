@@ -53,7 +53,7 @@ const getAllReviews = async (req, res) => {
 
 		return res.status(200).json({
 			success: true,
-			reviewsList: reviews,
+			reviewList: reviews, // Changed from reviewsList to reviewList
 		});
 	} catch (err) {
 		console.error('Database error fetching reviews:', err);
@@ -65,10 +65,8 @@ const getAllReviews = async (req, res) => {
 };
 
 const addReview = async (req, res) => {
-	const { bookId, rating, comment } = req.body;
-
-	// This assumes you have middleware that adds the authenticated user to the request object.
-	const memberId = req.user?._id;
+	// The frontend is sending memberId in the body, so we get it from there.
+	const { bookId, rating, comment, memberId } = req.body;
 
 	// --- Validation ---
 	if (!memberId) {

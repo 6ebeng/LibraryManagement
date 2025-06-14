@@ -10,7 +10,8 @@ const routes = {
   BOOK: "books",
   BORROWAL: "borrowals",
   GENRE: "genres",
-  USER: "users"
+  USER: "users",
+  REVIEW: "reviews"
 };
 
 const methods = {
@@ -21,7 +22,7 @@ const methods = {
   DELETE: "delete",
   LOGIN: "login",
   REGISTER: "register",
-  REVIEW: "reviews"
+  GET_ALL_BY_PARENT: "getAll"
 };
 
 const apiUrl = (route, method, id = "") => {

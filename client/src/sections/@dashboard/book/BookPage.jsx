@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import {
@@ -53,6 +54,11 @@ const ReviewList = ({ reviews, isLoading }) => {
       ))}
     </Box>
   );
+};
+
+ReviewList.propTypes = {
+  reviews: PropTypes.array.isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };
 
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Button, TextField, Rating, Box, Typography } from '@mui/material';
 
 /**
@@ -50,6 +51,12 @@ const ReviewForm = ({ bookId, onSubmit, isSubmitting }) => {
       </Box>
     </form>
   );
+};
+
+ReviewForm.propTypes = {
+  bookId: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  isSubmitting: PropTypes.bool.isRequired,
 };
 
 export default ReviewForm;
