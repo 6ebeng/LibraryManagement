@@ -160,13 +160,14 @@ const BookPage = () => {
       });
   };
 
-  const submitReview = (reviewData) => {
+const submitReview = (reviewData) => {
     setIsSubmittingReview(true);
     // This route needs to handle linking the review to the logged-in user
     axios.post(apiUrl(routes.REVIEW, methods.POST), { ...reviewData, memberId: user._id })
       .then(() => {
         toast.success('Review submitted!');
-        getReviewsForBook(reviewData.bookID); // Refresh reviews after submitting
+        // Corrected from reviewData.bookID to reviewData.bookId
+        getReviewsForBook(reviewData.bookId); 
       })
       .catch((error) => {
         console.error("Failed to submit review:", error);
