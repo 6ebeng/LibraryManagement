@@ -7,7 +7,9 @@ const Genre = require('../models/genre');
 
 // Configure dotenv for environment variables
 if (process.env.NODE_ENV !== 'production') {
-	require('dotenv').config();
+	// Load test environment if NODE_ENV is test, otherwise load default .env
+	const envFile = process.env.NODE_ENV === 'test' ? '../.env.test' : '../.env';
+	require('dotenv').config({ path: envFile });
 }
 
 // Test Users Data
