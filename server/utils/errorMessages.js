@@ -69,6 +69,17 @@ const errorMessages = {
 		unauthorized: 'You need to be logged in to perform this action.',
 		forbidden: 'You do not have permission to perform this action.',
 	},
+	review: {
+		invalidRating: 'Review rating must be a number between 1 and 5.',
+		notFound: 'Review not found.',
+		alreadyExists: 'You have already reviewed this book.',
+		createError: 'Could not create the review.',
+		updateError: 'Could not update the review.',
+		deleteError: 'Could not delete the review.',
+		bookRequired: 'Book ID is required to create a review.',
+		memberRequired: 'Member ID is required to create a review.',
+		ratingRequired: 'Rating is required to create a review.',
+	},
 };
 
 // Helper function to get error message with fallback

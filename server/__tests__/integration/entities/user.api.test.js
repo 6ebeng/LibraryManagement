@@ -1,7 +1,7 @@
 /*
- * server/__tests__/integration/user.api.test.js
+ * server/__tests__/integration/entities/user.api.test.js
  *
- * This new test file covers test cases for User Management by a Librarian.
+ * This test file covers test cases for User Management by a Librarian.
  * Corresponds to cases from 'TC_Specific_Feature_Testing.pdf'.
  */
 const request = require('supertest');
@@ -9,102 +9,140 @@ const app = require('../../../index');
 const mongoose = require('mongoose');
 const User = require('../../../models/user');
 
-// Removed: let mongoServer;
-
 let librarianAgent;
 let memberAgent;
-let userToManage;
+let userToManage; // This will be the member user created for management tests
 let createdUserIds = [];
 
 beforeAll(async () => {
-	// Connect to the external MongoDB instance specified by MONGO_URI
+	if (!process.env.MONGO_URI) {
+		throw new Error('MONGO_URI environment variable is not set. Tests cannot connect to the database.');
+	}
 	await mongoose.connect(process.env.MONGO_URI);
-	console.log(`Connected to MongoDB for tests: ${process.env.MONGO_URI}`);
+	console.log(`Connected to MongoDB for user.api tests: ${process.env.MONGO_URI}`);
+
+	// Create a unique suffix for emails to avoid collisions during re-runs or in shared environments
+	const uniqueSuffix = Date.now();
 
 	// Create a librarian user
-	const librarian = new User({
-		name: 'Lib User',
-		email: 'librarian.user@example.com',
+	const librarianData = {
+		name: 'Lib UserMgmt',
+		email: `librarian.usermgmt.${uniqueSuffix}@example.com`,
 		isAdmin: true,
-		photoUrl: 'http://example.com/lib_user.jpg',
-	});
+		photoUrl: 'http://example.com/lib_usermgmt.jpg',
+	};
+	const librarian = new User(librarianData);
 	librarian.setPassword('password123');
 	await librarian.save();
 	createdUserIds.push(librarian._id);
 
 	// Create a member user to manage
-	const member = new User({
-		name: 'Mem User',
-		email: 'member.user@example.com',
+	const memberData = {
+		name: 'Mem UserToManage',
+		email: `member.usertomanage.${uniqueSuffix}@example.com`,
 		isAdmin: false,
-		photoUrl: 'http://example.com/mem_user.jpg',
-	});
+		photoUrl: 'http://example.com/mem_usertomanage.jpg',
+	};
+	const member = new User(memberData);
 	member.setPassword('password123');
 	await member.save();
 	createdUserIds.push(member._id);
+	userToManage = member; // Assign the created member to userToManage
 
-	userToManage = member; // The member user created
-
+	// Login agents
 	librarianAgent = request.agent(app);
-	await librarianAgent.post('/api/auth/login').send({ email: 'librarian.user@example.com', password: 'password123' });
+	await librarianAgent.post('/api/auth/login').send({ email: librarianData.email, password: 'password123' });
 
 	memberAgent = request.agent(app);
-	await memberAgent.post('/api/auth/login').send({ email: 'member.user@example.com', password: 'password123' });
+	await memberAgent.post('/api/auth/login').send({ email: memberData.email, password: 'password123' });
 });
 
 afterAll(async () => {
 	try {
+		// Delete all users created during the tests
 		await User.deleteMany({ _id: { $in: createdUserIds } });
-		// Clean up any users created within individual tests as well
-		await User.deleteMany({ email: 'todelete@example.com' });
+		// Additional cleanup for any users specifically created in tests and not added to createdUserIds
+		// (though the current TC_USER_DEL_001 adds its user to createdUserIds)
+		await User.deleteMany({ email: { $regex: /todelete\..*@example\.com/i } });
 	} catch (error) {
 		console.error('Error during afterAll cleanup in user.api.test.js:', error.message);
 	} finally {
 		if (mongoose.connection && mongoose.connection.readyState === 1) {
 			await mongoose.disconnect();
-			console.log('MongoDB connection disconnected after user tests.');
+			console.log('MongoDB connection disconnected after user.api tests.');
 		}
 	}
 });
 
 describe('User Management API (Librarian)', () => {
+	// Test Case: TC_USER_VIEW_001
+	// Objective: Verify a librarian can view all users.
 	it('TC_USER_VIEW_001: should allow a librarian to view all users', async () => {
 		const res = await librarianAgent.get('/api/users/getAll');
 		expect(res.statusCode).toEqual(200);
+		expect(res.body.success).toBe(true); // Assuming a common success flag
 		expect(Array.isArray(res.body.usersList)).toBe(true);
-		expect(res.body.usersList.length).toBeGreaterThan(1);
+		// There should be at least the librarian and the member created in beforeAll
+		expect(res.body.usersList.length).toBeGreaterThanOrEqual(2);
 	});
 
+	// Test Case: (Implicit from TC_USER_VIEW_001 context)
+	// Objective: Verify a non-librarian (member) cannot view all users.
 	it('should prevent a member from viewing all users', async () => {
 		const res = await memberAgent.get('/api/users/getAll');
+		// Expecting 403 Forbidden if the route is admin-protected
 		expect(res.statusCode).toEqual(403);
 	});
 
+	// Test Case: TC_USER_UPDATE_001
+	// Objective: Verify a librarian can update another user's details.
 	it("TC_USER_UPDATE_001: should allow a librarian to update a user's details", async () => {
-		const res = await librarianAgent
-			.put(`/api/users/update/${userToManage._id}`)
-			.send({ name: 'Updated Member Name', email: userToManage.email, isAdmin: userToManage.isAdmin, photoUrl: userToManage.photoUrl });
+		const updatedName = 'Updated Member Name by Librarian';
+		const res = await librarianAgent.put(`/api/users/update/${userToManage._id}`).send({
+			name: updatedName,
+			// Send other fields as they are, assuming only name is intended to change for this test assertion
+			email: userToManage.email,
+			isAdmin: userToManage.isAdmin,
+			photoUrl: userToManage.photoUrl,
+		});
 		expect(res.statusCode).toEqual(200);
-		expect(res.body).toHaveProperty('updatedUser.name', 'Updated Member Name');
+		expect(res.body.success).toBe(true);
+		expect(res.body.updatedUser).toBeDefined();
+		expect(res.body.updatedUser.name).toEqual(updatedName);
+		// Optionally, verify in DB
+		const dbUser = await User.findById(userToManage._id);
+		expect(dbUser.name).toEqual(updatedName);
 	});
 
+	// Test Case: TC_USER_DEL_001
+	// Objective: Verify a librarian can delete a user.
 	it('TC_USER_DEL_001: should allow a librarian to delete a user', async () => {
-		const userToDelete = new User({
-			name: 'User To Delete',
-			email: 'todelete@example.com',
+		// Create a new user specifically for this deletion test
+		const uniqueEmailForDelete = `todelete.${Date.now()}@example.com`;
+		const userToDeletePayload = {
+			name: 'User To Be Deleted',
+			email: uniqueEmailForDelete,
 			isAdmin: false,
 			photoUrl: 'http://example.com/todelete.jpg',
-		});
-		userToDelete.setPassword('pw');
+		};
+		const userToDelete = new User(userToDeletePayload);
+		userToDelete.setPassword('password123');
 		await userToDelete.save();
-		createdUserIds.push(userToDelete._id); // Add to cleanup list
+
+		// Add this user's ID to createdUserIds so it's cleaned up in afterAll
+		// even if the delete API call fails or this test has an issue.
+		createdUserIds.push(userToDelete._id);
 
 		const res = await librarianAgent.delete(`/api/users/delete/${userToDelete._id}`);
 
 		expect(res.statusCode).toEqual(200);
-		expect(res.body).toHaveProperty('deletedUser.name', 'User To Delete');
+		expect(res.body.success).toBe(true);
+		expect(res.body.deletedUser).toBeDefined();
+		expect(res.body.deletedUser.name).toEqual(userToDeletePayload.name);
+		expect(res.body.deletedUser.email).toEqual(userToDeletePayload.email);
 
-		const deletedUser = await User.findById(userToDelete._id);
-		expect(deletedUser).toBeNull();
+		// Verify the user is actually deleted from the database
+		const deletedUserFromDb = await User.findById(userToDelete._id);
+		expect(deletedUserFromDb).toBeNull();
 	});
 });

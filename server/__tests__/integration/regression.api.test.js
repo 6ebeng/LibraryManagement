@@ -4,15 +4,13 @@
  * This test file implements the test cases from 'TC_Regression_Testing.tex'.
  */
 const request = require('supertest');
-const app = require('../../../index');
+const app = require('../../index'); // Corrected path
 const mongoose = require('mongoose');
-const Book = require('../../../models/book');
-const Author = require('../../../models/author');
-const Genre = require('../../../models/genre');
-const User = require('../../../models/user');
-const Borrowal = require('../../../models/borrowal');
-
-// Removed: let mongoServer;
+const Book = require('../../models/book');
+const Author = require('../../models/author');
+const Genre = require('../../models/genre');
+const User = require('../../models/user');
+const Borrowal = require('../../models/borrowal');
 
 let librarianAgent;
 let memberAgent;
@@ -26,6 +24,12 @@ let createdGenreIds = [];
 let createdBookIds = [];
 let createdBorrowalIds = [];
 
+// Default credentials if environment variables are not set
+const LIBRARIAN_EMAIL = process.env.LIBRARIAN_EMAIL || 'librarian.reg@example.com';
+const LIBRARIAN_PASSWORD = process.env.LIBRARIAN_PASSWORD || 'password123';
+const MEMBER_EMAIL = process.env.MEMBER_EMAIL || 'member.reg@example.com';
+const MEMBER_PASSWORD = process.env.MEMBER_PASSWORD || 'password123';
+
 beforeAll(async () => {
 	// Connect to the external MongoDB instance specified by MONGO_URI
 	await mongoose.connect(process.env.MONGO_URI);
@@ -34,24 +38,22 @@ beforeAll(async () => {
 	// Seed Users
 	const librarian = new User({
 		name: 'Test Librarian',
-		email: 'librarian.reg@test.com',
-		password: 'password123',
+		email: LIBRARIAN_EMAIL,
 		isAdmin: true,
 		photoUrl: 'http://example.com/librarian.jpg',
 	});
-	librarian.setPassword('password123');
+	librarian.setPassword(LIBRARIAN_PASSWORD);
 	await librarian.save();
 	testLibrarian = librarian;
 	createdUserIds.push(testLibrarian._id);
 
 	const member = new User({
 		name: 'Test Member',
-		email: 'member.reg@test.com',
-		password: 'password123',
+		email: MEMBER_EMAIL,
 		isAdmin: false,
 		photoUrl: 'http://example.com/member.jpg',
 	});
-	member.setPassword('password123');
+	member.setPassword(MEMBER_PASSWORD);
 	await member.save();
 	testMember = member;
 	createdUserIds.push(testMember._id);
@@ -68,10 +70,10 @@ beforeAll(async () => {
 
 	// Create agents for authenticated requests
 	librarianAgent = request.agent(app);
-	await librarianAgent.post('/api/auth/login').send({ email: 'librarian.reg@test.com', password: 'password123' });
+	await librarianAgent.post('/api/auth/login').send({ email: LIBRARIAN_EMAIL, password: LIBRARIAN_PASSWORD });
 
 	memberAgent = request.agent(app);
-	await memberAgent.post('/api/auth/login').send({ email: 'member.reg@test.com', password: 'password123' });
+	await memberAgent.post('/api/auth/login').send({ email: MEMBER_EMAIL, password: MEMBER_PASSWORD });
 });
 
 afterAll(async () => {
@@ -94,14 +96,14 @@ afterAll(async () => {
 describe('Regression Test Suite', () => {
 	describe('Authentication & Core Access (Smoke Tests)', () => {
 		test('TC_REG_AUTH_001: Successful login with valid Librarian credentials', async () => {
-			const res = await request.agent(app).post('/api/auth/login').send({ email: 'librarian.reg@test.com', password: 'password123' });
+			const res = await request.agent(app).post('/api/auth/login').send({ email: LIBRARIAN_EMAIL, password: LIBRARIAN_PASSWORD });
 			expect(res.statusCode).toEqual(200);
 			expect(res.body.success).toBe(true);
 			expect(res.body.user.isAdmin).toBe(true);
 		});
 
 		test('TC_REG_AUTH_002: Successful login with valid Member credentials', async () => {
-			const res = await request.agent(app).post('/api/auth/login').send({ email: 'member.reg@test.com', password: 'password123' });
+			const res = await request.agent(app).post('/api/auth/login').send({ email: MEMBER_EMAIL, password: MEMBER_PASSWORD });
 			expect(res.statusCode).toEqual(200);
 			expect(res.body.success).toBe(true);
 			expect(res.body.user.isAdmin).toBe(false);
@@ -117,7 +119,7 @@ describe('Regression Test Suite', () => {
 		let newBorrowalId;
 
 		test('TC_REG_FLOW_001: Member can borrow a book', async () => {
-			const res = await memberAgent.post('/api/borrowals/add').send({ bookId: testBookAvailable._id, memberId: testMember._id }); // Added memberId and corrected endpoint
+			const res = await memberAgent.post('/api/borrowals/add').send({ bookId: testBookAvailable._id, memberId: testMember._id });
 			expect(res.statusCode).toEqual(201);
 			expect(res.body.newBorrowal.bookId.toString()).toEqual(testBookAvailable._id.toString());
 			expect(res.body.newBorrowal.memberId.toString()).toEqual(testMember._id.toString());
@@ -131,16 +133,29 @@ describe('Regression Test Suite', () => {
 		});
 
 		test('TC_REG_FLOW_002: Member can view their own borrowal history', async () => {
-			const res = await memberAgent.get('/api/borrowals/getAll'); // Corrected endpoint
+			const res = await memberAgent.get('/api/borrowals/getAll');
 			expect(res.statusCode).toEqual(200);
 			expect(Array.isArray(res.body.borrowalsList)).toBe(true);
 			const borrowal = res.body.borrowalsList.find((b) => b._id.toString() === newBorrowalId);
 			expect(borrowal).toBeDefined();
-			expect(res.body.borrowalsList.every((b) => b.member._id.toString() === testMember._id.toString())).toBe(true);
+			// Corrected assertion:
+			// If the API returns memberId directly (because BorrowalSchema.memberId lacks 'ref: User'),
+			// then we assert against b.memberId.
+			// If the API *does* populate memberId into a 'member' object, the original 'b.member._id' would be correct,
+			// but that would require 'ref: User' in BorrowalSchema for memberId.
+			expect(
+				res.body.borrowalsList.every((b) => {
+					// Check if 'member' field is populated, otherwise use 'memberId'
+					if (b.member && b.member._id) {
+						return b.member._id.toString() === testMember._id.toString();
+					}
+					return b.memberId.toString() === testMember._id.toString();
+				})
+			).toBe(true);
 		});
 
 		test('TC_REG_FLOW_003: Librarian can update a borrowal status (e.g., return a book)', async () => {
-			const res = await librarianAgent.put(`/api/borrowals/update/${newBorrowalId}`).send({ status: 'Returned' }); // Corrected endpoint
+			const res = await librarianAgent.put(`/api/borrowals/update/${newBorrowalId}`).send({ status: 'Returned' });
 			expect(res.statusCode).toEqual(200);
 			expect(res.body.updatedBorrowal.status).toEqual('Returned');
 
