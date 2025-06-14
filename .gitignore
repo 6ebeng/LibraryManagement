@@ -16,9 +16,9 @@ coverage/
 
 
 # Environment variables
-# .env
-# .env.*
-# !.env.example # Include example env files if you have them
+.env
+.env.*
+!.env.example
 
 # Log files
 *.log
@@ -152,3 +152,6 @@ e2e/cypress.env.json
 docker-compose.dev.yml
 docker-compose.prod.yml
 
+.env.dev
+.env.prod
+.env.test
