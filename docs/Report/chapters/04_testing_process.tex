@@ -9,22 +9,22 @@ Our methodology emphasizes automation to facilitate a continuous integration and
 
 \begin{figure}[H]
     \centering
-    \resizebox{\textwidth}{!}{%
+    \resizebox{0.8\textwidth}{!}{%
     \begin{tikzpicture}[
-        node distance=2cm and 1.2cm,
-        block/.style={rectangle, draw, fill=blue!10, text width=10em, text centered, rounded corners, minimum height=3em, drop shadow},
-        line/.style={draw, -{Stealth[length=3mm]}},
-        cloud/.style={ellipse, draw, fill=gray!10, minimum height=2em, drop shadow}
+        node distance=1.5cm and 1cm,
+        block/.style={rectangle, draw, fill=blue!10, text width=8em, text centered, rounded corners, minimum height=2.5em, drop shadow},
+        line/.style={draw, -{Stealth[length=2mm]}},
+        cloud/.style={ellipse, draw, fill=gray!10, minimum height=1.8em, drop shadow}
     ]
         % Nodes
         \node[block] (commit) {Developer Commits Code to Git};
         \node[block, below=of commit] (ci_trigger) {CI Pipeline Triggered (e.g., on Git Push)};
-        \node[block, below=of ci_trigger, text width=12em] (build) {Build Docker Images \& Start Containers (\texttt{docker-compose -f docker-compose.test.yml up})};
+        \node[block, below=of ci_trigger, text width=10em] (build) {Build Docker Images \& Start Containers (\texttt{docker-compose -f docker-compose.test.yml up})};
         \node[block, below left=of build] (unit_integration) {Run Backend Unit \& Integration Tests (Jest/Supertest)};
         \node[block, below right=of build] (component) {Run Frontend Component \& Unit Tests (React Testing Library)};
-        \node[block, below=of build, yshift=-4cm, text width=12em] (e2e) {Run End-to-End Tests (Cypress)};
+        \node[block, below=of build, yshift=-3cm, text width=10em] (e2e) {Run End-to-End Tests (Cypress)};
         \node[block, below=of e2e] (report) {Generate \& Archive Test Reports (Jest HTML \& Cypress Videos/Screenshots)};
-        \node[cloud, below=of report, text width=8em] (review) {Team Reviews Results \& Manages Defects};
+        \node[cloud, below=of report, text width=7em] (review) {Team Reviews Results \& Manages Defects};
 
         % Paths
         \path [line] (commit) -- (ci_trigger);
@@ -35,7 +35,7 @@ Our methodology emphasizes automation to facilitate a continuous integration and
         \path [line] (component) -- (e2e);
         \path [line] (e2e) -- (report);
         \path [line] (report) -- (review);
-        \path [line, dashed] (review.west) -| ++(-2.5,0) |- (commit.west);
+        \path [line, dashed] (review.west) -| ++(-2,0) |- (commit.west);
     \end{tikzpicture}
     }
     \caption{High-Level Automated Testing Process Flowchart}
@@ -59,6 +59,7 @@ This containerized architecture, illustrated in Figure \ref{fig:docker_test_env}
 
 \begin{figure}[H]
     \centering
+    \resizebox{\textwidth}{!}{%
     \begin{tikzpicture}[
         node distance=2.5cm and 3cm,
         container/.style={
@@ -100,15 +101,16 @@ This containerized architecture, illustrated in Figure \ref{fig:docker_test_env}
         \node[env_box, fit=(cypress) (mongo), label={[yshift=0.4cm]above:\textbf{Docker Network (Orchestrated by \texttt{docker-compose.test.yml})}}] (docker_env) {};
 
         % Arrows with labels
-        \path [line] (cypress) -- (client) node[arrow_label] {User Interaction};
-        \path [line] (client) -- (server) node[arrow_label] {API Calls (HTTP/S)};
-        \path [line] (server) -- (mongo) node[arrow_label] {DB Queries};
+        \path [line] (cypress) -- (client) node[arrow_label, font=\tiny] {User Interaction};
+        \path [line] (client) -- (server) node[arrow_label, font=\tiny] {API Calls (HTTP/S)};
+        \path [line] (server) -- (mongo) node[arrow_label, font=\tiny] {DB Queries};
         
         % Internal Test Runner Labels
         \node[below, font=\small\itshape, text width=3cm, align=center, yshift=-1cm] at (client.south) {(Runs React Testing Library / Jest)};
         \node[below, font=\small\itshape, text width=3cm, align=center, yshift=-1cm] at (server.south) {(Runs Jest / Supertest)};
 
     \end{tikzpicture}
+    }
     \caption{Docker-Based Test Environment Architecture}
     \label{fig:docker_test_env}
 \end{figure}
@@ -126,7 +128,7 @@ Unit tests form the foundation of our testing pyramid, focusing on the smallest 
     \item \textbf{Frontend (Client):} We use \textbf{React Testing Library} with Jest to test individual React components and custom hooks. Component tests verify that they render correctly given specific props and that they respond as expected to simulated user interactions. For instance, tests for \texttt{LoginForm.js} check for the presence of input fields and validate that clicking the submit button triggers the correct callback function. We also test utility functions like \texttt{formatTime.js} and \texttt{formatNumber.js} to ensure data is displayed correctly across the UI.
 \end{itemize}
 
-\begin{lstlisting}[language=JavaScript, caption={Example of a Backend Unit Test for \texttt{bookController.js}}, label={lst:jest\_unit\_test}]
+\begin{lstlisting}[language=JavaScript, caption={Example of a Backend Unit Test for \texttt{bookController.js}}, label={lst:jest-unit-test}]
 // From: server/__tests__/unit/controllers/bookController.test.js
 
 const bookController = require('../../../controllers/bookController');
@@ -176,7 +178,7 @@ Cypress tests cover critical user journeys derived from the use cases in the SRS
 \end{itemize}
 To manage test data, Cypress uses fixtures (e.g., \texttt{user-data.json}) to provide consistent user credentials and other data inputs for the tests.
 
-\begin{lstlisting}[language=JavaScript, caption={Example of a Cypress E2E Test for User Login}, label={lst:cypress\_e2e\_test}]
+\begin{lstlisting}[language=JavaScript, caption={Example of a Cypress E2E Test for User Login}, label={lst:cypress-e2e-test}]
 // From: e2e/cypress/e2e/authentication_authorization.cy.ts
 
 describe('Authentication and Authorization', () => {
@@ -216,7 +218,7 @@ Upon completion, the test frameworks generate detailed reports. Jest is configur
 \begin{figure}[H]
     \centering
     % Placeholder for a test report screenshot
-    \includegraphics[width=\textwidth]{./assets/test_report_example.png}
+    \includegraphics[width=\textwidth]{assets/jest/jest_report_screenshot.png}
     \caption{Example of an HTML Test Report from Jest}
     \label{fig:test_report_example}
 \end{figure}

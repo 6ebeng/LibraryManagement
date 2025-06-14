@@ -79,6 +79,21 @@
 				"lines": 50
 			}
 		},
+		"testPathIgnorePatterns": [
+			"/node_modules/",
+			"/__tests__/utils/"
+		],
+		"watchPathIgnorePatterns": [
+			"<rootDir>/node_modules/",
+			"<rootDir>/test-report/"
+		],
+		"coverageDirectory": "<rootDir>/test-report/coverage",
+		"coveragePathIgnorePatterns": [
+			"<rootDir>/node_modules/",
+			"<rootDir>/scripts/",
+			"<rootDir>/passport-config.js",
+			"<rootDir>/test-report/"
+		],
 		"reporters": [
 			"default",
 			[
@@ -86,8 +101,18 @@
 				{
 					"publicPath": "./test-report",
 					"filename": "report.html",
-					"pageTitle": "API Test Report",
-					"expand": false
+					"pageTitle": "Library Management System API Test Report",
+					"expand": false,
+					"includeFailureMsg": true,
+					"includeConsoleLog": true,
+					"theme": "darkTheme",
+					"logo": "../docs/Report/assets/ukh-logo.png",
+					"sort": "status",
+					"reportTitle": "Library Management System API Test Report",
+					"inlineSource": true,
+					"disableReport": false,
+					"disableGlobalSummary": false,
+					"disableTestFileSummary": false
 				}
 			]
 		]
