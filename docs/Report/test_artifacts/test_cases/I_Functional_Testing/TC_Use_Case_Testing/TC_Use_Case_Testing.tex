@@ -1,27 +1,4 @@
-\documentclass[10pt, a4paper]{report}
-\usepackage[utf8]{inputenc}
-\usepackage{geometry}
-\usepackage{longtable}
-\usepackage{array} % For better column definitions in longtable
-\usepackage{enumitem} % Required for itemize and enumerate options
-\usepackage{helvet} % Using a sans-serif font for better readability
-\renewcommand{\familydefault}{\sfdefault}
-
-\geometry{left=1.5cm, right=1.5cm, top=2cm, bottom=2cm}
-
-\title{Functional Test Cases: Use Case Testing \\ \large Library Management System}
-\author{Test Design Team (Non-Coders/Specification Experts)}
-\date{June 5, 2025}
-
-\begin{document}
-\maketitle
-\begin{center}
-    \textbf{Note:} These test cases are designed from a black-box, user-centric perspective, based on the key use cases defined in the SRS (Software Requirements Specification). Actual results and status are to be filled during test execution. Each test case is designed to cover the main flow and specified alternative/exception flows.
-\end{center}
-
-\section*{I.D Functional Test Cases: Use Case Testing}
-
-\begin{longtable}{|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{5cm}|}
+\begin{longtable}{|>{\scriptsize\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|}
 \caption{Use Case Test Cases}\label{tab:use_case_tests}\\
 \hline
 \textbf{Test Case ID} & \textbf{Test Title / Use Case} & \textbf{Test Steps} & \textbf{Expected Results} \\
@@ -148,7 +125,6 @@ TC\_UC\_HISTORY\_003 & Verify role-based view of borrowal history &
     \end{itemize} \\ \hline
     
 % UC-001 & UC-004 are covered in the Authentication/Authorization test cases document.
-\multicolumn{4}{|l|}{\parbox{18cm}{\vspace{5pt}\textbf{Note: UC-001 (User Login) and UC-004 (Register New User) are detailed in the Authentication \& Authorization test plan.}\vspace{5pt}}} 
+\multicolumn{4}{|l|}{\parbox{13cm}{\vspace{5pt}\textbf{Note: UC-001 (User Login) and UC-004 (Register New User) are detailed in the Authentication \& Authorization test plan.}\vspace{5pt}}} 
 
 \end{longtable}
-\end{document}

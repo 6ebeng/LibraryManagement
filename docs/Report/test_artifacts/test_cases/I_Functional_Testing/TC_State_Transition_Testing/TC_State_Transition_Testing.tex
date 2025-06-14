@@ -1,27 +1,4 @@
-\documentclass[10pt, a4paper]{report}
-\usepackage[utf8]{inputenc}
-\usepackage{geometry}
-\usepackage{longtable}
-\usepackage{array} % For better column definitions in longtable
-\usepackage{enumitem} % Required for itemize and enumerate options
-\usepackage{helvet} % Using a sans-serif font for better readability
-\renewcommand{\familydefault}{\sfdefault}
-
-\geometry{left=1.5cm, right=1.5cm, top=2cm, bottom=2cm}
-
-\title{Functional Test Cases: State Transition Testing \\ \large Library Management System}
-\author{Test Design Team (Non-Coders/Specification Experts)}
-\date{June 5, 2025}
-
-\begin{document}
-\maketitle
-\begin{center}
-    \textbf{Note:} These test cases are designed from a black-box, user-centric perspective based on SRS requirements for entities with distinct states.  Actual results and status are to be filled during test execution. Refer to the SRS for complete requirements. 
-\end{center}
-
-\section*{I.E Functional Test Cases: State Transition Testing}
-
-\begin{longtable}{|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4.5cm}|>{\raggedright\arraybackslash}p{4cm}|}
+\begin{longtable}{|>{\scriptsize\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|}
 \caption{State Transition Test Cases}\label{tab:state_test_cases}\\
 \hline
 \textbf{Test Case ID} & \textbf{Test Title} & \textbf{Test Steps} & \textbf{Expected Results} \\
@@ -178,5 +155,3 @@ TC\_STATE\_SESSION\_004 & State Persistence: Verify session remains 'Logged-In' 
     \end{itemize} \\ \hline
     
 \end{longtable}
-
-\end{document}

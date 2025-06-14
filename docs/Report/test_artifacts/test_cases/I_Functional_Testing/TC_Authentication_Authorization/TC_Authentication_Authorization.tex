@@ -1,27 +1,4 @@
-\documentclass[10pt, a4paper]{report}
-\usepackage[utf8]{inputenc}
-\usepackage{geometry}
-\usepackage{longtable}
-\usepackage{array} % For better column definitions in longtable
-\usepackage{enumitem} % Required for itemize and enumerate options
-\usepackage{helvet} % Using a sans-serif font for better readability
-\renewcommand{\familydefault}{\sfdefault}
-
-\geometry{left=0.5cm, right=0.5cm, top=2cm, bottom=2cm}
-
-\title{Functional Test Cases: Authentication \& Authorization \\ \large Library Management System}
-\author{Test Design Team (Non-Coders/Specification Experts)}
-\date{May 30, 2025}
-
-\begin{document}
-\maketitle
-\begin{center}
-    \textbf{Note:} These test cases are designed from a black-box, user-centric perspective. Actual results and status are to be filled during test execution. Refer to the SRS for complete requirements.
-\end{center}
-
-\section*{I.A Functional Test Cases: Authentication \& Authorization}
-
-\begin{longtable}{|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{5cm}|>{\raggedright\arraybackslash}p{5cm}|}
+\begin{longtable}{|>{\scriptsize\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|}
 \caption{Authentication and Authorization Test Cases}\label{tab:auth_test_cases}\\
 \hline
 \textbf{Test Case ID} & \textbf{Test Title} & \textbf{Test Steps} & \textbf{Expected Results} \\
@@ -44,7 +21,7 @@ TC\_AUTH\_REG\_001 & Successful new user (Member) registration by Librarian &
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
         \item Login as Librarian.
         \item Navigate to 'User Management' or 'Add User' section.
-        \item Fill in all required fields with valid and unique data for a new 'Member' (e.g., username, password, email, full name).
+        \item Fill in all required fields with valid and unique data for a new 'Member' (e.g., email, password, full name). 
         \item Submit the registration form.
     \end{itemize} & 
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
@@ -53,23 +30,23 @@ TC\_AUTH\_REG\_001 & Successful new user (Member) registration by Librarian &
         \item The new user appears in the list of users.
         \item The new user can subsequently log in (to be tested in Login cases).
     \end{itemize} \\ \hline
-TC\_AUTH\_REG\_002 & Attempt to register a new user with an existing username & 
+TC\_AUTH\_REG\_002 & Attempt to register a new user with an existing email & 
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
         \item Login as Librarian.
         \item Navigate to 'Add User' section.
-        \item Fill in user details, using a username that already exists in the system.
+        \item Fill in user details, using an email address that already exists in the system. 
         \item Submit the registration form.
     \end{itemize} & 
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
         \item System rejects the registration.
-        \item An appropriate error message is displayed (e.g., "Username already exists").
+        \item An appropriate error message is displayed (e.g., "Email already exists").
         \item The user is not created.
     \end{itemize} \\ \hline
 TC\_AUTH\_REG\_003 & Attempt to register a new user with missing required fields & 
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
         \item Login as Librarian.
         \item Navigate to 'Add User' section.
-        \item Fill in user details but leave one or more mandatory fields blank (e.g., password or email).
+        \item Fill in user details but leave one or more mandatory fields blank (e.g., password or email). 
         \item Submit the registration form.
     \end{itemize} & 
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
@@ -81,7 +58,7 @@ TC\_AUTH\_REG\_004 & Attempt to register a new user with invalid data format (e.
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
         \item Login as Librarian.
         \item Navigate to 'Add User' section.
-        \item Fill in user details, providing an incorrectly formatted email address (e.g., "usertest.com").
+        \item Fill in user details, providing an incorrectly formatted email address (e.g., "usertest.com"). 
         \item Submit the registration form.
     \end{itemize} & 
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
@@ -95,8 +72,8 @@ TC\_AUTH\_REG\_004 & Attempt to register a new user with invalid data format (e.
 TC\_AUTH\_LOGIN\_001 & Successful login with valid Librarian credentials & 
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
         \item Navigate to the login page.
-        \item Enter valid Librarian username.
-        \item Enter corresponding valid password.
+        \item Enter valid Librarian email. 
+        \item Enter corresponding valid password. 
         \item Click the 'Login' button.
     \end{itemize} & 
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
@@ -107,8 +84,8 @@ TC\_AUTH\_LOGIN\_001 & Successful login with valid Librarian credentials &
 TC\_AUTH\_LOGIN\_002 & Successful login with valid Member credentials & 
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
         \item Navigate to the login page.
-        \item Enter valid Member username.
-        \item Enter corresponding valid password.
+        \item Enter valid Member email. 
+        \item Enter corresponding valid password. 
         \item Click the 'Login' button.
     \end{itemize} & 
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
@@ -116,47 +93,47 @@ TC\_AUTH\_LOGIN\_002 & Successful login with valid Member credentials &
         \item User is redirected to the Member dashboard/homepage.
         \item Member-specific functionalities are visible/accessible.
     \end{itemize} \\ \hline
-TC\_AUTH\_LOGIN\_003 & Attempt login with invalid username & 
+TC\_AUTH\_LOGIN\_003 & Attempt login with invalid email & 
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
         \item Navigate to the login page.
-        \item Enter a username that does not exist.
+        \item Enter an email that does not exist. 
         \item Enter any password.
         \item Click the 'Login' button.
     \end{itemize} & 
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
         \item Login fails.
-        \item An appropriate error message is displayed (e.g., "Invalid username or password").
+        \item An appropriate error message is displayed (e.g., "Invalid email or password").
         \item User remains on the login page.
     \end{itemize} \\ \hline
-TC\_AUTH\_LOGIN\_004 & Attempt login with valid username but invalid password & 
+TC\_AUTH\_LOGIN\_004 & Attempt login with valid email but invalid password & 
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
         \item Navigate to the login page.
-        \item Enter a valid existing username.
-        \item Enter an incorrect password for that username.
+        \item Enter a valid existing email. 
+        \item Enter an incorrect password for that email. 
         \item Click the 'Login' button.
     \end{itemize} & 
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
         \item Login fails.
-        \item An appropriate error message is displayed (e.g., "Invalid username or password").
+        \item An appropriate error message is displayed (e.g., "Invalid email or password").
         \item User remains on the login page.
     \end{itemize} \\ \hline
-TC\_AUTH\_LOGIN\_005 & Attempt login with empty username field & 
+TC\_AUTH\_LOGIN\_005 & Attempt login with empty email field & 
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
         \item Navigate to the login page.
-        \item Leave the username field empty.
+        \item Leave the email field empty. 
         \item Enter any password.
         \item Click the 'Login' button.
     \end{itemize} & 
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
         \item Login fails.
-        \item An appropriate error message is displayed (e.g., "Username is required").
+        \item An appropriate error message is displayed (e.g., "Email is required").
         \item User remains on the login page.
     \end{itemize} \\ \hline
 TC\_AUTH\_LOGIN\_006 & Attempt login with empty password field & 
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
         \item Navigate to the login page.
-        \item Enter a valid username.
-        \item Leave the password field empty.
+        \item Enter a valid email. 
+        \item Leave the password field empty. 
         \item Click the 'Login' button.
     \end{itemize} & 
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
@@ -239,5 +216,3 @@ TC\_AUTH\_RBAC\_004 & Verify guest (not logged in) user access to public pages a
     \end{itemize} \\ \hline
 
 \end{longtable}
-
-\end{document}

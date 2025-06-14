@@ -1,27 +1,4 @@
-\documentclass[10pt, a4paper]{report}
-\usepackage[utf8]{inputenc}
-\usepackage{geometry}
-\usepackage{longtable}
-\usepackage{array} % For better column definitions in longtable
-\usepackage{enumitem} % Required for itemize and enumerate options
-\usepackage{helvet} % Using a sans-serif font for better readability
-\renewcommand{\familydefault}{\sfdefault}
-
-\geometry{left=1cm, right=1cm, top=2cm, bottom=2cm}
-
-\title{Functional Test Cases: Specific Feature Testing \\ \large Library Management System}
-\author{Test Design Team (Non-Coders/Specification Experts)}
-\date{June 5, 2025}
-
-\begin{document}
-\maketitle
-\begin{center}
-    \textbf{Note:} These test cases are designed from a black-box, user-centric perspective based on the SRS document. Actual results and status are to be filled during test execution.
-\end{center}
-
-\section*{I.C Functional Test Cases: Specific Feature Testing}
-
-\begin{longtable}{|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{4.5cm}|>{\raggedright\arraybackslash}p{4.5cm}|>{\raggedright\arraybackslash}p{4.5cm}|}
+\begin{longtable}{|>{\scriptsize\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|}
 \caption{Specific Feature Test Cases}\label{tab:feature_test_cases}\\
 \hline
 \textbf{Test Case ID} & \textbf{Test Title} & \textbf{Test Steps} & \textbf{Expected Results} \\
@@ -254,28 +231,4 @@ TC\_REV\_DEL\_001 & Successful deletion of a review by Librarian &
         \item The review is removed from the book's list of reviews.
     \end{itemize} \\ \hline
 
-\multicolumn{4}{|l|}{\textbf{Feature Area: Book Reviews (new feat)}} \\ \hline
-TC\_REV\_ADD\_001 & Verify Librarian can add a review (new feat) &
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item Login as Librarian.
-        \item Navigate to a book's detail page.
-        \item Use an administrative function to add a review for the book.
-        \item Enter a star rating and review text.
-        \item Submit the review.
-    \end{itemize} &
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item A success message is displayed.
-        \item The new review appears in the list of reviews for that book.
-    \end{itemize} \\ \hline
-TC\_REV\_VIEW\_001 & Verify any user can view reviews for a book (new feat) &
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item As any logged-in user (or guest, if public).
-        \item Navigate to the detail page of a book that has reviews.
-    \end{itemize} &
-    \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-        \item The list of reviews for the book is displayed correctly.
-    \end{itemize} \\ \hline
-
 \end{longtable}
-
-\end{document}

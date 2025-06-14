@@ -1,27 +1,4 @@
-\documentclass[10pt, a4paper]{report}
-\usepackage[utf8]{inputenc}
-\usepackage{geometry}
-\usepackage{longtable}
-\usepackage{array} % For better column definitions in longtable
-\usepackage{enumitem} % Required for itemize and enumerate options
-\usepackage{helvet} % Using a sans-serif font for better readability
-\renewcommand{\familydefault}{\sfdefault}
-
-\geometry{left=1cm, right=1cm, top=2cm, bottom=2cm}
-
-\title{Functional Test Cases: Entity Management (CRUD Operations) \\ \large Library Management System}
-\author{Test Design Team (Non-Coders/Specification Experts)}
-\date{June 5, 2025}
-
-\begin{document}
-\maketitle
-\begin{center}
-    \textbf{Note:} These test cases are designed from a black-box, user-centric perspective based on the SRS document. Actual results and status are to be filled during test execution. Test case design incorporates techniques like Equivalence Partitioning and Boundary Value Analysis.
-\end{center}
-
-\section*{I.B Functional Test Cases: Entity Management (CRUD)}
-
-\begin{longtable}{|>{\raggedright\arraybackslash}p{4.5cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4.5cm}|>{\raggedright\arraybackslash}p{4cm}|}
+\begin{longtable}{|>{\scriptsize\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|}
 \caption{Entity Management Test Cases}\label{tab:entity_test_cases}\\
 \hline
 \textbf{Test Case ID} & \textbf{Test Title} & \textbf{Test Steps} & \textbf{Expected Results} \\
@@ -273,7 +250,7 @@ TC\_BORROW\_UPDATE\_001 & Successful borrowal update by Librarian (mark as retur
 
 % Review Management
 \multicolumn{4}{|l|}{\textbf{Sub-Section: Review Management (SRS 3.8)}} \\ \hline
-TC\_REVIEW\_CREATE\_001 & (Assumed) Successful review creation by Member & 
+TC\_REVIEW\_CREATE\_001 & Successful review creation by Member & 
     \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
         \item Pre-condition: Based on assumed member capabilities if UI were present.
         \item Login as Member.
@@ -305,42 +282,4 @@ TC\_REVIEW\_DELETE\_001 & Successful review deletion by Librarian &
         \item The review is no longer visible.
     \end{itemize} \\ \hline
 
-\multicolumn{4}{|l|}{\textbf{Entity: Review Management (new feat)}} \\ \hline
-<<<<<<< HEAD
-TC\_REVIEW_CREATE\_001 & Successful review creation by Member (new feat) & 
-=======
-TC\_REVIEW\_CREATE\_001 \& Successful review creation by Member (new feat) & 
->>>>>>> feature/add-review-feature
-	\begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-		\item Login as Member.
-		\item Navigate to a specific book's detail page.
-		\item Submit a new review with a star rating and text.
-	\end{itemize} & 
-	\begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-		\item A success message is displayed.
-		\item The new review is visible on the book's page.
-	\end{itemize} \\ \hline
-TC\_REVIEW\_CREATE\_002 & Attempt to create a review with invalid data (new feat) & 
-	\begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-		\item Login as Member.
-		\item Attempt to submit a review with a required field missing (e.g., star rating) or an invalid value (e.g., 6 stars).
-	\end{itemize} & 
-	\begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-		\item System rejects the submission.
-		\item An appropriate error message is displayed.
-	\end{itemize} \\ \hline
-TC\_REVIEW\_DELETE\_001 & Successful review deletion by Librarian (new feat) & 
-	\begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-		\item Pre-condition: A review exists for a book.
-		\item Login as Librarian.
-		\item Navigate to the book or a review management section.
-		\item Select a review and delete it.
-	\end{itemize} & 
-	\begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*]
-		\item The review is removed from the system.
-		\item A success confirmation message is shown.
-	\end{itemize} \\ \hline
-
 \end{longtable}
-
-\end{document}
