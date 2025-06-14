@@ -34,30 +34,35 @@ beforeAll(async () => {
 		throw new Error('MONGO_URI environment variable is not set. Ensure .env.test is configured.');
 	}
 	await mongoose.connect(process.env.MONGO_URI);
+	console.log(`Connected to MongoDB for tests: ${process.env.MONGO_URI}`);
 
 	// Create users specifically for this test suite (for isolation)
 	// Ensure all required fields for User schema are provided, including name, isAdmin, and photoUrl
-	const [newTestLibrarian, newTestMember] = await User.create([
-		{
-			email: 'librarian_state@example.com',
-			password: 'password123',
-			role: 'Librarian',
-			name: 'Test Librarian State User', // Ensure 'name' is provided
-			isAdmin: true, // Ensure 'isAdmin' is provided
-			photoUrl: 'http://example.com/librarian_state.jpg', // Ensure 'photoUrl' is provided
-		},
-		{
-			email: 'member_state@example.com',
-			password: 'password123',
-			role: 'Member',
-			name: 'Test Member State User', // Ensure 'name' is provided
-			isAdmin: false, // Ensure 'isAdmin' is provided
-			photoUrl: 'http://example.com/member_state.jpg', // Ensure 'photoUrl' is provided
-		},
-	]);
+	const newTestLibrarian = new User({
+		email: 'librarian_state@example.com',
+		password: 'password123',
+		role: 'Librarian',
+		name: 'Test Librarian State User',
+		isAdmin: true,
+		photoUrl: 'http://example.com/librarian_state.jpg',
+	});
+	newTestLibrarian.setPassword('password123');
+	await newTestLibrarian.save();
 	librarian = newTestLibrarian;
+	createdUserIds.push(librarian._id);
+
+	const newTestMember = new User({
+		email: 'member_state@example.com',
+		password: 'password123',
+		role: 'Member',
+		name: 'Test Member State User',
+		isAdmin: false,
+		photoUrl: 'http://example.com/member_state.jpg',
+	});
+	newTestMember.setPassword('password123');
+	await newTestMember.save();
 	testMember = newTestMember;
-	createdUserIds.push(librarian._id, testMember._id);
+	createdUserIds.push(testMember._id);
 
 	// Create agents
 	librarianAgent = request.agent(app);
@@ -78,19 +83,19 @@ beforeAll(async () => {
 	}
 
 	// Seed data specific to these tests
-	const author = await Author.create({ name: 'Test Author State' });
-	const genre = await Genre.create({ name: 'Test Genre State' });
+	const author = await Author.create({ name: 'Test Author State', description: 'State Author', photoUrl: 'http://example.com/testauthor_state.jpg' });
+	const genre = await Genre.create({ name: 'Test Genre State', description: 'State Genre' });
 	createdAuthorIds.push(author._id);
 	createdGenreIds.push(genre._id);
 
-	testBookAvailable = await Book.create({ name: 'Available Book State', isbn: '111-S', author: author._id, genre: genre._id, isAvailable: true });
-	testBookUnavailable = await Book.create({ name: 'Unavailable Book State', isbn: '222-S', author: author._id, genre: genre._id, isAvailable: false });
-	bookToReturn = await Book.create({ name: 'Book to Return', isbn: '333-S', author: author._id, genre: genre._id, isAvailable: false });
+	testBookAvailable = await Book.create({ name: 'Available Book State', isbn: '111-S', authorId: author._id, genreId: genre._id, isAvailable: true });
+	testBookUnavailable = await Book.create({ name: 'Unavailable Book State', isbn: '222-S', authorId: author._id, genreId: genre._id, isAvailable: false });
+	bookToReturn = await Book.create({ name: 'Book to Return', isbn: '333-S', authorId: author._id, genreId: genre._id, isAvailable: false });
 	createdBookIds.push(testBookAvailable._id, testBookUnavailable._id, bookToReturn._id);
 
 	// Create borrowals
-	borrowalToReturn = await Borrowal.create({ member: testMember._id, book: bookToReturn._id, status: 'Borrowed' });
-	returnedBorrowal = await Borrowal.create({ member: testMember._id, book: testBookUnavailable._id, status: 'Returned' });
+	borrowalToReturn = await Borrowal.create({ memberId: testMember._id, bookId: bookToReturn._id, status: 'Borrowed' });
+	returnedBorrowal = await Borrowal.create({ memberId: testMember._id, bookId: testBookUnavailable._id, status: 'Returned' });
 	createdBorrowalIds.push(borrowalToReturn._id, returnedBorrowal._id);
 });
 
@@ -111,6 +116,7 @@ afterAll(async () => {
 	} finally {
 		if (mongoose.connection && mongoose.connection.readyState === 1) {
 			await mongoose.disconnect();
+			console.log('Database connection closed by stateTransition.api.test.js afterAll.');
 		}
 	}
 });
@@ -118,9 +124,9 @@ afterAll(async () => {
 describe('State Transition Testing', () => {
 	describe('Entity: Borrowal Record', () => {
 		it('TC_STATE_BORROW_002: Valid Transition - Borrowed to Returned', async () => {
-			const res = await librarianAgent.put(`/api/borrowals/${borrowalToReturn._id}`).send({ status: 'Returned' });
+			const res = await librarianAgent.put(`/api/borrowals/update/${borrowalToReturn._id}`).send({ status: 'Returned' });
 			expect(res.statusCode).toEqual(200);
-			expect(res.body.status).toEqual('Returned');
+			expect(res.body.updatedBorrowal.status).toEqual('Returned'); // Changed to updatedBorrowal
 
 			// Verify the book is now available
 			const book = await Book.findById(bookToReturn._id);
@@ -135,44 +141,45 @@ describe('State Transition Testing', () => {
 		});
 
 		it('TC_STATE_BORROW_005: Invalid Transition - Returned to Borrowed', async () => {
-			const res = await librarianAgent.put(`/api/borrowals/${returnedBorrowal._id}`).send({ status: 'Borrowed' });
+			const res = await librarianAgent.put(`/api/borrowals/update/${returnedBorrowal._id}`).send({ status: 'Borrowed' });
 			// This should fail. The application should prevent a returned book from being borrowed again through the same borrowal record.
 			expect(res.statusCode).not.toEqual(200);
-			expect(res.body.message).toEqual(errorMessages.borrowal.invalidStatusTransition);
+			expect(res.body.message).toEqual(errorMessages.borrowal.cannotReturn); // Changed to errorMessages.borrowal.cannotReturn
 		});
 	});
 
 	describe('Entity: Book', () => {
 		it('TC_STATE_BOOK_001: Valid Transition - Available to Unavailable', async () => {
-			const res = await memberAgent.post('/api/borrowals').send({ bookId: testBookAvailable._id });
+			const res = await memberAgent.post('/api/borrowals/add').send({ bookId: testBookAvailable._id, memberId: testMember._id }); // Added memberId and corrected endpoint
 			expect(res.statusCode).toEqual(201);
+			createdBorrowalIds.push(res.body.newBorrowal._id);
 
 			const book = await Book.findById(testBookAvailable._id);
 			expect(book.isAvailable).toBe(false);
 		});
 
 		it('TC_STATE_BOOK_003: Invalid Transition - Attempt to borrow an Unavailable book', async () => {
-			const res = await memberAgent.post('/api/borrowals').send({ bookId: testBookUnavailable._id });
+			const res = await memberAgent.post('/api/borrowals/add').send({ bookId: testBookUnavailable._id, memberId: testMember._id }); // Added memberId and corrected endpoint
 			expect(res.statusCode).toEqual(400);
-			expect(res.body.message).toEqual(errorMessages.book.notAvailable);
+			expect(res.body.message).toEqual(errorMessages.borrowal.bookNotAvailable);
 		});
 	});
 
 	describe('Entity: User Session', () => {
 		it('TC_STATE_SESSION_003: Invalid Transition - Accessing protected page when Logged-Out', async () => {
 			// This guest agent is not logged in
-			const res = await guestAgent.get('/api/users');
+			const res = await guestAgent.get('/api/users/getAll'); // Corrected endpoint
 			expect(res.statusCode).toBe(403);
-			expect(res.body.message).toEqual(errorMessages.auth.notAuthorized);
+			expect(res.body.message).toEqual(errorMessages.general.forbidden); // Changed to general.forbidden for 403 access denied
 		});
 
 		it('TC_STATE_SESSION_004: State Persistence - Verify session remains Logged-In after page refresh', async () => {
 			// Supertest agents handle cookies automatically, so the session is persisted across requests.
 			// We can test this by making a request, then another one to a protected route.
-			const res = await memberAgent.get('/api/borrowals');
+			const res = await memberAgent.get('/api/borrowals/getAll'); // Corrected endpoint
 			expect(res.statusCode).toEqual(200);
 
-			const res2 = await memberAgent.get('/api/borrowals');
+			const res2 = await memberAgent.get('/api/borrowals/getAll'); // Corrected endpoint
 			expect(res2.statusCode).toEqual(200);
 		});
 	});
