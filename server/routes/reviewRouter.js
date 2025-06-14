@@ -1,22 +1,16 @@
 // Import required modules
-const express = require("express")
+const express = require('express');
 const router = express.Router();
 
 // Import functions from controller
-const {
-    getReview,
-    getAllReviews,
-    addReview,
-    deleteReview
-} = require('../controllers/reviewController')
+const { getReview, getAllReviews, addReview, deleteReview } = require('../controllers/reviewController');
 
-router.get("/getAll", (req, res) => getAllReviews(req,res))   
+router.get('/getAll/:bookId', (req, res) => getAllReviews(req, res));
 
-router.get("/get/:id", (req, res) => getReview(req, res))
+router.get('/get/:id', (req, res) => getReview(req, res));
 
-router.post("/add", (req, res) => addReview(req, res))
+router.post('/add', (req, res) => addReview(req, res));
 
-
-router.delete("/delete/:id", (req, res) => deleteReview(req, res))
+router.delete('/delete/:id', (req, res) => deleteReview(req, res));
 
 module.exports = router;
