@@ -16,16 +16,20 @@ const getReview = async (req, res) => {
 };
 
 const getAllReviews = async (req, res) => {
-	Review.find({}, (err, reviews) => {
-		if (err) {
-			return res.status(400).json({ success: false, err });
-		}
+	// The .populate() method is added to fetch associated book and member names.
+	Review.find({})
+		.populate('bookId', 'name') // Populates the 'name' field from the Book model
+		.populate('memberId', 'name') // Populates the 'name' field from the User model
+		.exec((err, reviews) => {
+			if (err) {
+				return res.status(400).json({ success: false, err });
+			}
 
-		return res.status(200).json({
-			success: true,
-			reviewsList: reviews,
+			return res.status(200).json({
+				success: true,
+				reviewsList: reviews,
+			});
 		});
-	});
 };
 
 const addReview = async (req, res) => {
