@@ -7,55 +7,112 @@
 const request = require('supertest');
 const app = require('../../../index');
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
 const User = require('../../../models/user');
 const Book = require('../../../models/book');
 const Author = require('../../../models/author');
 const Genre = require('../../../models/genre');
 const Borrowal = require('../../../models/borrowal');
+const { errorMessages } = require('../../../utils/errorMessages');
 
-let mongoServer;
+// Increase Jest timeout for this test suite, as beforeAll involves heavy setup
+jest.setTimeout(90000); // Increased to 90 seconds
+
 let librarianAgent, memberAgent, guestAgent;
 let testBookAvailable, testBookUnavailable, bookToReturn;
 let testMember, librarian;
 let borrowalToReturn, returnedBorrowal;
+let createdUserIds = []; // To keep track of users created for cleanup
+let createdBookIds = [];
+let createdAuthorIds = [];
+let createdGenreIds = [];
+let createdBorrowalIds = [];
 
 beforeAll(async () => {
-	mongoServer = await MongoMemoryServer.create();
-	const mongoUri = mongoServer.getUri();
-	await mongoose.connect(mongoUri);
+	// Connect to the Dockerized MongoDB instance
+	// MONGO_URI is expected to be loaded from .env.test via jest.setup.js
+	if (!process.env.MONGO_URI) {
+		throw new Error('MONGO_URI environment variable is not set. Ensure .env.test is configured.');
+	}
+	await mongoose.connect(process.env.MONGO_URI);
 
-	// Create users
-	[librarian, testMember] = await User.create([
-		{ username: 'librarian_state', password: 'password123', role: 'Librarian', fullName: 'Test Librarian State' },
-		{ username: 'member_state', password: 'password123', role: 'Member', fullName: 'Test Member State' },
+	// Create users specifically for this test suite (for isolation)
+	// Ensure all required fields for User schema are provided, including name, isAdmin, and photoUrl
+	const [newTestLibrarian, newTestMember] = await User.create([
+		{
+			email: 'librarian_state@example.com',
+			password: 'password123',
+			role: 'Librarian',
+			name: 'Test Librarian State User', // Ensure 'name' is provided
+			isAdmin: true, // Ensure 'isAdmin' is provided
+			photoUrl: 'http://example.com/librarian_state.jpg', // Ensure 'photoUrl' is provided
+		},
+		{
+			email: 'member_state@example.com',
+			password: 'password123',
+			role: 'Member',
+			name: 'Test Member State User', // Ensure 'name' is provided
+			isAdmin: false, // Ensure 'isAdmin' is provided
+			photoUrl: 'http://example.com/member_state.jpg', // Ensure 'photoUrl' is provided
+		},
 	]);
+	librarian = newTestLibrarian;
+	testMember = newTestMember;
+	createdUserIds.push(librarian._id, testMember._id);
 
 	// Create agents
 	librarianAgent = request.agent(app);
 	memberAgent = request.agent(app);
 	guestAgent = request.agent(app); // For logged-out tests
 
-	// Login users
-	await librarianAgent.post('/api/auth/login').send({ username: 'librarian_state', password: 'password123' });
-	await memberAgent.post('/api/auth/login').send({ username: 'member_state', password: 'password123' });
+	// Login users with their created credentials
+	const librarianLoginRes = await librarianAgent.post('/api/auth/login').send({ email: 'librarian_state@example.com', password: 'password123' });
+	if (librarianLoginRes.statusCode !== 200) {
+		console.error('Librarian login failed in stateTransition.api.test.js beforeAll:', librarianLoginRes.body);
+		throw new Error('Failed to log in librarian for tests.');
+	}
 
-	// Seed data
+	const memberLoginRes = await memberAgent.post('/api/auth/login').send({ email: 'member_state@example.com', password: 'password123' });
+	if (memberLoginRes.statusCode !== 200) {
+		console.error('Member login failed in stateTransition.api.test.js beforeAll:', memberLoginRes.body);
+		throw new Error('Failed to log in member for tests.');
+	}
+
+	// Seed data specific to these tests
 	const author = await Author.create({ name: 'Test Author State' });
 	const genre = await Genre.create({ name: 'Test Genre State' });
+	createdAuthorIds.push(author._id);
+	createdGenreIds.push(genre._id);
 
 	testBookAvailable = await Book.create({ name: 'Available Book State', isbn: '111-S', author: author._id, genre: genre._id, isAvailable: true });
 	testBookUnavailable = await Book.create({ name: 'Unavailable Book State', isbn: '222-S', author: author._id, genre: genre._id, isAvailable: false });
 	bookToReturn = await Book.create({ name: 'Book to Return', isbn: '333-S', author: author._id, genre: genre._id, isAvailable: false });
+	createdBookIds.push(testBookAvailable._id, testBookUnavailable._id, bookToReturn._id);
 
 	// Create borrowals
 	borrowalToReturn = await Borrowal.create({ member: testMember._id, book: bookToReturn._id, status: 'Borrowed' });
 	returnedBorrowal = await Borrowal.create({ member: testMember._id, book: testBookUnavailable._id, status: 'Returned' });
+	createdBorrowalIds.push(borrowalToReturn._id, returnedBorrowal._id);
 });
 
 afterAll(async () => {
-	await mongoose.disconnect();
-	await mongoServer.stop();
+	try {
+		// Log out agents
+		await librarianAgent.get('/api/auth/logout');
+		await memberAgent.get('/api/auth/logout');
+
+		// Clean up test data
+		await Borrowal.deleteMany({ _id: { $in: createdBorrowalIds } });
+		await Book.deleteMany({ _id: { $in: createdBookIds } });
+		await Author.deleteMany({ _id: { $in: createdAuthorIds } });
+		await Genre.deleteMany({ _id: { $in: createdGenreIds } });
+		await User.deleteMany({ _id: { $in: createdUserIds } });
+	} catch (error) {
+		console.error('Error during afterAll cleanup in stateTransition.api.test.js:', error.message);
+	} finally {
+		if (mongoose.connection && mongoose.connection.readyState === 1) {
+			await mongoose.disconnect();
+		}
+	}
 });
 
 describe('State Transition Testing', () => {
@@ -81,6 +138,7 @@ describe('State Transition Testing', () => {
 			const res = await librarianAgent.put(`/api/borrowals/${returnedBorrowal._id}`).send({ status: 'Borrowed' });
 			// This should fail. The application should prevent a returned book from being borrowed again through the same borrowal record.
 			expect(res.statusCode).not.toEqual(200);
+			expect(res.body.message).toEqual(errorMessages.borrowal.invalidStatusTransition);
 		});
 	});
 
@@ -96,7 +154,7 @@ describe('State Transition Testing', () => {
 		it('TC_STATE_BOOK_003: Invalid Transition - Attempt to borrow an Unavailable book', async () => {
 			const res = await memberAgent.post('/api/borrowals').send({ bookId: testBookUnavailable._id });
 			expect(res.statusCode).toEqual(400);
-			expect(res.body.message).toEqual('Book is not available');
+			expect(res.body.message).toEqual(errorMessages.book.notAvailable);
 		});
 	});
 
@@ -105,6 +163,7 @@ describe('State Transition Testing', () => {
 			// This guest agent is not logged in
 			const res = await guestAgent.get('/api/users');
 			expect(res.statusCode).toBe(403);
+			expect(res.body.message).toEqual(errorMessages.auth.notAuthorized);
 		});
 
 		it('TC_STATE_SESSION_004: State Persistence - Verify session remains Logged-In after page refresh', async () => {

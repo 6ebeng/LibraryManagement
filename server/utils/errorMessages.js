@@ -28,6 +28,7 @@ const errorMessages = {
 		createFailed: 'Failed to add book. Please check all required fields.',
 		updateFailed: 'Failed to update book information. Please try again.',
 		deleteFailed: 'Failed to delete book. Please try again.',
+		notAvailable: 'This book is currently not available for borrowing',
 	},
 
 	// User Management Errors
@@ -54,6 +55,7 @@ const errorMessages = {
 		overdue: 'This book is overdue. Please return it as soon as possible.',
 		createFailed: 'Failed to create borrowal record. Please try again.',
 		returnFailed: 'Failed to process book return. Please try again.',
+		invalidStatusTransition: 'Invalid status transition for borrowal record. A returned book cannot be re-borrowed via update.',
 	},
 
 	// General Errors
