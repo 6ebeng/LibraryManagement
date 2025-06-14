@@ -1,122 +1,107 @@
-const Borrowal = require('../models/borrowal')
-const mongoose = require("mongoose");
-const Book = require("../models/book");
+const Borrowal = require('../models/borrowal');
+const mongoose = require('mongoose');
+const Book = require('../models/book');
 
+// Refactored to use async/await and try/catch for better error handling
 const getBorrowal = async (req, res) => {
-    const borrowalId = req.params.id;
+	try {
+		const borrowal = await Borrowal.findById(req.params.id);
+		if (!borrowal) {
+			return res.status(404).json({ success: false, message: 'Borrowal not found' });
+		}
+		return res.status(200).json({ success: true, borrowal });
+	} catch (err) {
+		return res.status(500).json({ success: false, err: err.message });
+	}
+};
 
-    Borrowal.findById(borrowalId, (err, borrowal) => {
-        if (err) {
-            return res.status(400).json({ success: false, err });
-        }
-
-        return res.status(200).json({
-            success: true,
-            borrowal
-        });
-    });
-}
-
+// Refactored to use async/await
 const getAllBorrowals = async (req, res) => {
-    Borrowal.aggregate([{
-        $lookup: {
-            from: "users",
-            localField: "memberId",
-            foreignField: "_id",
-            as: "member"
-        },
-    },
-        {
-            $unwind: "$member"
-        },
-        {
-            $lookup: {
-                from: "books",
-                localField: "bookId",
-                foreignField: "_id",
-                as: "book"
-            },
-        },
-        {
-            $unwind: "$book"
-        },]).exec((err, borrowals) => {
-        if (err) {
-            return res.status(400).json({success: false, err});
-        }
+	try {
+		const borrowals = await Borrowal.aggregate([
+			{
+				$lookup: {
+					from: 'users',
+					localField: 'memberId',
+					foreignField: '_id',
+					as: 'member',
+				},
+			},
+			{ $unwind: '$member' },
+			{
+				$lookup: {
+					from: 'books',
+					localField: 'bookId',
+					foreignField: '_id',
+					as: 'book',
+				},
+			},
+			{ $unwind: '$book' },
+		]);
+		return res.status(200).json({ success: true, borrowalsList: borrowals });
+	} catch (err) {
+		return res.status(500).json({ success: false, err: err.message });
+	}
+};
 
-        return res.status(200).json({
-            success: true,
-            borrowalsList: borrowals
-        });
-    })
-}
-
+// Refactored to handle nested asynchronous operations cleanly
 const addBorrowal = async (req, res) => {
-    const newBorrowal = {
-        ...req.body,
-        memberId: mongoose.Types.ObjectId(req.body.memberId),
-        bookId: mongoose.Types.ObjectId(req.body.bookId)
-    }
+	try {
+		const newBorrowalData = {
+			...req.body,
+			memberId: mongoose.Types.ObjectId(req.body.memberId),
+			bookId: mongoose.Types.ObjectId(req.body.bookId),
+		};
 
-    Borrowal.create(newBorrowal, (err, borrowal) => {
-        if (err) {
-            return res.status(400).json({success: false, err});
-        }
+		const borrowal = await Borrowal.create(newBorrowalData);
+		await Book.findByIdAndUpdate(newBorrowalData.bookId, { isAvailable: false });
 
-        Book.findByIdAndUpdate(newBorrowal.bookId, {isAvailable: false}, (err, book) => {
-            if (err) {
-                return res.status(400).json({success: false, err});
-            }
+		return res.status(201).json({ success: true, newBorrowal: borrowal });
+	} catch (err) {
+		return res.status(400).json({ success: false, err: err.message });
+	}
+};
 
-            return res.status(200).json({
-                success: true,
-                newBorrowal: borrowal
-            });
-        });
-    })
-}
-
+// Refactored to return the updated document
 const updateBorrowal = async (req, res) => {
-    const borrowalId = req.params.id
-    const updatedBorrowal = req.body
+	try {
+		const updatedBorrowal = await Borrowal.findByIdAndUpdate(
+			req.params.id,
+			req.body,
+			{ new: true } // This option returns the document after it has been updated
+		);
 
-    Borrowal.findByIdAndUpdate(borrowalId,updatedBorrowal, (err, borrowal) => {
-        if (err) {
-            return res.status(400).json({ success: false, err });
-        }
+		if (!updatedBorrowal) {
+			return res.status(404).json({ success: false, message: 'Borrowal not found to update' });
+		}
 
-        return res.status(200).json({
-            success: true,
-            updatedBorrowal: borrowal
-        });
-    })
-}
+		return res.status(200).json({ success: true, updatedBorrowal });
+	} catch (err) {
+		return res.status(400).json({ success: false, err: err.message });
+	}
+};
 
+// Refactored to handle nested asynchronous operations and check for existence
 const deleteBorrowal = async (req, res) => {
-    const borrowalId = req.params.id
+	try {
+		const borrowal = await Borrowal.findByIdAndDelete(req.params.id);
 
-    Borrowal.findByIdAndDelete(borrowalId, (err, borrowal) => {
-        if (err) {
-            return res.status(400).json({success: false, err});
-        }
+		if (!borrowal) {
+			return res.status(404).json({ success: false, message: 'Borrowal not found to delete' });
+		}
 
-        Book.findByIdAndUpdate(borrowal.bookId, {isAvailable: true}, (err, book) => {
-            if (err) {
-                return res.status(400).json({success: false, err});
-            }
+		await Book.findByIdAndUpdate(borrowal.bookId, { isAvailable: true });
 
-            return res.status(200).json({
-                success: true,
-                deletedBorrowal: borrowal
-            });
-        });
-    })
-}
+		return res.status(200).json({ success: true, deletedBorrowal: borrowal });
+	} catch (err) {
+		return res.status(500).json({ success: false, err: err.message });
+	}
+};
 
 module.exports = {
-    getBorrowal,
-    getAllBorrowals,
-    addBorrowal,
-    updateBorrowal,
-    deleteBorrowal
-}
+	getBorrowal,
+	getAllBorrowals,
+	addBorrowal,
+	updateBorrowal,
+	deleteBorrowal,
+};

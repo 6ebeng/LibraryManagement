@@ -103,12 +103,12 @@ initializePassport(passport);
 
 // Implement routes for REST API
 app.use('/api/auth', authRouter);
-app.use('/api/book', bookRouter);
-app.use('/api/author', authorRouter);
-app.use('/api/borrowal', borrowalRouter);
-app.use('/api/genre', genreRouter);
-app.use('/api/user', userRouter);
-app.use('/api/review', reviewRouter);
+app.use('/api/books', bookRouter);
+app.use('/api/authors', authorRouter);
+app.use('/api/borrowals', borrowalRouter);
+app.use('/api/genres', genreRouter);
+app.use('/api/users', userRouter);
+app.use('/api/reviews', reviewRouter);
 app.get('/api/health', (req, res) => {
 	console.log('HEALTH CHECK: /api/health endpoint was hit at', new Date().toISOString());
 	try {
