@@ -60,9 +60,10 @@ beforeAll(async () => {
 afterAll(async () => {
 	try {
 		// Delete all users created during the tests
-		await User.deleteMany({ _id: { $in: createdUserIds } });
+		if (createdUserIds.length > 0) {
+			await User.deleteMany({ _id: { $in: createdUserIds } });
+		}
 		// Additional cleanup for any users specifically created in tests and not added to createdUserIds
-		// (though the current TC_USER_DEL_001 adds its user to createdUserIds)
 		await User.deleteMany({ email: { $regex: /todelete\..*@example\.com/i } });
 	} catch (error) {
 		console.error('Error during afterAll cleanup in user.api.test.js:', error.message);
@@ -80,7 +81,7 @@ describe('User Management API (Librarian)', () => {
 	it('TC_USER_VIEW_001: should allow a librarian to view all users', async () => {
 		const res = await librarianAgent.get('/api/users/getAll');
 		expect(res.statusCode).toEqual(200);
-		expect(res.body.success).toBe(true); // Assuming a common success flag
+		expect(res.body.success).toBe(true);
 		expect(Array.isArray(res.body.usersList)).toBe(true);
 		// There should be at least the librarian and the member created in beforeAll
 		expect(res.body.usersList.length).toBeGreaterThanOrEqual(2);
@@ -98,39 +99,43 @@ describe('User Management API (Librarian)', () => {
 	// Objective: Verify a librarian can update another user's details.
 	it("TC_USER_UPDATE_001: should allow a librarian to update a user's details", async () => {
 		const updatedName = 'Updated Member Name by Librarian';
-		const res = await librarianAgent.put(`/api/users/update/${userToManage._id}`).send({
+		const updatePayload = {
 			name: updatedName,
-			// Send other fields as they are, assuming only name is intended to change for this test assertion
-			email: userToManage.email,
-			isAdmin: userToManage.isAdmin,
-			photoUrl: userToManage.photoUrl,
-		});
+			email: userToManage.email, // Keep original email or provide a new valid one if allowed
+			isAdmin: userToManage.isAdmin, // Keep original isAdmin status or change if intended
+			photoUrl: userToManage.photoUrl, // Keep original photoUrl or provide new
+			// DO NOT send 'password' field if not intending to change it.
+		};
+
+		const res = await librarianAgent.put(`/api/users/update/${userToManage._id}`).send(updatePayload);
+
 		expect(res.statusCode).toEqual(200);
 		expect(res.body.success).toBe(true);
 		expect(res.body.updatedUser).toBeDefined();
 		expect(res.body.updatedUser.name).toEqual(updatedName);
+
 		// Optionally, verify in DB
-		const dbUser = await User.findById(userToManage._id);
+		const dbUser = await User.findById(userToManage._id).lean();
 		expect(dbUser.name).toEqual(updatedName);
 	});
 
 	// Test Case: TC_USER_DEL_001
-	// Objective: Verify a librarian can delete a user.
+	// Objective: Verify a librarian can delete a user (that has no blocking referential integrity).
 	it('TC_USER_DEL_001: should allow a librarian to delete a user', async () => {
-		// Create a new user specifically for this deletion test
-		const uniqueEmailForDelete = `todelete.${Date.now()}@example.com`;
+		const uniqueSuffixDelete = Date.now();
 		const userToDeletePayload = {
 			name: 'User To Be Deleted',
-			email: uniqueEmailForDelete,
+			email: `todelete.${uniqueSuffixDelete}@example.com`,
 			isAdmin: false,
 			photoUrl: 'http://example.com/todelete.jpg',
 		};
 		const userToDelete = new User(userToDeletePayload);
-		userToDelete.setPassword('password123');
+		userToDelete.setPassword('password123'); // Set a password for the new user
 		await userToDelete.save();
 
-		// Add this user's ID to createdUserIds so it's cleaned up in afterAll
-		// even if the delete API call fails or this test has an issue.
+		// Important: Add to createdUserIds for cleanup ONLY if you are sure it should be cleaned up by the main hook.
+		// If the test is about deletion, this user ID might be removed by the test itself.
+		// For safety, let's add it, assuming afterAll is robust.
 		createdUserIds.push(userToDelete._id);
 
 		const res = await librarianAgent.delete(`/api/users/delete/${userToDelete._id}`);

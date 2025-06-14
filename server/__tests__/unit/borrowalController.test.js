@@ -4,7 +4,7 @@
 const borrowalController = require('../../controllers/borrowalController');
 const Borrowal = require('../../models/borrowal');
 const Book = require('../../models/book');
-const mongoose = require('mongoose'); // This will be the mocked mongoose
+const mongoose = require('mongoose'); // This will be the mocked mongoose after jest.mock runs
 
 // --- Mocking Mongoose ---
 const actualMongoose = jest.requireActual('mongoose'); // For creating real ObjectId instances in test data
@@ -12,13 +12,13 @@ const actualMongoose = jest.requireActual('mongoose'); // For creating real Obje
 jest.mock('mongoose', () => {
 	const originalMongoose = jest.requireActual('mongoose');
 	// Define the spy function here, so it's created when the mock factory runs.
-	const internalObjectIdSpy = jest.fn((id) => {
-		// Handle null/undefined IDs to prevent errors if the controller passes them
+	const objectIdSpyInstance = jest.fn((id) => {
 		if (id === null || typeof id === 'undefined') {
-			// Option 1: Throw an error similar to what Mongoose might do
-			// throw new originalMongoose.Error.CastError('ObjectId', id, 'path');
-			// Option 2: Return null or a specific marker, depending on how you want to test this case
-			return null;
+			// For testing, it's often better to let it try to cast and potentially fail
+			// if that's what real Mongoose would do, or return a specific marker.
+			// Returning null might hide issues if the controller isn't expecting it.
+			// Let's allow it to proceed to new originalMongoose.Types.ObjectId(id)
+			// which will throw if id is invalid for an ObjectId.
 		}
 		return new originalMongoose.Types.ObjectId(id);
 	});
@@ -29,12 +29,17 @@ jest.mock('mongoose', () => {
 		model: originalMongoose.model,
 		Types: {
 			...originalMongoose.Types,
-			ObjectId: internalObjectIdSpy, // What the code under test uses
-			_ObjectIdSpy: internalObjectIdSpy, // What our tests use to assert/clear
+			ObjectId: objectIdSpyInstance, // This is what the code under test (controller) will use
+			_objectIdSpyFn: objectIdSpyInstance, // This is how tests will access the spy
 		},
-		// Ensure other static methods are present if used directly (e.g., mongoose.connect)
-		connect: originalMongoose.connect,
-		connection: originalMongoose.connection,
+		connect: jest.fn().mockResolvedValue(undefined), // Mock connect if used directly
+		connection: {
+			// Mock connection properties if used
+			readyState: 1,
+			on: jest.fn(),
+			once: jest.fn(),
+			close: jest.fn().mockResolvedValue(undefined),
+		},
 		// Add any other static properties/methods of mongoose that your code might use directly
 	};
 });
@@ -69,9 +74,10 @@ describe('Borrowal Controller - Unit Tests', () => {
 		Borrowal.findByIdAndUpdate.mockClear();
 		Borrowal.findByIdAndDelete.mockClear();
 		Borrowal.aggregate.mockClear();
-		// Clear the spy via the mocked mongoose module
-		if (mongoose.Types._ObjectIdSpy) {
-			mongoose.Types._ObjectIdSpy.mockClear();
+
+		// Clear the spy via the mocked mongoose module's new property
+		if (mongoose.Types && mongoose.Types._objectIdSpyFn) {
+			mongoose.Types._objectIdSpyFn.mockClear();
 		}
 		if (require('../../utils/errorMessages').getErrorMessage.mockClear) {
 			require('../../utils/errorMessages').getErrorMessage.mockClear();
@@ -95,9 +101,11 @@ describe('Borrowal Controller - Unit Tests', () => {
 
 			await borrowalController.addBorrowal(req, res);
 
-			expect(mongoose.Types._ObjectIdSpy).toHaveBeenCalledWith(req.body.bookId);
-			expect(mongoose.Types._ObjectIdSpy).toHaveBeenCalledWith(req.body.memberId);
+			// Assert that our spy (mongoose.Types.ObjectId) was called
+			expect(mongoose.Types._objectIdSpyFn).toHaveBeenCalledWith(req.body.bookId);
+			expect(mongoose.Types._objectIdSpyFn).toHaveBeenCalledWith(req.body.memberId);
 
+			// The controller calls mongoose.Types.ObjectId(), which returns a real ObjectId instance because our spy does.
 			const expectedBookObjectId = new actualMongoose.Types.ObjectId(req.body.bookId);
 			const expectedMemberObjectId = new actualMongoose.Types.ObjectId(req.body.memberId);
 
@@ -120,8 +128,8 @@ describe('Borrowal Controller - Unit Tests', () => {
 
 			await borrowalController.addBorrowal(req, res);
 
-			expect(mongoose.Types._ObjectIdSpy).toHaveBeenCalledWith(req.body.bookId);
-			expect(mongoose.Types._ObjectIdSpy).toHaveBeenCalledWith(req.body.memberId);
+			expect(mongoose.Types._objectIdSpyFn).toHaveBeenCalledWith(req.body.bookId);
+			expect(mongoose.Types._objectIdSpyFn).toHaveBeenCalledWith(req.body.memberId);
 
 			expect(Book.findOneAndUpdate).toHaveBeenCalledWith({ _id: new actualMongoose.Types.ObjectId(req.body.bookId), isAvailable: true }, { $set: { isAvailable: false } });
 			expect(Borrowal.create).not.toHaveBeenCalled();
