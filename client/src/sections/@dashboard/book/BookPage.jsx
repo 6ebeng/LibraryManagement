@@ -44,9 +44,11 @@ const ReviewList = ({ reviews, isLoading }) => {
         <Card key={review._id} sx={{ mb: 2, p: 2 }}>
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Typography variant="subtitle2">{review.memberId?.name || 'Anonymous'}</Typography>
-            <Rating value={review.star} readOnly size="small" />
+            {/* FIX: Use review.rating for the star value */}
+            <Rating value={review.rating} readOnly size="small" />
           </Stack>
-          <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>{review.rating}</Typography>
+          {/* FIX: Use review.comment for the comment text */}
+          <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>{review.comment}</Typography>
           <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', textAlign: 'right' }}>
             {fDate(review.createdAt)}
           </Typography>
@@ -55,7 +57,6 @@ const ReviewList = ({ reviews, isLoading }) => {
     </Box>
   );
 };
-
 ReviewList.propTypes = {
   reviews: PropTypes.array.isRequired,
   isLoading: PropTypes.bool.isRequired,
