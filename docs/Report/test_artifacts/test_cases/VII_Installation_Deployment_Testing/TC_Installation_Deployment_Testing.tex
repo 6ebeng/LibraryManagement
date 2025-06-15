@@ -1,519 +1,58 @@
-\subsubsection{Scope}
-The Installation/Deployment Testing covers:
-\begin{itemize}
-    \item Docker container setup and configuration
-    \item Environment variable validation
-    \item Database connectivity and initialization
-    \item Service orchestration with Docker Compose
-    \item Cross-platform deployment verification
-    \item Smoke testing after deployment
-    \item Rollback and recovery procedures
-\end{itemize}
+\begin{longtable}{|p{0.1\textwidth}|p{0.2\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|p{0.05\textwidth}|p{0.05\textwidth}|}
+    \caption{Installation \& Deployment Test Cases}
+    \label{tab:installation_tests}\\
+    \hline
+    \textbf{Test ID} & \textbf{Description} & \textbf{Execution Steps} & \textbf{Expected Results} & \textbf{Status} & \textbf{Notes} \\
+    \hline
+    \endfirsthead
+    \multicolumn{6}{c}%
+    {{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+    \hline
+    \textbf{Test ID} & \textbf{Description} & \textbf{Execution Steps} & \textbf{Expected Results} & \textbf{Status} & \textbf{Notes} \\
+    \hline
+    \endhead
+    \hline \multicolumn{6}{|r|}{{Continued on next page}} \\ \hline
+    \endfoot
+    \hline
+    \endlastfoot
+    
+    TC-IDT-001 & Verify Docker Environment Build and Launch & 
+    1. Navigate to the project root directory. \newline
+    2. Run the command \texttt{docker-compose up --build -d}. \newline
+    3. Check container status with \texttt{docker ps}. & 
+    All containers (lms-server, lms-client, lms-db) are running without errors. The client is accessible at \texttt{http://localhost:3000} and the server logs show a successful connection to the database.  & Pass & \\
+    \hline
+    
+    TC-IDT-002 & Verify Database Initialization and Seeding & 
+    1. After a fresh launch, connect to the MongoDB container. \newline
+    2. Access the \texttt{lms} database. \newline
+    3. List collections and query the \texttt{users} collection. & 
+    The database contains all required collections as defined by the Mongoose models. The \texttt{users} collection is populated with the initial admin user from the seeding script. & Pass & \\
+    \hline
+    
+    TC-IDT-003 & Post-Deployment Smoke Test (Librarian) & 
+    1. Open a browser and navigate to \texttt{http://localhost:3000}. \newline
+    2. Log in with Librarian credentials. \newline
+    3. Navigate to the Dashboard, Books, and Users pages. & 
+    Login is successful. The user is redirected to the Dashboard.  All navigated pages (Dashboard, Books, Users) load correctly without critical errors and display their respective UI components.  & Pass & \\
+    \hline
+    
+    TC-IDT-004 & Post-Deployment Acceptance Test (Member) & 
+    1. In a new browser session, log in with Member credentials. \newline
+    2. Navigate to the Books page and view a book's details. \newline
+    3. Navigate to the Borrowals page to view personal history. & 
+    Login is successful. The user is redirected to the Books page.  The user can view the list of books and their details. The borrowal history page loads correctly, displaying a message that no borrowals are found (for a new user).  & Pass & \\
+    \hline
 
-\subsubsection{Test Environment}
-\begin{itemize}
-    \item \textbf{Development Environment}: Local development machines
-    \item \textbf{Staging Environment}: Docker containers on staging server
-    \item \textbf{Production-like Environment}: Simulated production setup
-    \item \textbf{Operating Systems}: Windows 10/11, Ubuntu 20.04+, macOS
-    \item \textbf{Container Runtime}: Docker Engine 20.10+, Docker Compose 2.0+
-\end{itemize}
+    TC-IDT-005 & Verify Docker Build Process & 
+    1. Run \texttt{docker-compose build --no-cache} from the root directory. & 
+    The Docker images for both the \texttt{server} and \texttt{client} services are built successfully without any errors during dependency installation or code copying.  & Pass & \\
+    \hline
 
-\subsubsection{Test Strategy}
+    TC-IDT-006 & Verify Graceful Shutdown & 
+    1. From the root directory, run the command \texttt{docker-compose down}. \newline
+    2. Run \texttt{docker ps -a} to check for remaining containers. & 
+    All application containers are stopped and removed. The custom network created by Docker Compose is also removed. No orphaned resources remain. & Pass & \\
+    \hline
 
-\subsubsubsection{Testing Approach}
-\begin{enumerate}
-    \item \textbf{Fresh Installation Testing}: Clean environment setup
-    \item \textbf{Upgrade Testing}: Version migration scenarios
-    \item \textbf{Configuration Testing}: Environment-specific configurations
-    \item \textbf{Integration Testing}: Service connectivity validation
-    \item \textbf{Smoke Testing}: Basic functionality verification post-deployment
-    \item \textbf{Recovery Testing}: Failure and rollback scenarios
-\end{enumerate}
-
-\subsubsubsection{Entry Criteria}
-\begin{itemize}
-    \item Docker images built successfully
-    \item Docker Compose configuration validated
-    \item Environment configuration files prepared
-    \item Test data and scripts ready
-\end{itemize}
-
-\subsubsubsection{Exit Criteria}
-\begin{itemize}
-    \item All critical installation scenarios pass
-    \item Smoke tests execute successfully
-    \item Performance benchmarks meet requirements
-    \item Documentation updated and verified
-\end{itemize}
-
-\subsubsection{Test Cases}
-
-\subsubsubsection{Docker Container Setup Testing}
-
-\begin{longtable}{|p{3cm}|p{12cm}|}
-\caption{Docker Container Setup Test Cases} \\
-\hline
-\rowcolor{lightgray}
-\textbf{Test Case ID} & \textbf{TC\_INSTALL\_DOCKER\_001} \\
-\hline
-\textbf{Test Case Name} & Docker Image Build Verification \\
-\hline
-\textbf{Objective} & Verify that all Docker images build successfully without errors \\
-\hline
-\textbf{Preconditions} & 
-\begin{itemize}[nosep]
-    \item Docker Engine installed and running
-    \item Source code available
-    \item Dockerfiles present in respective directories
-\end{itemize} \\
-\hline
-\textbf{Test Steps} & 
-\begin{enumerate}[nosep]
-    \item Navigate to project root directory
-    \item Execute: \texttt{docker build -t library-server ./server}
-    \item Execute: \texttt{docker build -t library-client ./client}
-    \item Execute: \texttt{docker build -t library-e2e ./e2e}
-    \item Verify build logs for errors
-    \item Check image creation: \texttt{docker images}
-\end{enumerate} \\
-\hline
-\textbf{Expected Result} & 
-\begin{itemize}[nosep]
-    \item All images build without errors
-    \item Images appear in Docker images list
-    \item Build process completes within reasonable time
-    \item No security vulnerabilities reported
-\end{itemize} \\
-\hline
-\textbf{Priority} & High \\
-\hline
-\textbf{Test Type} & Installation \\
-\hline
 \end{longtable}
-
-\begin{longtable}{|p{3cm}|p{12cm}|}
-\caption{Docker Container Startup Test Cases} \\
-\hline
-\rowcolor{lightgray}
-\textbf{Test Case ID} & \textbf{TC\_INSTALL\_DOCKER\_002} \\
-\hline
-\textbf{Test Case Name} & Docker Compose Service Orchestration \\
-\hline
-\textbf{Objective} & Verify Docker Compose starts all services correctly \\
-\hline
-\textbf{Preconditions} & 
-\begin{itemize}[nosep]
-    \item Docker images built successfully
-    \item docker-compose.yml configured
-    \item Environment files present
-\end{itemize} \\
-\hline
-\textbf{Test Steps} & 
-\begin{enumerate}[nosep]
-    \item Execute: \texttt{docker-compose up -d}
-    \item Wait for services to start (30 seconds)
-    \item Check service status: \texttt{docker-compose ps}
-    \item Verify logs: \texttt{docker-compose logs}
-    \item Test service connectivity between containers
-\end{enumerate} \\
-\hline
-\textbf{Expected Result} & 
-\begin{itemize}[nosep]
-    \item All services start successfully
-    \item No error messages in logs
-    \item Services can communicate with each other
-    \item Health checks pass
-\end{itemize} \\
-\hline
-\textbf{Priority} & High \\
-\hline
-\textbf{Test Type} & Installation \\
-\hline
-\end{longtable}
-
-\subsubsubsection{Environment Configuration Testing}
-
-\begin{longtable}{|p{3cm}|p{12cm}|}
-\caption{Environment Configuration Test Cases} \\
-\hline
-\rowcolor{lightgray}
-\textbf{Test Case ID} & \textbf{TC\_INSTALL\_ENV\_001} \\
-\hline
-\textbf{Test Case Name} & Environment Variable Validation \\
-\hline
-\textbf{Objective} & Verify all required environment variables are properly configured \\
-\hline
-\textbf{Preconditions} & 
-\begin{itemize}[nosep]
-    \item Environment configuration files available
-    \item Docker containers ready to start
-\end{itemize} \\
-\hline
-\textbf{Test Steps} & 
-\begin{enumerate}[nosep]
-    \item Review .env files for completeness
-    \item Start containers with environment variables
-    \item Verify database connection string
-    \item Check API endpoint configurations
-    \item Validate security configurations
-    \item Test with missing required variables
-\end{enumerate} \\
-\hline
-\textbf{Expected Result} & 
-\begin{itemize}[nosep]
-    \item All required variables are present
-    \item Services start with correct configurations
-    \item Missing variables cause appropriate errors
-    \item Security settings are properly applied
-\end{itemize} \\
-\hline
-\textbf{Priority} & High \\
-\hline
-\textbf{Test Type} & Configuration \\
-\hline
-\end{longtable}
-
-\begin{longtable}{|p{3cm}|p{12cm}|}
-\caption{Database Configuration Test Cases} \\
-\hline
-\rowcolor{lightgray}
-\textbf{Test Case ID} & \textbf{TC\_INSTALL\_DB\_001} \\
-\hline
-\textbf{Test Case Name} & Database Initialization and Connectivity \\
-\hline
-\textbf{Objective} & Verify database setup and initial data loading \\
-\hline
-\textbf{Preconditions} & 
-\begin{itemize}[nosep]
-    \item MongoDB container configured
-    \item Database initialization scripts available
-\end{itemize} \\
-\hline
-\textbf{Test Steps} & 
-\begin{enumerate}[nosep]
-    \item Start MongoDB container
-    \item Verify database connectivity from server
-    \item Check database initialization scripts execution
-    \item Validate initial collections creation
-    \item Test database authentication
-    \item Verify data persistence after container restart
-\end{enumerate} \\
-\hline
-\textbf{Expected Result} & 
-\begin{itemize}[nosep]
-    \item Database starts successfully
-    \item Server connects to database
-    \item Initial collections are created
-    \item Authentication works correctly
-    \item Data persists across restarts
-\end{itemize} \\
-\hline
-\textbf{Priority} & High \\
-\hline
-\textbf{Test Type} & Installation \\
-\hline
-\end{longtable}
-
-\subsubsubsection{Cross-Platform Deployment Testing}
-
-\begin{longtable}{|p{3cm}|p{12cm}|}
-\caption{Cross-Platform Deployment Test Cases} \\
-\hline
-\rowcolor{lightgray}
-\textbf{Test Case ID} & \textbf{TC\_INSTALL\_PLATFORM\_001} \\
-\hline
-\textbf{Test Case Name} & Windows Platform Deployment \\
-\hline
-\textbf{Objective} & Verify successful deployment on Windows environment \\
-\hline
-\textbf{Preconditions} & 
-\begin{itemize}[nosep]
-    \item Windows 10/11 with Docker Desktop
-    \item PowerShell or Command Prompt access
-    \item Git for Windows installed
-\end{itemize} \\
-\hline
-\textbf{Test Steps} & 
-\begin{enumerate}[nosep]
-    \item Clone repository on Windows machine
-    \item Execute deployment scripts using PowerShell
-    \item Verify Docker containers start correctly
-    \item Test application accessibility
-    \item Check file path handling
-    \item Validate port binding
-\end{enumerate} \\
-\hline
-\textbf{Expected Result} & 
-\begin{itemize}[nosep]
-    \item Deployment completes without errors
-    \item Application accessible via browser
-    \item All services function correctly
-    \item File paths resolve properly
-\end{itemize} \\
-\hline
-\textbf{Priority} & Medium \\
-\hline
-\textbf{Test Type} & Deployment \\
-\hline
-\end{longtable}
-
-\begin{longtable}{|p{3cm}|p{12cm}|}
-\caption{Linux Platform Deployment Test Cases} \\
-\hline
-\rowcolor{lightgray}
-\textbf{Test Case ID} & \textbf{TC\_INSTALL\_PLATFORM\_002} \\
-\hline
-\textbf{Test Case Name} & Linux Platform Deployment \\
-\hline
-\textbf{Objective} & Verify successful deployment on Linux environment \\
-\hline
-\textbf{Preconditions} & 
-\begin{itemize}[nosep]
-    \item Ubuntu 20.04+ or similar Linux distribution
-    \item Docker and Docker Compose installed
-    \item Bash shell access
-\end{itemize} \\
-\hline
-\textbf{Test Steps} & 
-\begin{enumerate}[nosep]
-    \item Clone repository on Linux machine
-    \item Execute deployment scripts using bash
-    \item Verify Docker containers start correctly
-    \item Test application accessibility
-    \item Check file permissions
-    \item Validate network connectivity
-\end{enumerate} \\
-\hline
-\textbf{Expected Result} & 
-\begin{itemize}[nosep]
-    \item Deployment completes without errors
-    \item Application accessible via browser
-    \item File permissions set correctly
-    \item Network services function properly
-\end{itemize} \\
-\hline
-\textbf{Priority} & Medium \\
-\hline
-\textbf{Test Type} & Deployment \\
-\hline
-\end{longtable}
-
-\subsubsubsection{Smoke Testing After Deployment}
-
-\begin{longtable}{|p{3cm}|p{12cm}|}
-\caption{Post-Deployment Smoke Test Cases} \\
-\hline
-\rowcolor{lightgray}
-\textbf{Test Case ID} & \textbf{TC\_INSTALL\_SMOKE\_001} \\
-\hline
-\textbf{Test Case Name} & Basic Application Functionality Smoke Test \\
-\hline
-\textbf{Objective} & Verify core application features work after deployment \\
-\hline
-\textbf{Preconditions} & 
-\begin{itemize}[nosep]
-    \item Application deployed successfully
-    \item All services running
-    \item Database initialized
-\end{itemize} \\
-\hline
-\textbf{Test Steps} & 
-\begin{enumerate}[nosep]
-    \item Access application URL in browser
-    \item Verify login page loads
-    \item Test user authentication
-    \item Navigate to main dashboard
-    \item Test basic CRUD operations
-    \item Verify API endpoints respond
-    \item Check database connectivity
-\end{enumerate} \\
-\hline
-\textbf{Expected Result} & 
-\begin{itemize}[nosep]
-    \item Application loads without errors
-    \item User can login successfully
-    \item Dashboard displays correctly
-    \item Basic operations work
-    \item API responses are valid
-\end{itemize} \\
-\hline
-\textbf{Priority} & High \\
-\hline
-\textbf{Test Type} & Smoke \\
-\hline
-\end{longtable}
-
-\begin{longtable}{|p{3cm}|p{12cm}|}
-\caption{Performance Smoke Test Cases} \\
-\hline
-\rowcolor{lightgray}
-\textbf{Test Case ID} & \textbf{TC\_INSTALL\_SMOKE\_002} \\
-\hline
-\textbf{Test Case Name} & Performance Baseline Verification \\
-\hline
-\textbf{Objective} & Verify application meets basic performance requirements \\
-\hline
-\textbf{Preconditions} & 
-\begin{itemize}[nosep]
-    \item Application deployed and running
-    \item Test data loaded
-    \item Performance monitoring tools available
-\end{itemize} \\
-\hline
-\textbf{Test Steps} & 
-\begin{enumerate}[nosep]
-    \item Measure application startup time
-    \item Test page load times for key pages
-    \item Measure API response times
-    \item Check database query performance
-    \item Monitor resource utilization
-    \item Test concurrent user handling
-\end{enumerate} \\
-\hline
-\textbf{Expected Result} & 
-\begin{itemize}[nosep]
-    \item Startup time < 30 seconds
-    \item Page load times < 3 seconds
-    \item API responses < 500ms
-    \item Database queries < 100ms
-    \item Resource usage within limits
-\end{itemize} \\
-\hline
-\textbf{Priority} & Medium \\
-\hline
-\textbf{Test Type} & Performance \\
-\hline
-\end{longtable}
-
-\subsubsubsection{Recovery and Rollback Testing}
-
-\begin{longtable}{|p{3cm}|p{12cm}|}
-\caption{Recovery and Rollback Test Cases} \\
-\hline
-\rowcolor{lightgray}
-\textbf{Test Case ID} & \textbf{TC\_INSTALL\_RECOVERY\_001} \\
-\hline
-\textbf{Test Case Name} & Container Failure Recovery \\
-\hline
-\textbf{Objective} & Verify system recovery from container failures \\
-\hline
-\textbf{Preconditions} & 
-\begin{itemize}[nosep]
-    \item Application running normally
-    \item Docker Compose configured with restart policies
-\end{itemize} \\
-\hline
-\textbf{Test Steps} & 
-\begin{enumerate}[nosep]
-    \item Stop individual containers forcefully
-    \item Verify automatic restart behavior
-    \item Test data consistency after restart
-    \item Simulate network failures
-    \item Test database connection recovery
-    \item Verify application state restoration
-\end{enumerate} \\
-\hline
-\textbf{Expected Result} & 
-\begin{itemize}[nosep]
-    \item Containers restart automatically
-    \item Data remains consistent
-    \item Application recovers gracefully
-    \item No data loss occurs
-    \item Services reconnect properly
-\end{itemize} \\
-\hline
-\textbf{Priority} & High \\
-\hline
-\textbf{Test Type} & Recovery \\
-\hline
-\end{longtable}
-
-\begin{longtable}{|p{3cm}|p{12cm}|}
-\caption{Rollback Test Cases} \\
-\hline
-\rowcolor{lightgray}
-\textbf{Test Case ID} & \textbf{TC\_INSTALL\_ROLLBACK\_001} \\
-\hline
-\textbf{Test Case Name} & Version Rollback Procedure \\
-\hline
-\textbf{Objective} & Verify ability to rollback to previous version \\
-\hline
-\textbf{Preconditions} & 
-\begin{itemize}[nosep]
-    \item Previous version images available
-    \item Database backup available
-    \item Rollback scripts prepared
-\end{itemize} \\
-\hline
-\textbf{Test Steps} & 
-\begin{enumerate}[nosep]
-    \item Deploy new version
-    \item Create system backup
-    \item Simulate deployment failure
-    \item Execute rollback procedure
-    \item Verify previous version restoration
-    \item Test application functionality
-    \item Validate data integrity
-\end{enumerate} \\
-\hline
-\textbf{Expected Result} & 
-\begin{itemize}[nosep]
-    \item Rollback completes successfully
-    \item Previous version functions correctly
-    \item Data integrity maintained
-    \item No service interruption
-    \item System returns to stable state
-\end{itemize} \\
-\hline
-\textbf{Priority} & High \\
-\hline
-\textbf{Test Type} & Rollback \\
-\hline
-\end{longtable}
-
-\subsubsection{Test Execution}
-
-\subsubsubsection{Test Execution Schedule}
-\begin{enumerate}
-    \item \textbf{Phase 1}: Docker Container Setup Testing
-    \item \textbf{Phase 2}: Environment Configuration Testing
-    \item \textbf{Phase 3}: Cross-Platform Deployment Testing
-    \item \textbf{Phase 4}: Smoke Testing After Deployment
-    \item \textbf{Phase 5}: Recovery and Rollback Testing
-\end{enumerate}
-
-\subsubsubsection{Test Data Requirements}
-\begin{itemize}
-    \item Sample user accounts for different roles
-    \item Test books, authors, and genres data
-    \item Configuration files for different environments
-    \item Performance test datasets
-\end{itemize}
-
-\subsubsubsection{Tools and Resources}
-\begin{itemize}
-    \item Docker Engine and Docker Compose
-    \item Postman for API testing
-    \item Browser developer tools
-    \item System monitoring tools
-    \item Log analysis tools
-\end{itemize}
-
-\subsubsection{Risk Assessment}
-
-\subsubsubsection{High Risk Areas}
-\begin{itemize}
-    \item Database connectivity and data persistence
-    \item Cross-platform compatibility issues
-    \item Network configuration and port conflicts
-    \item Resource allocation and performance
-\end{itemize}
-
-\subsubsubsection{Mitigation Strategies}
-\begin{itemize}
-    \item Comprehensive environment validation
-    \item Automated health checks
-    \item Detailed logging and monitoring
-    \item Rollback procedures documentation
-\end{itemize}
