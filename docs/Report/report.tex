@@ -22,6 +22,17 @@
 \usepackage{pdflscape} % For landscape pages if needed
 \usepackage{colortbl}
 
+% Define colors
+\definecolor{passColor}{HTML}{D4EDDA}
+\definecolor{failColor}{HTML}{F8D7DA}
+\definecolor{headerColor}{HTML}{E2E3E5}
+
+% Define commands for pass/fail
+\newcommand{\pass}{\cellcolor{passColor}\textbf{Pass}}
+\newcommand{\fail}{\cellcolor{failColor}\textbf{Fail}}
+\newcommand{\na}{N/A}
+\newcommand{\tick}{\textcolor{green!50!black}{\checkmark}}
+
 % --- JavaScript Listings Support ---
 \lstdefinelanguage{JavaScript}{
     keywords={break, case, catch, class, const, continue, debugger, default, delete, do, 

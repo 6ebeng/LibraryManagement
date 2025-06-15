@@ -1,33 +1,71 @@
-\subsubsection{Code Reviews/Inspections}
-Code reviews involve a systematic examination of the source code by peers to identify errors, enforce coding standards, and improve code quality. This activity is initiated early in the project (Phase 1: Initial Code Review Setup \& Process Definition ) and continues throughout the development cycle (Phase 3: Ongoing Code Reviews ).
-\begin{itemize}
-    \item \textbf{Objective:} To identify defects such as logical errors, security vulnerabilities, performance bottlenecks, and deviations from established coding standards before execution. It also aims to enhance code readability and maintainability.
-    \item \textbf{Methodology:}
-    \begin{itemize}
-        \item \textbf{Coders'} Responsibilities: Coders lead the technical reviews of their code, focusing on logic, security, efficiency, and adherence to established standards. They are also responsible for preparing their code for review.
-        \item \textbf{Non-Coders'/Specification Experts' Responsibilities:} Non-coders and specification experts actively participate in code reviews, focusing on aspects such as readability, alignment with the Software Requirements Specification (SRS), understandability of comments, and alignment with user stories. Checklists may be utilized to ensure comprehensive coverage.
-    \end{itemize}
-\end{itemize}
-
-\subsubsection{Walkthroughs}
-Walkthroughs are a form of peer review where a developer leads the team through the code, explaining the logic and flow. This interactive session encourages discussion and collaborative problem-solving.
-\begin{itemize}
-    \item \textbf{Objective:} To facilitate a shared understanding of the codebase among team members, identify design flaws, and uncover defects through a collaborative inspection process.
-    \item \textbf{Methodology:}
-    \begin{itemize}
-        \item \textbf{Coders'} Responsibilities: Coders are responsible for leading walkthroughs of their own code, explaining its design, logic, and implementation details.
-        \item \textbf{Non-Coders'/Specification Experts' Responsibilities:} Non-coders and specification experts actively question and seek clarification during walkthroughs to ensure the code's implementation aligns precisely with the defined requirements.
-    \end{itemize}
-\end{itemize}
-
 \subsubsection{Documentation Review}
-Documentation review involves scrutinizing various project documents to ensure their clarity, consistency, completeness, and accuracy. This process is vital for maintaining high-quality project artifacts that guide development and testing efforts. This activity is performed at key stages, including initial planning (Phase 1: Documentation Review (SRS, Test Plan) ) and prior to project submission (Phase 5: Final Documentation Review ).
+All key project documents were subjected to a thorough review process. The review focused on identifying ambiguities, inconsistencies, and missing information. This process ensures that the entire team operates from a shared, unambiguous understanding of the project's goals and specifications.
+
 \begin{itemize}
-    \item \textbf{Objective:} To ensure all project documentation, including the Software Requirements Specification (SRS), Test Plan, Test Cases, and the Final Report, is accurate, consistent, and provides a clear and complete understanding of the system.
-    \item \textbf{Methodology:}
-    \begin{itemize}
-        \item \textbf{Documents Reviewed:} The primary documents subject to review include: the Software Requirements Specification (SRS), Test Plan, detailed Test Cases, and the Final Report.
-        \item \textbf{Coders'} Responsibilities: Coders review documentation for technical accuracy and contribute to sections that detail technical testing efforts.
-        \item \textbf{Non-Coders'/Specification Experts' Responsibilities:} Non-coders and specification experts lead the review of all project documentation for overall clarity, consistency, completeness, and accuracy. They are also responsible for driving the compilation of all test-related sections of the final report. This includes ensuring that non-functional aspects like maintainability (e.g., well-structured and modular codebase, necessary code comments ) and usability (e.g., intuitive UI, clear feedback, consistent navigation, responsive design ) are adequately addressed and consistently described across documents.
-    \end{itemize}
+    \item \textbf{Software Requirements Specification (SRS):} The SRS document was the cornerstone of our review process. It was meticulously examined to ensure that all functional and non-functional requirements were clearly defined, testable, and free from contradiction. Feedback from this review was used to refine the requirements, which in turn guided development and the creation of dynamic test cases.
+    \item \textbf{Test Plan and Test Cases:} All documented test cases (including those for functional, API, integration, and non-functional testing) were reviewed to ensure they provided adequate coverage of the requirements. The review verified that test steps were clear, expected outcomes were precise, and traceability to the SRS was established.
+    \item \textbf{Tasks and Responsibilities Matrix:} The \texttt{Tasks.tex} document was reviewed to ensure a clear allocation of duties for all testing activities, confirming that every aspect of the test plan had a designated owner.
 \end{itemize}
+
+\subsubsection{Code Review and Walkthroughs}
+Source code was systematically reviewed to enforce quality and adherence to best practices.
+
+\begin{itemize}
+    \item \textbf{Code Reviews:} Peer reviews were conducted for all major components of the application. Developers reviewed each other's code, focusing on logic, efficiency, error handling, security, and compliance with our established coding standards. This process was instrumental in identifying subtle bugs and improving code clarity.
+    \item \textbf{Walkthroughs:} For complex workflows, such as the book borrowing and return process, developers conducted walkthroughs. In these sessions, the author of the code explained its structure and logic to other team members, who would ask questions and provide feedback. This method proved highly effective for verifying business logic and ensuring the implementation correctly reflected the use cases defined in the SRS.
+\end{itemize}
+
+\subsubsection{Static Testing Test Cases and Findings}
+The following table summarizes the key activities performed during static testing and their outcomes. Unlike dynamic tests, these "test cases" represent structured review tasks.
+
+\begin{center}
+\begin{longtable}{|p{0.1\textwidth}|p{0.2\textwidth}|p{0.3\textwidth}|p{0.3\textwidth}|}
+\caption{Static Testing Cases and Results} \label{tab:static_testing_cases} \\
+\hline
+\rowcolor{headerColor} \textbf{Test ID} & \textbf{Test Area} & \textbf{Objective} & \textbf{Outcome / Findings} \\
+\hline
+\endfirsthead
+\multicolumn{4}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline
+\rowcolor{headerColor} \textbf{Test ID} & \textbf{Test Area} & \textbf{Objective} & \textbf{Outcome / Findings} \\
+\hline
+\endhead
+\hline \multicolumn{4}{|r|}{{Continued on next page}} \\ \hline
+\endfoot
+\hline
+\endlastfoot
+
+% --- Documentation Review ---
+\textbf{TC-STATIC-001} & SRS Document Review & Verify that all functional requirements are clear, complete, consistent, and testable. & \tick{} The requirements were found to be mostly clear. Minor ambiguities in the book return policy (Use Case UC-003) were identified and clarified with the team. Traceability links to test cases were established. \\
+\hline
+\textbf{TC-STATIC-002} & Test Plan and Test Cases Review & Ensure comprehensive test coverage for all requirements specified in the SRS. Verify clarity of test steps and expected results. & \tick{} Confirmed that all major use cases were covered by at least one functional or integration test. Some test case descriptions were enhanced for better clarity. \\
+\hline
+\textbf{TC-STATIC-003} & Tasks \& Responsibilities Review & Confirm that all testing roles and responsibilities are clearly defined and assigned. & \tick{} The roles defined in \texttt{Tasks.tex} were confirmed to be clear and comprehensive, ensuring no gaps in test ownership. \\
+\hline
+
+% --- Code Review ---
+\textbf{TC-STATIC-004} & Code Review: \texttt{authController.js} & Inspect authentication logic for potential security vulnerabilities (e.g., error message information disclosure) and adherence to best practices. & \tick{} The review identified that initial error messages for failed logins could potentially reveal whether a username exists. The logic was updated to return a generic "Invalid credentials" message in all failure cases. \\
+\hline
+\textbf{TC-STATIC-005} & Code Review: \texttt{borrowalController.js} & Verify the logic for borrowing, returning, and checking the status of books. Ensure correct state management and handling of edge cases (e.g., borrowing an unavailable book). & \tick{} The core logic was sound. A recommendation was made to add more detailed logging for borrowal transactions to facilitate easier debugging in the future. \\
+\hline
+\textbf{TC-STATIC-006} & Code Review: Frontend Components (\texttt{/client/src/sections}) & Ensure React components follow best practices for state management, props handling, and separation of concerns. Check for UI consistency. & \tick{} Reviews led to minor refactoring in several components to improve reusability (e.g., creating a generic dialog component). Consistent error handling via \texttt{errorHandler.js} was verified. \\
+\hline
+\textbf{TC-STATIC-007} & Code Review: Database Models (\texttt{/server/models}) & Review Mongoose schemas for correctness, validation rules, and indexing to ensure data integrity and performance. & \tick{} Confirmed that appropriate validation (e.g., \texttt{required}, \texttt{enum}) was in place. A missing index on the \texttt{email} field of the User model was identified and added to improve query performance. \\
+\hline
+
+% --- Walkthrough ---
+\textbf{TC-STATIC-008} & Walkthrough: User Registration \& Login Workflow & Walk through the end-to-end code path from the frontend form submission to the backend API, controller logic, and database interaction. & \tick{} The walkthrough confirmed that all team members understood the flow of data and the role of JWT tokens in session management. It clarified the interaction between Passport.js and the custom controller logic. \\
+\hline
+\textbf{TC-STATIC-009} & Walkthrough: Book Management (CRUD) & Present the code for adding, updating, and deleting books, including referential integrity checks with authors and genres. & \tick{} The walkthrough helped identify a potential race condition if two librarians attempted to delete the same author simultaneously. While a low risk, it highlighted an area for future improvement with more robust transaction management. \\
+\hline
+
+\end{longtable}
+\end{center}
+
+% It is uncommon to have a dedicated image for static testing results, 
+% as they are typically captured in review comments, checklists, or meeting minutes.
+% If a visual representation of the review process were needed, a flowchart could be inserted here.
+% For example: \includegraphics[width=0.8\textwidth]{assets/static_review_process.png}
+
+
