@@ -42,18 +42,10 @@ Critical functions analyzed for complexity:
     \item \textbf{User.isValidPassword}: Complexity = 2 (Low)
 \end{itemize}
 
-\subsubsubsection{Complexity Reduction Recommendations}
-\begin{enumerate}
-    \item Break down high-complexity functions into smaller, focused functions
-    \item Extract validation logic into separate utility functions
-    \item Implement strategy pattern for different authentication methods
-    \item Use middleware for common validation tasks
-\end{enumerate}
-
 \subsubsection{Server-Side White-Box Testing}
 \subsubsubsection{Model Testing}
 
-\subsubsubsubsection{User Model \tiny{(TC\_WB\_USER\_001 - TC\_WB\_USER\_017)}}
+\subsubsubsubsection{User Model \\ \tiny{(TC\_WB\_USER\_001 - TC\_WB\_USER\_017)}}
 \textbf{File}: \texttt{server/\_\_tests\_\_/unit/models/user.test.js}
 
 \textbf{Coverage Areas}:
@@ -85,7 +77,7 @@ TC\_WB\_USER\_016 & Should handle crypto errors gracefully & Error Path \\
 \hline
 \end{longtable}
 
-\subsubsubsubsection{Book Model \tiny{(TC\_WB\_BOOK\_MODEL\_001 - TC\_WB\_BOOK\_MODEL\_026)}}
+\subsubsubsubsection{Book Model \\ \tiny{(TC\_WB\_BOOK\_MODEL\_001 - TC\_WB\_BOOK\_MODEL\_026)}}
 \textbf{File}: \texttt{server/\_\_tests\_\_/unit/models/book.test.js}
 
 \textbf{Coverage Areas}:
@@ -99,7 +91,7 @@ TC\_WB\_USER\_016 & Should handle crypto errors gracefully & Error Path \\
 
 \subsubsubsection{Controller Testing}
 
-\subsubsubsubsection{Authentication Controller \tiny{(TC\_WB\_AUTH\_001 - TC\_WB\_AUTH\_017)}}
+\subsubsubsubsection{Authentication Controller \\ \tiny{(TC\_WB\_AUTH\_001 - TC\_WB\_AUTH\_017)}}
 \textbf{File}: \texttt{server/\_\_tests\_\_/unit/controllers/authController.test.js}
 
 \textbf{Coverage Areas}:
@@ -123,7 +115,7 @@ TC\_WB\_USER\_016 & Should handle crypto errors gracefully & Error Path \\
 6. Create new user if validation passes
 \end{lstlisting}
 
-\subsubsubsubsection{Book Controller \tiny{(TC\_WB\_BOOK\_001 - TC\_WB\_BOOK\_008)}}
+\subsubsubsubsection{Book Controller \\ \tiny{(TC\_WB\_BOOK\_001 - TC\_WB\_BOOK\_008)}}
 \textbf{File}: \texttt{server/\_\_tests\_\_/unit/controllers/bookController.test.js}
 
 \textbf{Coverage Areas}:
@@ -137,7 +129,7 @@ TC\_WB\_USER\_016 & Should handle crypto errors gracefully & Error Path \\
 
 \subsubsubsection{Utility Testing}
 
-\subsubsubsubsection{Error Messages Utility \tiny{(TC\_WB\_UTIL\_001 - TC\_WB\_UTIL\_026)}}
+\subsubsubsubsection{Error Messages Utility \\ \tiny{(TC\_WB\_UTIL\_001 - TC\_WB\_UTIL\_026)}}
 \textbf{File}: \texttt{server/\_\_tests\_\_/unit/utils/errorMessages.test.js}
 
 \textbf{Coverage Areas}:
@@ -164,7 +156,7 @@ function getErrorMessage(category, key, fallback) {
 
 \subsubsubsection{Utility Function Testing}
 
-\subsubsubsubsection{Format Number Utility \tiny{(TC\_WB\_CLIENT\_001 - TC\_WB\_CLIENT\_040)}}
+\subsubsubsubsection{Format Number Utility \\ \tiny{(TC\_WB\_CLIENT\_001 - TC\_WB\_CLIENT\_040)}}
 \textbf{File}: \texttt{client/src/\_\_tests\_\_/unit/utils/formatNumber.test.js}
 
 \textbf{Coverage Areas}:
@@ -175,20 +167,6 @@ function getErrorMessage(category, key, fallback) {
     \item Error handling for invalid inputs
     \item Numeral.js integration testing
 \end{itemize}
-
-\textbf{Internal Logic Analysis}:
-\begin{lstlisting}[language=JavaScript, caption=Currency Formatting Logic]
-export function fCurrency(number) {
-  // White-box testing reveals conditional logic:
-  const format = number ? numeral(number).format('$0,0.00') : '';  // Branch 1
-  return result(format, '.00');  // Always calls result function
-}
-
-function result(format, key = '.00') {
-  const isInteger = format.includes(key);  // Condition testing
-  return isInteger ? format.replace(key, '') : format;  // Branch coverage
-}
-\end{lstlisting}
 
 \subsubsection{Code Coverage Analysis}
 
@@ -229,24 +207,6 @@ Components & 75\% & 70\% & 85\% & 75\% \\
 \end{tabular}
 \caption{Client-Side Code Coverage Results}
 \end{table}
-
-\subsubsection{Coverage Gaps and Recommendations}
-
-\subsubsubsection{Identified Gaps}
-\begin{enumerate}
-    \item \textbf{Error Handling Paths}: Some error scenarios in controllers not fully covered
-    \item \textbf{Async Operations}: Complex async/await patterns need additional testing
-    \item \textbf{React Components}: Event handlers and lifecycle methods require more coverage
-    \item \textbf{Integration Points}: Database connection error scenarios
-\end{enumerate}
-
-\subsubsubsection{Improvement Recommendations}
-\begin{enumerate}
-    \item Implement additional error injection tests
-    \item Add more comprehensive async operation testing
-    \item Increase React component interaction testing
-    \item Implement database connection failure simulation
-\end{enumerate}
 
 \subsubsection{Static Analysis Results}
 
@@ -340,24 +300,4 @@ Components & 75\% & 70\% & 85\% & 75\% \\
     \item \textbf{Medium Complexity (4-6)}: 25\% of functions
     \item \textbf{High Complexity (7-10)}: 8\% of functions
     \item \textbf{Very High Complexity (>10)}: 2\% of functions
-\end{itemize}
-
-\subsubsubsubsection{Maintainability Recommendations}
-\begin{enumerate}
-    \item Refactor high-complexity functions into smaller units
-    \item Implement consistent error handling patterns
-    \item Add comprehensive JSDoc documentation
-    \item Establish coding standards enforcement
-    \item Implement automated complexity monitoring
-\end{enumerate}
-
-\subsubsubsection{Test Maintainability}
-
-\subsubsubsubsection{Test Code Quality}
-\begin{itemize}
-    \item \textbf{Test Coverage}: Comprehensive unit test suite
-    \item \textbf{Mock Usage}: Proper isolation of dependencies
-    \item \textbf{Test Organization}: Clear describe/test structure
-    \item \textbf{Assertion Quality}: Specific, meaningful assertions
-    \item \textbf{Documentation}: Well-documented test cases with TC IDs
 \end{itemize}
