@@ -1,4 +1,4 @@
-\subsection{Scope}
+\subsubsection{Scope}
 The Installation/Deployment Testing covers:
 \begin{itemize}
     \item Docker container setup and configuration
@@ -10,7 +10,7 @@ The Installation/Deployment Testing covers:
     \item Rollback and recovery procedures
 \end{itemize}
 
-\subsection{Test Environment}
+\subsubsection{Test Environment}
 \begin{itemize}
     \item \textbf{Development Environment}: Local development machines
     \item \textbf{Staging Environment}: Docker containers on staging server
@@ -19,9 +19,9 @@ The Installation/Deployment Testing covers:
     \item \textbf{Container Runtime}: Docker Engine 20.10+, Docker Compose 2.0+
 \end{itemize}
 
-\section{Test Strategy}
+\subsubsection{Test Strategy}
 
-\subsection{Testing Approach}
+\subsubsubsection{Testing Approach}
 \begin{enumerate}
     \item \textbf{Fresh Installation Testing}: Clean environment setup
     \item \textbf{Upgrade Testing}: Version migration scenarios
@@ -31,7 +31,7 @@ The Installation/Deployment Testing covers:
     \item \textbf{Recovery Testing}: Failure and rollback scenarios
 \end{enumerate}
 
-\subsection{Entry Criteria}
+\subsubsubsection{Entry Criteria}
 \begin{itemize}
     \item Docker images built successfully
     \item Docker Compose configuration validated
@@ -39,7 +39,7 @@ The Installation/Deployment Testing covers:
     \item Test data and scripts ready
 \end{itemize}
 
-\subsection{Exit Criteria}
+\subsubsubsection{Exit Criteria}
 \begin{itemize}
     \item All critical installation scenarios pass
     \item Smoke tests execute successfully
@@ -47,9 +47,9 @@ The Installation/Deployment Testing covers:
     \item Documentation updated and verified
 \end{itemize}
 
-\section{Test Cases}
+\subsubsection{Test Cases}
 
-\subsection{Docker Container Setup Testing}
+\subsubsubsection{Docker Container Setup Testing}
 
 \begin{longtable}{|p{3cm}|p{12cm}|}
 \caption{Docker Container Setup Test Cases} \\
@@ -132,7 +132,7 @@ The Installation/Deployment Testing covers:
 \hline
 \end{longtable}
 
-\subsection{Environment Configuration Testing}
+\subsubsubsection{Environment Configuration Testing}
 
 \begin{longtable}{|p{3cm}|p{12cm}|}
 \caption{Environment Configuration Test Cases} \\
@@ -215,7 +215,7 @@ The Installation/Deployment Testing covers:
 \hline
 \end{longtable}
 
-\subsection{Cross-Platform Deployment Testing}
+\subsubsubsection{Cross-Platform Deployment Testing}
 
 \begin{longtable}{|p{3cm}|p{12cm}|}
 \caption{Cross-Platform Deployment Test Cases} \\
@@ -299,7 +299,7 @@ The Installation/Deployment Testing covers:
 \hline
 \end{longtable}
 
-\subsection{Smoke Testing After Deployment}
+\subsubsubsection{Smoke Testing After Deployment}
 
 \begin{longtable}{|p{3cm}|p{12cm}|}
 \caption{Post-Deployment Smoke Test Cases} \\
@@ -386,7 +386,7 @@ The Installation/Deployment Testing covers:
 \hline
 \end{longtable}
 
-\subsection{Recovery and Rollback Testing}
+\subsubsubsection{Recovery and Rollback Testing}
 
 \begin{longtable}{|p{3cm}|p{12cm}|}
 \caption{Recovery and Rollback Test Cases} \\
@@ -472,9 +472,9 @@ The Installation/Deployment Testing covers:
 \hline
 \end{longtable}
 
-\section{Test Execution}
+\subsubsection{Test Execution}
 
-\subsection{Test Execution Schedule}
+\subsubsubsection{Test Execution Schedule}
 \begin{enumerate}
     \item \textbf{Phase 1}: Docker Container Setup Testing
     \item \textbf{Phase 2}: Environment Configuration Testing
@@ -483,7 +483,7 @@ The Installation/Deployment Testing covers:
     \item \textbf{Phase 5}: Recovery and Rollback Testing
 \end{enumerate}
 
-\subsection{Test Data Requirements}
+\subsubsubsection{Test Data Requirements}
 \begin{itemize}
     \item Sample user accounts for different roles
     \item Test books, authors, and genres data
@@ -491,7 +491,7 @@ The Installation/Deployment Testing covers:
     \item Performance test datasets
 \end{itemize}
 
-\subsection{Tools and Resources}
+\subsubsubsection{Tools and Resources}
 \begin{itemize}
     \item Docker Engine and Docker Compose
     \item Postman for API testing
@@ -500,9 +500,9 @@ The Installation/Deployment Testing covers:
     \item Log analysis tools
 \end{itemize}
 
-\section{Risk Assessment}
+\subsubsection{Risk Assessment}
 
-\subsection{High Risk Areas}
+\subsubsubsection{High Risk Areas}
 \begin{itemize}
     \item Database connectivity and data persistence
     \item Cross-platform compatibility issues
@@ -510,7 +510,7 @@ The Installation/Deployment Testing covers:
     \item Resource allocation and performance
 \end{itemize}
 
-\subsection{Mitigation Strategies}
+\subsubsubsection{Mitigation Strategies}
 \begin{itemize}
     \item Comprehensive environment validation
     \item Automated health checks

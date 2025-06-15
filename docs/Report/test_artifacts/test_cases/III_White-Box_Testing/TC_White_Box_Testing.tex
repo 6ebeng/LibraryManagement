@@ -1,38 +1,38 @@
-\section{Test Strategy and Coverage Criteria}
+\subsubsection{Test Strategy and Coverage Criteria}
 
-\subsection{Coverage Types Implemented}
+\subsubsubsection{Coverage Types Implemented}
 
-\subsubsection{Statement Coverage}
+\subsubsubsection{Statement Coverage}
 \begin{itemize}
     \item \textbf{Target}: 90\% statement coverage
     \item \textbf{Measurement}: Every executable statement tested at least once
     \item \textbf{Implementation}: Jest coverage reports track statement execution
 \end{itemize}
 
-\subsubsection{Branch Coverage}
+\subsubsubsection{Branch Coverage}
 \begin{itemize}
     \item \textbf{Target}: 85\% branch coverage
     \item \textbf{Measurement}: All conditional branches (if/else, switch cases) tested
     \item \textbf{Implementation}: Test cases cover both true and false conditions
 \end{itemize}
 
-\subsubsection{Condition Coverage}
+\subsubsubsection{Condition Coverage}
 \begin{itemize}
     \item \textbf{Target}: 80\% condition coverage
     \item \textbf{Measurement}: Individual conditions in complex boolean expressions tested
     \item \textbf{Implementation}: Separate test cases for each condition combination
 \end{itemize}
 
-\subsubsection{Path Coverage}
+\subsubsubsection{Path Coverage}
 \begin{itemize}
     \item \textbf{Target}: 75\% path coverage for critical functions
     \item \textbf{Measurement}: Independent execution paths through functions tested
     \item \textbf{Implementation}: Test cases designed to exercise different execution paths
 \end{itemize}
 
-\subsection{Complexity Analysis}
+\subsubsection{Complexity Analysis}
 
-\subsubsection{Cyclomatic Complexity Assessment}
+\subsubsubsection{Cyclomatic Complexity Assessment}
 Critical functions analyzed for complexity:
 \begin{itemize}
     \item \textbf{authController.registerUser}: Complexity = 8 (High)
@@ -42,7 +42,7 @@ Critical functions analyzed for complexity:
     \item \textbf{User.isValidPassword}: Complexity = 2 (Low)
 \end{itemize}
 
-\subsubsection{Complexity Reduction Recommendations}
+\subsubsubsection{Complexity Reduction Recommendations}
 \begin{enumerate}
     \item Break down high-complexity functions into smaller, focused functions
     \item Extract validation logic into separate utility functions
@@ -50,10 +50,10 @@ Critical functions analyzed for complexity:
     \item Use middleware for common validation tasks
 \end{enumerate}
 
-\section{Server-Side White-Box Testing}
-\subsection{Model Testing}
+\subsubsection{Server-Side White-Box Testing}
+\subsubsubsection{Model Testing}
 
-\subsubsection{User Model \tiny{(TC\_WB\_USER\_001 - TC\_WB\_USER\_017)}}
+\subsubsubsubsection{User Model \tiny{(TC\_WB\_USER\_001 - TC\_WB\_USER\_017)}}
 \textbf{File}: \texttt{server/\_\_tests\_\_/unit/models/user.test.js}
 
 \textbf{Coverage Areas}:
@@ -85,7 +85,7 @@ TC\_WB\_USER\_016 & Should handle crypto errors gracefully & Error Path \\
 \hline
 \end{longtable}
 
-\subsubsection{Book Model \tiny{(TC\_WB\_BOOK\_MODEL\_001 - TC\_WB\_BOOK\_MODEL\_026)}}
+\subsubsubsubsection{Book Model \tiny{(TC\_WB\_BOOK\_MODEL\_001 - TC\_WB\_BOOK\_MODEL\_026)}}
 \textbf{File}: \texttt{server/\_\_tests\_\_/unit/models/book.test.js}
 
 \textbf{Coverage Areas}:
@@ -97,9 +97,9 @@ TC\_WB\_USER\_016 & Should handle crypto errors gracefully & Error Path \\
     \item Mongoose integration validation
 \end{itemize}
 
-\subsection{Controller Testing}
+\subsubsubsection{Controller Testing}
 
-\subsubsection{Authentication Controller \tiny{(TC\_WB\_AUTH\_001 - TC\_WB\_AUTH\_017)}}
+\subsubsubsubsection{Authentication Controller \tiny{(TC\_WB\_AUTH\_001 - TC\_WB\_AUTH\_017)}}
 \textbf{File}: \texttt{server/\_\_tests\_\_/unit/controllers/authController.test.js}
 
 \textbf{Coverage Areas}:
@@ -123,7 +123,7 @@ TC\_WB\_USER\_016 & Should handle crypto errors gracefully & Error Path \\
 6. Create new user if validation passes
 \end{lstlisting}
 
-\subsubsection{Book Controller \tiny{(TC\_WB\_BOOK\_001 - TC\_WB\_BOOK\_008)}}
+\subsubsubsubsection{Book Controller \tiny{(TC\_WB\_BOOK\_001 - TC\_WB\_BOOK\_008)}}
 \textbf{File}: \texttt{server/\_\_tests\_\_/unit/controllers/bookController.test.js}
 
 \textbf{Coverage Areas}:
@@ -135,9 +135,9 @@ TC\_WB\_USER\_016 & Should handle crypto errors gracefully & Error Path \\
     \item Error handling for database operations
 \end{itemize}
 
-\subsection{Utility Testing}
+\subsubsubsection{Utility Testing}
 
-\subsubsection{Error Messages Utility \tiny{(TC\_WB\_UTIL\_001 - TC\_WB\_UTIL\_026)}}
+\subsubsubsubsection{Error Messages Utility \tiny{(TC\_WB\_UTIL\_001 - TC\_WB\_UTIL\_026)}}
 \textbf{File}: \texttt{server/\_\_tests\_\_/unit/utils/errorMessages.test.js}
 
 \textbf{Coverage Areas}:
@@ -160,11 +160,11 @@ function getErrorMessage(category, key, fallback) {
 }
 \end{lstlisting}
 
-\section{Client-Side White-Box Testing}
+\subsubsection{Client-Side White-Box Testing}
 
-\subsection{Utility Function Testing}
+\subsubsubsection{Utility Function Testing}
 
-\subsubsection{Format Number Utility \tiny{(TC\_WB\_CLIENT\_001 - TC\_WB\_CLIENT\_040)}}
+\subsubsubsubsection{Format Number Utility \tiny{(TC\_WB\_CLIENT\_001 - TC\_WB\_CLIENT\_040)}}
 \textbf{File}: \texttt{client/src/\_\_tests\_\_/unit/utils/formatNumber.test.js}
 
 \textbf{Coverage Areas}:
@@ -190,11 +190,11 @@ function result(format, key = '.00') {
 }
 \end{lstlisting}
 
-\section{Code Coverage Analysis}
+\subsubsection{Code Coverage Analysis}
 
-\subsection{Coverage Metrics}
+\subsubsubsection{Coverage Metrics}
 
-\subsubsection{Server-Side Coverage}
+\subsubsubsubsection{Server-Side Coverage}
 \begin{table}[h]
 \centering
 \begin{tabular}{|l|c|c|c|c|}
@@ -213,7 +213,7 @@ Utilities & 100\% & 95\% & 100\% & 100\% \\
 \caption{Server-Side Code Coverage Results}
 \end{table}
 
-\subsubsection{Client-Side Coverage}
+\subsubsubsection{Client-Side Coverage}
 \begin{table}[h]
 \centering
 \begin{tabular}{|l|c|c|c|c|}
@@ -230,9 +230,9 @@ Components & 75\% & 70\% & 85\% & 75\% \\
 \caption{Client-Side Code Coverage Results}
 \end{table}
 
-\subsection{Coverage Gaps and Recommendations}
+\subsubsection{Coverage Gaps and Recommendations}
 
-\subsubsection{Identified Gaps}
+\subsubsubsection{Identified Gaps}
 \begin{enumerate}
     \item \textbf{Error Handling Paths}: Some error scenarios in controllers not fully covered
     \item \textbf{Async Operations}: Complex async/await patterns need additional testing
@@ -240,7 +240,7 @@ Components & 75\% & 70\% & 85\% & 75\% \\
     \item \textbf{Integration Points}: Database connection error scenarios
 \end{enumerate}
 
-\subsubsection{Improvement Recommendations}
+\subsubsubsection{Improvement Recommendations}
 \begin{enumerate}
     \item Implement additional error injection tests
     \item Add more comprehensive async operation testing
@@ -248,11 +248,11 @@ Components & 75\% & 70\% & 85\% & 75\% \\
     \item Implement database connection failure simulation
 \end{enumerate}
 
-\section{Static Analysis Results}
+\subsubsection{Static Analysis Results}
 
-\subsection{ESLint Analysis}
+\subsubsubsection{ESLint Analysis}
 
-\subsubsection{Code Quality Metrics}
+\subsubsubsubsection{Code Quality Metrics}
 \begin{itemize}
     \item \textbf{Total Issues}: 23 warnings, 0 errors
     \item \textbf{Complexity Issues}: 3 functions exceed recommended complexity
@@ -260,7 +260,7 @@ Components & 75\% & 70\% & 85\% & 75\% \\
     \item \textbf{Best Practices}: 15 minor violations (unused variables, console.log statements)
 \end{itemize}
 
-\subsubsection{Critical Issues Addressed}
+\subsubsubsubsection{Critical Issues Addressed}
 \begin{enumerate}
     \item Reduced cyclomatic complexity in authController.registerUser
     \item Extracted common validation logic into utility functions
@@ -268,11 +268,11 @@ Components & 75\% & 70\% & 85\% & 75\% \\
     \item Standardized error handling patterns
 \end{enumerate}
 
-\section{Test Execution and Results}
+\subsubsection{Test Execution and Results}
 
-\subsection{Unit Test Execution Summary}
+\subsubsubsection{Unit Test Execution Summary}
 
-\subsubsection{Server-Side Results}
+\subsubsubsubsection{Server-Side Results}
 \begin{itemize}
     \item \textbf{Total Tests}: 89 unit tests
     \item \textbf{Passed}: 89 (100\%)
@@ -281,7 +281,7 @@ Components & 75\% & 70\% & 85\% & 75\% \\
     \item \textbf{Coverage}: 91\% statements, 86\% branches
 \end{itemize}
 
-\subsubsection{Client-Side Results}
+\subsubsubsubsection{Client-Side Results}
 \begin{itemize}
     \item \textbf{Total Tests}: 40 unit tests
     \item \textbf{Passed}: 40 (100\%)
@@ -290,9 +290,9 @@ Components & 75\% & 70\% & 85\% & 75\% \\
     \item \textbf{Coverage}: 82\% statements, 78\% branches
 \end{itemize}
 
-\subsection{Performance Analysis}
+\subsubsubsection{Performance Analysis}
 
-\subsubsection{Test Execution Performance}
+\subsubsubsubsection{Test Execution Performance}
 \begin{itemize}
     \item \textbf{Average Test Duration}: 25ms per test
     \item \textbf{Slowest Tests}: Database integration tests (150ms average)
@@ -300,41 +300,41 @@ Components & 75\% & 70\% & 85\% & 75\% \\
     \item \textbf{Optimization}: Mocking reduced execution time by 60\%
 \end{itemize}
 
-\section{Defects Found and Fixed}
+\subsubsection{Defects Found and Fixed}
 
-\subsection{Critical Issues Discovered}
+\subsubsubsection{Critical Issues Discovered}
 
-\subsubsection{Password Validation Logic}
+\subsubsubsubsection{Password Validation Logic}
 \textbf{Issue}: Password validation in authController allowed empty strings
 \textbf{Root Cause}: Truthy check instead of explicit length validation
 \textbf{Fix}: Added explicit length check before password strength validation
 \textbf{Test Case}: TC\_WB\_AUTH\_024 (empty string inputs)
 
-\subsubsection{ObjectId Validation}
+\subsubsubsubsection{ObjectId Validation}
 \textbf{Issue}: Invalid ObjectId format caused server crashes
 \textbf{Root Cause}: Missing validation before mongoose operations
 \textbf{Fix}: Added mongoose.Types.ObjectId.isValid() checks
 \textbf{Test Case}: TC\_WB\_BOOK\_001 (ObjectId format validation)
 
-\subsubsection{Error Message Fallback}
+\subsubsubsubsection{Error Message Fallback}
 \textbf{Issue}: getErrorMessage function returned undefined for invalid categories
 \textbf{Root Cause}: Missing fallback logic for edge cases
 \textbf{Fix}: Implemented proper fallback chain with default error message
 \textbf{Test Case}: TC\_WB\_UTIL\_011 (fallback handling)
 
-\subsection{Performance Issues}
+\subsubsubsection{Performance Issues}
 
-\subsubsection{Crypto Operations}
+\subsubsubsubsection{Crypto Operations}
 \textbf{Issue}: Password hashing blocking event loop
 \textbf{Root Cause}: Synchronous crypto.pbkdf2Sync usage
 \textbf{Recommendation}: Migrate to asynchronous crypto.pbkdf2 for production
 \textbf{Test Coverage}: TC\_WB\_USER\_007 (crypto parameter validation)
 
-\section{Maintainability Assessment}
+\subsubsection{Maintainability Assessment}
 
-\subsection{Code Complexity Analysis}
+\subsubsubsection{Code Complexity Analysis}
 
-\subsubsection{Function Complexity Distribution}
+\subsubsubsubsection{Function Complexity Distribution}
 \begin{itemize}
     \item \textbf{Low Complexity (1-3)}: 65\% of functions
     \item \textbf{Medium Complexity (4-6)}: 25\% of functions
@@ -342,7 +342,7 @@ Components & 75\% & 70\% & 85\% & 75\% \\
     \item \textbf{Very High Complexity (>10)}: 2\% of functions
 \end{itemize}
 
-\subsubsection{Maintainability Recommendations}
+\subsubsubsubsection{Maintainability Recommendations}
 \begin{enumerate}
     \item Refactor high-complexity functions into smaller units
     \item Implement consistent error handling patterns
@@ -351,9 +351,9 @@ Components & 75\% & 70\% & 85\% & 75\% \\
     \item Implement automated complexity monitoring
 \end{enumerate}
 
-\subsection{Test Maintainability}
+\subsubsubsection{Test Maintainability}
 
-\subsubsection{Test Code Quality}
+\subsubsubsubsection{Test Code Quality}
 \begin{itemize}
     \item \textbf{Test Coverage}: Comprehensive unit test suite
     \item \textbf{Mock Usage}: Proper isolation of dependencies
