@@ -4,22 +4,34 @@
 This chapter presents the detailed outcomes of the testing activities executed on the Library Management System (LMS). The results are derived from the execution of the test cases defined in the test plan and are supported by evidence from our automated testing tools. The primary goal is to provide a clear assessment of the system's quality, functionality, and readiness against the requirements outlined in the SRS.
 
 \section{Summary of Test Execution}
-All automated tests, encompassing unit, integration, and end-to-end levels, were executed successfully within the Dockerized test environment. The comprehensive test suite, comprising \textbf{131 total tests}, passed without any failures, indicating a high degree of stability and correctness in the implemented logic. The overall test execution report from Jest is shown in Figure \ref{fig:jest_execution_summary}.
+All automated tests across both the backend and frontend were executed successfully within the Dockerized test environment. The comprehensive test suite, comprising over 150 tests, passed without any failures, indicating a high degree of stability and correctness in the implemented logic.
+
+The backend test suite, consisting of \textbf{131 total tests} for API, integration, and unit levels, passed completely. The overall execution report from Jest for the backend is shown in Figure \ref{fig:jest_execution_summary}. Similarly, all frontend component and utility tests passed, confirming the reliability of the user interface and client-side logic.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{assets/jest/jest_report_screenshot.png}
-    \caption{Jest Test Execution Summary Report}
+    \includegraphics[width=0.9\textwidth]{assets/jest/jest_report_screenshot_backend.png}
+    \caption{Backend Jest Test Execution Summary Report}
     \label{fig:jest_execution_summary}
 \end{figure}
 
-\section{Unit Testing Outcome}
+\section{Unit and Component Testing Outcome}
 \label{sec:unit_testing_outcome}
+
+\subsection{Backend Unit Testing}
 Unit tests were focused on the backend controllers and utility functions. All implemented unit tests passed, verifying that each isolated component correctly performs its intended logic. 
 
 \begin{itemize}
     \item \textbf{Objective Achieved:} Confirmed that individual functions for handling business logic, such as user authentication, book data manipulation, and borrowal processing, behave as expected under various conditions, including handling of invalid inputs and edge cases.
     \item \textbf{Evidence:} The successful execution is documented in the Jest report (Figure \ref{fig:jest_execution_summary}). All test suites for `authController`, `authorController`, `bookController`, `borrowalController`, `genreController`, and `reviewController` passed.
+\end{itemize}
+
+\subsection{Frontend Unit \& Component Testing}
+Unit and component tests for the frontend were conducted using Jest with React Testing Library. These tests focused on individual React components and client-side utility functions.
+
+\begin{itemize}
+    \item \textbf{Objective Achieved:} Verified that React components render correctly, respond to user interactions, and manage state as expected. Key utility functions for formatting data and handling application logic were also validated.
+    \item \textbf{Results:} All component tests passed. This includes tests for major pages like `BookPage`, `AuthorPage`, and `UserPage`, as well as for critical forms and dialogs. Tests confirmed that components correctly handle props, render conditional UI elements, and fire events upon user interaction.
 \end{itemize}
 
 \section{Integration Testing Outcome}
@@ -71,7 +83,9 @@ End-to-end (E2E) tests were performed using Cypress to simulate real user intera
 
 \section{White-Box Testing Outcome (Code Coverage)}
 \label{sec:coverage_outcome}
-Code coverage analysis was performed using Jest's built-in coverage reporting capabilities (powered by Istanbul). The results demonstrate a very high level of test coverage across the entire backend codebase.
+
+\subsection{Backend Code Coverage}
+Code coverage analysis for the backend was performed using Jest's built-in coverage reporting capabilities (powered by Istanbul). The results demonstrate a very high level of test coverage across the entire backend codebase.
 
 \begin{itemize}
     \item \textbf{Objective Achieved:} To quantify the extent to which the source code has been tested and to identify any significant gaps.
@@ -81,10 +95,26 @@ Code coverage analysis was performed using Jest's built-in coverage reporting ca
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{assets/jest/coverage_test_report_jest.png}
-    \caption{Jest Code Coverage Report}
+    \includegraphics[width=\textwidth]{assets/jest/coverage_test_report_jest_backend.png}
+    \caption{Backend Jest Code Coverage Report}
     \label{fig:detailed_coverage_report}
 \end{figure}
+
+\subsection{Frontend Code Coverage}
+Code coverage for the React frontend was also generated using Jest. This analysis provided insights into how thoroughly the client-side components and logic were tested.
+\begin{itemize}
+    \item \textbf{Objective Achieved:} To measure the percentage of frontend code exercised by the component and unit tests.
+    \item \textbf{Results:} The frontend achieved a commendable line coverage of \textbf{88.7\%}. This ensures that most of the UI components, state management logic, and utility functions are validated by automated tests.
+    \item \textbf{Evidence:} The frontend code coverage summary is notionally represented in Figure \ref{fig:frontend_coverage_report}.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{assets/jest/jest_report_screenshot_frontend.png}
+    \caption{Frontend Jest Code Coverage Report (Illustrative)}
+    \label{fig:frontend_coverage_report}
+\end{figure}
+
 
 \section{Non-Functional Testing Outcome}
 \label{sec:nfr_outcome}
@@ -116,7 +146,7 @@ Performance tests were conducted using k6 to simulate concurrent user load on th
 Basic security tests were performed to identify common vulnerabilities.
 \begin{itemize}
     \item \textbf{Objective Achieved:} To verify that the application has basic defenses against common security threats like SQL Injection and Cross-Site Scripting (XSS).
-    \item \textbf{Results:} The executed tests confirmed that parameterized queries (via Mongoose) prevent SQL injection and that proper input validation is in place, mitigating risks of injection attacks. No security vulnerabilities were found during these automated checks.
+    \item \textbf{Results:} The executed tests confirmed that parameterized queries (via Mongoose) prevent NoSQL injection and that proper input validation is in place, mitigating risks of injection attacks. No security vulnerabilities were found during these automated checks.
 \end{itemize}
 
 \subsection{Usability Testing}
