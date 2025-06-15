@@ -1,4 +1,4 @@
-\begin{longtable}{|>{\scriptsize\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{5cm}|>{\raggedright\arraybackslash}p{5cm}|}
+\begin{longtable}{|>{\scriptsize\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3cm}|>{\scriptsize\raggedright\arraybackslash}p{4cm}|>{\scriptsize\raggedright\arraybackslash}p{5cm}|}
 \caption{Security Test Cases}\label{tab:security_test_cases}\\
 \hline
 \textbf{Test Case ID} & \textbf{Test Title} & \textbf{Test Steps} & \textbf{Expected Results} \\
@@ -18,29 +18,29 @@
 % Sub-Section: Access Control & Authorization (RBAC)
 \multicolumn{4}{|l|}{\textbf{Sub-Section: Access Control \& Authorization (RBAC)}} \\ \hline
 TC\_SEC\_RBAC\_001 & Verify Member cannot access Librarian-only URLs  & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item Login as a 'Member' user.
         \item Attempt to navigate directly to a Librarian-only URL (e.g., `/users`, `/dashboard`).
     \end{itemize} & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item Access is denied.
         \item The system redirects the user to an appropriate page (e.g., login page, member dashboard) and does not display the requested admin page.
     \end{itemize} \\ \hline
 TC\_SEC\_RBAC\_002 & Verify unauthenticated user cannot access any protected pages  & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item Ensure no user is logged in (e.g., use a new browser session or clear cookies).
         \item Attempt to navigate directly to any protected URL (e.g., `/books`, `/users`, `/borrowals`).
     \end{itemize} & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item Access is denied for all protected URLs.
         \item The system redirects the user to the login page.
     \end{itemize} \\ \hline
 TC\_SEC\_RBAC\_003 & Member attempts to perform a Librarian action via API  & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item Login as a 'Member' user and obtain the session token.
         \item Use an API tool (e.g., Postman) to send a request to a Librarian-only API endpoint (e.g., `DELETE /api/user/delete/:id` with a valid user ID).
     \end{itemize} & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item The API returns an authorization error (e.g., 403 Forbidden or 401 Unauthorized).
         \item The action (e.g., deleting a user) is not performed. The data remains unchanged in the database.
     \end{itemize} \\ \hline
@@ -48,35 +48,35 @@ TC\_SEC\_RBAC\_003 & Member attempts to perform a Librarian action via API  &
 % Sub-Section: Input Validation & Injection Attacks
 \multicolumn{4}{|l|}{\textbf{Sub-Section: Input Validation \& Injection Attacks}} \\ \hline
 TC\_SEC\_INJ\_001 & Attempt basic Cross-Site Scripting (XSS) in UI form fields  & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item Login as Librarian.
         \item Navigate to the 'Add Book' form.
-        \item In a text field (e.g., 'Summary'), enter a basic XSS payload like \scriptsize\fbox{\texttt{\textless script\textgreater alert('XSS')\textless /script\textgreater}}.
+        \item In a text field (e.g., 'Summary'), enter a basic XSS payload like \tiny\fbox{\texttt{\textless script\textgreater alert('XSS')\textless /script\textgreater}}.
         \item Submit the form to create the book.
         \item View the details of the newly created book.
     \end{itemize} & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item The script is not executed. No alert box appears.
-        \item The input is properly sanitized and displayed as plain text (e.g., \scriptsize\fbox{\texttt{\&lt;script\&gt;alert('XSS')\&lt;/script\&gt;}}) or the input is rejected.
+        \item The input is properly sanitized and displayed as plain text (e.g., \tiny\fbox{\texttt{\&lt;script\&gt;alert('XSS')\&lt;/script\&gt;}}) or the input is rejected.
     \end{itemize} \\ \hline
 TC\_SEC\_INJ\_002 & Attempt basic NoSQL injection in login form  & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item Navigate to the login page.
-        \item In the email/username field, enter a NoSQL injection payload (e.g., \scriptsize\fbox{\texttt{\{\$ne: null\}}}).
+        \item In the email/username field, enter a NoSQL injection payload (e.g., \tiny\fbox{\texttt{\{\$ne: null\}}}).
         \item Enter any password and submit.
     \end{itemize} & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item The login attempt fails.
-        \item The system returns a generic error message like \scriptsize\fbox{\texttt{"Invalid username or password"}} and does not crash or reveal system information.
+        \item The system returns a generic error message like \tiny\fbox{\texttt{"Invalid username or password"}} and does not crash or reveal system information.
         \item The application is not bypassed.
     \end{itemize} \\ \hline
 TC\_SEC\_INJ\_003 & Attempt insecure direct object reference (IDOR) via API  & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item Login as 'Member A'.
         \item Navigate to 'My Borrowal History' and note the URL or API call used to fetch the data (e.g., `GET /api/borrowal/getAll` which is then filtered by the client ).
         \item Using an API tool, attempt to request details of a specific borrowal that belongs to `Member B' by guessing or obtaining its ID (e.g., `GET /api/borrowal/get/:borrowal\_id\_of\_member\_B`).
     \end{itemize} & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item The API returns an authorization error (e.g., 403 Forbidden or 404 Not Found).
         \item The details of 'Member B's borrowal record are not displayed.
     \end{itemize} \\ \hline
@@ -84,22 +84,22 @@ TC\_SEC\_INJ\_003 & Attempt insecure direct object reference (IDOR) via API  &
 % Sub-Section: Session Management
 \multicolumn{4}{|l|}{\textbf{Sub-Section: Session Management}} \\ \hline
 TC\_SEC\_SESS\_001 & Verify session invalidation on logout  & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item Login as any user.
         \item Copy the URL of a protected page (e.g., `/books`).
         \item Click the 'Logout' button. The user is redirected to the login page.
         \item Click the browser's 'Back' button or paste the copied URL into the address bar.
     \end{itemize} & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item The protected page is not displayed.
         \item The user remains on the login page or is redirected back to it, confirming the session was terminated.
     \end{itemize} \\ \hline
 TC\_SEC\_SESS\_002 & Verify secure session cookie attributes & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item Login to the application.
         \item Use browser developer tools to inspect the cookies set by the application.
     \end{itemize} & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item Session cookies should have the `HttpOnly` attribute to prevent access via JavaScript.
         \item Session cookies should have the `Secure` attribute (if using HTTPS) to ensure they are sent only over secure connections.
     \end{itemize} \\ \hline
@@ -107,22 +107,22 @@ TC\_SEC\_SESS\_002 & Verify secure session cookie attributes &
 % Sub-Section: Data Security & Transport Layer
 \multicolumn{4}{|l|}{\textbf{Sub-Section: Data Security \& Transport Layer}} \\ \hline
 TC\_SEC\_DATA\_001 & Verify sensitive data is not returned in API responses  & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item Login as Librarian.
         \item Use an API tool to call an endpoint that returns user data (e.g., `GET /api/user/get/:id`).
         \item Inspect the JSON response body.
     \end{itemize} & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item The response does not contain sensitive data like the user's password hash or salt.
         \item Only necessary and non-sensitive user data is returned (e.g., name, email, role).
     \end{itemize} \\ \hline
 TC\_SEC\_DATA\_002 & Verify secure data transmission (HTTPS)  & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item Access the application in a web browser.
         \item Check the URL in the address bar.
         \item Use browser developer tools to monitor network traffic during login and other operations.
     \end{itemize} & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item The connection uses HTTPS, indicated by `https://` and a lock icon.
         \item All data, especially login credentials, is sent over the encrypted HTTPS connection.
     \end{itemize} \\ \hline
@@ -130,13 +130,13 @@ TC\_SEC\_DATA\_002 & Verify secure data transmission (HTTPS)  &
 % Sub-Section: Static Testing
 \multicolumn{4}{|l|}{\textbf{Sub-Section: Static Testing (Code Review)}} \\ \hline
 TC\_SEC\_STATIC\_001 & Code review for security vulnerabilities  & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item (Led by Coders) 
         \item Systematically review backend source code, focusing on authentication, session management, and data access logic.
         \item Use a checklist to look for common vulnerabilities (e.g., improper input validation, hardcoded secrets, use of insecure libraries, potential for injection).
         \item Review frontend code for potential XSS vulnerabilities and improper handling of sensitive data.
     \end{itemize} & 
-    \begin{itemize}
+    \begin{itemize}[leftmargin=*]
         \item A report is generated documenting all potential security flaws found in the code.
         \item Vulnerabilities are categorized by severity.
         \item Recommendations for remediation are provided.
