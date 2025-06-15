@@ -67,16 +67,7 @@ End-to-end (E2E) tests were performed using Cypress to simulate real user intera
 
 \begin{figure}[H]
     \centering
-    % Placeholder for a screenshot of the Cypress test runner dashboard showing all tests passed.
-    \framebox{
-        \parbox{0.8\textwidth}{
-            \centering
-            \vspace{4cm}
-            \textbf{Placeholder Image:} \\
-            Cypress End-to-End Test Run Dashboard.
-            \vspace{4cm}
-        }
-    }
+    \includegraphics[width=0.9\textwidth]{assets/cypress_dashboard.png}
     \caption{Cypress E2E Test Execution Dashboard (Illustrative)}
     \label{fig:cypress_dashboard}
 \end{figure}
@@ -126,21 +117,21 @@ Performance tests were conducted using k6 to simulate concurrent user load on th
     \item \textbf{Results:} The system successfully handled a load of 50 virtual users over a sustained period. The average response time remained below 200ms for most endpoints, and the error rate was 0\%. This performance meets the NFR targets for system responsiveness.
     \item \textbf{Evidence:} A summary of the k6 load test results is notionally represented in Figure \ref{fig:k6_report}.
 \end{itemize}
-\begin{figure}[H]
-    \centering
-    % Placeholder for a screenshot of the k6 summary report.
-    \framebox{
-        \parbox{0.8\textwidth}{
-            \centering
-            \vspace{4cm}
-            \textbf{Placeholder Image:} \\
-            k6 Performance Test Summary Report.
-            \vspace{4cm}
-        }
-    }
-    \caption{k6 Load Test Summary Report (Illustrative)}
-    \label{fig:k6_report}
-\end{figure}
+% \begin{figure}[H]
+%     \centering
+%     % Placeholder for a screenshot of the k6 summary report.
+%     \framebox{
+%         \parbox{0.8\textwidth}{
+%             \centering
+%             \vspace{4cm}
+%             \textbf{Placeholder Image:} \\
+%             k6 Performance Test Summary Report.
+%             \vspace{4cm}
+%         }
+%     }
+%     \caption{k6 Load Test Summary Report (Illustrative)}
+%     \label{fig:k6_report}
+% \end{figure}
 
 \subsection{Security Testing}
 Basic security tests were performed to identify common vulnerabilities.
@@ -166,15 +157,7 @@ The application's frontend was tested on multiple modern web browsers.
 \begin{figure}[H]
     \centering
     % Placeholder for a side-by-side screenshot of the app in Chrome and Firefox.
-    \framebox{
-        \parbox{0.8\textwidth}{
-            \centering
-            \vspace{4cm}
-            \textbf{Placeholder Image:} \\
-            Side-by-side comparison of LMS in Chrome and Firefox.
-            \vspace{4cm}
-        }
-    }
+    \includegraphics[width=0.9\textwidth]{assets/browser_compatibility.png}
     \caption{Browser Compatibility Check (Illustrative)}
     \label{fig:browser_compatibility}
 \end{figure}

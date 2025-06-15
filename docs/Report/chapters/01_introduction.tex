@@ -1,0 +1,119 @@
+\chapter{Introduction}
+\label{chap:introduction}
+
+This report is submitted in fulfillment of the group coursework requirements for the SE507 Software Testing and Evaluation module. The primary objective of this coursework is to provide a practical, hands-on application of the fundamental principles and processes of software testing and evaluation. In accordance with the coursework guidelines, which permit the use of a ready-made application, this project undertakes a comprehensive testing and quality assurance initiative on a pre-existing software artifact: a full-stack Library Management System (LMS) sourced from the open-source repository MERNRAD on GitHub.
+
+The work documented herein demonstrates a systematic approach to the entire testing lifecycle as applied to an existing codebase. By selecting a representative MERN-stack application, this project serves as a realistic case study in verifying software quality, ensuring functional correctness, and validating adherence to implicit and explicit requirements. The ultimate goal is to present an empirically grounded evaluation of the software's readiness for deployment, thereby bridging the theoretical concepts of software testing with their practical implementation in a real-world scenario.
+
+\section{Problem Domain and Project Rationale}
+\label{sec:project_purpose}
+The impetus for selecting this particular project stems from the universal problem domain it addresses: the operational inefficiencies inherent in manual or legacy library systems. The management of core library functions—such as cataloging, circulation, and user administration—presents significant logistical challenges that are amenable to technological solutions. As delineated in the system's features and our derived Software Requirements Specification (SRS), the LMS aims to provide a centralized, scalable, and efficient digital platform. It is designed to serve two distinct user cohorts: Librarians, who function as system administrators with privileged access, and Members, who are the primary consumers of the library's services.
+
+The system's core functional domains, which form the basis of this testing investigation, include:
+\begin{itemize}
+    \item \textbf{User and Access Control Management:} Implementation of secure authentication mechanisms and a role-based access control (RBAC) model to govern system access for Librarians and Members.
+    \item \textbf{Entity Lifecycle Management:} Provision of comprehensive CRUD (Create, Read, Update, Delete) capabilities for foundational library entities, namely books, authors, and genres.
+    \item \textbf{Circulation Management:} Automation of the complete borrowal lifecycle, from the issuance of materials to their return, including the monitoring of due dates and the maintenance of historical transaction records.
+    \item \textbf{Interactive User Feedback System:} A feature enabling members to contribute qualitative and quantitative feedback through book reviews and ratings, fostering community engagement.
+\end{itemize}
+
+\section{Purpose and Contribution of This Report}
+\label{sec:report_purpose}
+This document constitutes the definitive testing and evaluation report for the selected Library Management System. Its central purpose is to methodically detail the testing strategies, execution processes, and empirical outcomes derived from our quality assurance phase. The report endeavors to furnish verifiable evidence that the LMS satisfies its specified functional and non-functional requirements, thereby establishing a high degree of confidence in its deployment readiness.
+
+The specific objectives of this report are to:
+\begin{itemize}
+    \item Systematically document the entire testing lifecycle, from strategic planning and test case architecting through to execution, data logging, and results analysis.
+    \item Present a transparent and detailed account of all executed test protocols, including quantified outcomes, identified anomalies, and defect classifications.
+    \item Conduct a multi-dimensional evaluation of the software's quality attributes, encompassing functionality, performance, security, and usability.
+    \item Furnish a conclusive, evidence-based assessment for stakeholders regarding the system's operational viability, in line with the course requirements.
+\end{itemize}
+
+\section{Scope of the Testing Mandate}
+\label{sec:testing_scope}
+To ensure methodological rigor and comprehensive validation, a multi-layered testing strategy was devised and implemented. The scope of this mandate was designed to scrutinize the system at all levels of abstraction, from discrete software units to the integrated system as a whole. The investigation encompassed the following testing paradigms:
+
+\begin{description}
+    \item[Static Testing:] Critical analysis of project artifacts, including the SRS and source code, without dynamic execution, to identify defects, ambiguities, and deviations from coding standards at the earliest possible stage.
+    \item[Unit Testing:] Rigorous validation of discrete software units (e.g., functions, classes) within the frontend and backend codebases to verify their logical and functional correctness in isolation.
+    \item[Integration Testing:] Examination of the interoperability between system components, with a primary focus on the data exchange and control flow across the interface between the React frontend and the Node.js/Express backend API.
+    \item[Functional Testing:] Application of black-box testing methodologies to confirm that the system's observable features conform to the behaviors specified in the SRS, including use case, entity management, and state transition scenarios.
+    \item[API Testing:] Direct interrogation of the backend API endpoints to validate their adherence to the specified contract, including request handling, data processing, and response generation.
+    \item[Non-Functional Testing:] Assessment of critical system quality attributes beyond core functionality, including:
+        \begin{itemize}
+            \item \textbf{Performance Testing:} Empirical measurement of the system's responsiveness, throughput, and stability under simulated load conditions.
+            \item \textbf{Security Testing:} Proactive identification of potential security vulnerabilities to ensure data confidentiality, integrity, and availability.
+            \item \textbf{Usability Testing:} Evaluation of the human-computer interaction (HCI) aspects of the user interface to gauge its effectiveness, efficiency, and user satisfaction.
+            \item \textbf{Browser Compatibility Testing:} Verification of consistent rendering and functionality across a defined set of contemporary web browsers.
+        \end{itemize}
+    \item[Regression Testing:] Systematic re-validation of existing functionality to ensure that recent code modifications or defect resolutions have not introduced unintended side effects.
+    \item[Installation and Deployment Testing:] Confirmation that the application can be reliably built, containerized using Docker, and deployed to its target operational environment.
+\end{description}
+
+\section{System Architecture Overview}
+\label{sec:system_overview}
+The Library Management System is architected as a full-stack web application employing the MERN technology stack, a widely adopted paradigm for robust and scalable web service development.
+\begin{itemize}
+    \item \textbf{MongoDB:} A NoSQL, document-oriented database serving as the persistence layer for all application data.
+    \item \textbf{Express.js:} A minimalist backend framework for Node.js, providing the foundation for the RESTful API that encapsulates the system's business logic.
+    \item \textbf{React.js:} A declarative JavaScript library for building the dynamic, single-page application (SPA) that constitutes the client-side user interface.
+    \item \textbf{Node.js:} A server-side JavaScript runtime environment that powers the application's backend services.
+\end{itemize}
+
+Figure \ref{fig:system_architecture} provides a high-level schematic of the system's architecture, illustrating the fundamental interactions between the client, server, and database tiers.
+
+\begin{figure}[H]
+    \centering
+    \resizebox{0.95\textwidth}{!}{%
+    \usetikzlibrary{positioning}
+    \begin{tikzpicture}[
+        node distance=2.5cm and 4cm, % Increased horizontal distance
+        box/.style={
+            rectangle, 
+            rounded corners, 
+            draw=black, 
+            very thick, 
+            text width=3.5cm, % Adjusted text width
+            minimum height=2.5cm,
+            align=center,
+            fill=blue!10
+        },
+        database/.style={
+            cylinder, 
+            shape border rotate=90, 
+            aspect=0.25, 
+            draw, 
+            very thick,
+            fill=red!10, 
+            minimum height=2.5cm, 
+            minimum width=2cm,
+            align=center,
+            text width=2.5cm
+        },
+        arrow/.style={-{[scale=1.5]Stealth}, thick},
+        label_style/.style={font=\small, sloped}
+    ]
+    % Nodes
+    \node[box, fill=green!10] (client) {\textbf{Client Tier} \\ (Web Browser) \\ \small React.js SPA};
+    \node[box, right=of client] (server) {\textbf{Application Tier} \\ (Server) \\ \small Node.js / Express.js \\ REST API};
+    \node[database, right=of server] (db) {\textbf{Data Tier} \\ \small MongoDB Database};
+
+    % Arrows and Labels
+    \path[arrow] (client.east) to node[label_style, above, yshift=3mm] {REST API Calls}
+                                  node[label_style, below, yshift=-3mm] {(HTTP/JSON)} (server.west);
+
+    \path[arrow] (server.east) to node[label_style, above, yshift=3mm] {Database Queries}
+                                  node[label_style, below, yshift=-3mm] {(CRUD Operations)} (db.west);
+
+    % Return Arrows and Labels
+    \draw[arrow, gray, dashed] (db.west) -- ++(-0.8,0) |- (server.east)
+        node[pos=0.25, label_style, below, xshift=6mm] {Data};
+
+    \draw[arrow, gray, dashed] (server.west) -- ++(-0.8,0) |- (client.east)
+        node[pos=0.25, label_style, below, xshift=6mm] {API Responses};
+
+    \end{tikzpicture}%
+    }
+    \caption{High-Level System Architecture of the LMS.}
+    \label{fig:system_architecture}
+\end{figure}
