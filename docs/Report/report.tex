@@ -20,6 +20,7 @@
 \usepackage{lmodern}
 \usepackage{pgfgantt} % For Gantt chart in Test Management
 \usepackage{pdflscape} % For landscape pages if needed
+\usepackage{colortbl}
 
 % --- JavaScript Listings Support ---
 \lstdefinelanguage{JavaScript}{
@@ -134,6 +135,8 @@
 % \title{\projectTitle} 
 % \date{\projectdate} 
 
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
 
 \begin{document}
 
@@ -150,9 +153,9 @@
 \input{chapters/01_introduction.tex}
 \input{chapters/02_background.tex}
 \input{chapters/03_test_management.tex}
-\input{chapters/04_testing_process.tex}
-\input{chapters/05_functional_testing.tex}
-\input{chapters/06_api_testing.tex}
+\input{chapters/04_testing_and_evaluation_process.tex}
+% \input{chapters/05_functional_testing.tex}
+% \input{chapters/06_api_testing.tex}
 % \input{chapters/07_white_box_testing.tex}
 % \input{chapters/08_non_functional_testing.tex}
 % \input{chapters/09_integration_regression.tex}

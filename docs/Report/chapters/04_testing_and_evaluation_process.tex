@@ -1,0 +1,223 @@
+\chapter{Testing and Evaluation Process}
+\label{chap:testing_process}
+
+This section details the comprehensive testing and evaluation process designed to ensure the Library Management System (LMS) meets the specified requirements and quality standards. Our strategy employs a multi-layered approach, combining static and dynamic testing techniques across various levels of the application architecture. The process is structured to systematically identify, document, and resolve defects throughout the software development lifecycle (SDLC).
+
+The primary objectives of our testing process are to:
+\begin{itemize}
+    \item Verify that all functional requirements outlined in the Software Requirements Specification (SRS) are correctly implemented.
+    \item Ensure that the system meets all non-functional requirements, including performance, security, and usability benchmarks.
+    \item Validate the system's stability, reliability, and robustness through rigorous integration, regression, and end-to-end testing.
+    \item Provide comprehensive test coverage reports and defect analyses to stakeholders for informed decision-making.
+\end{itemize}
+
+\section{Testing Strategy Overview}
+Our testing strategy is built upon a foundation of continuous testing, integrating quality assurance activities into every phase of the development cycle. The strategy is visualized in Figure \ref{fig:testing_process_flow}. It begins with static testing techniques like code and documentation reviews, followed by a hierarchy of dynamic testing levels, from unit testing of individual components to system-wide end-to-end testing.
+
+\begin{figure}[H]
+    \centering
+    \resizebox{0.7\textwidth}{!}{%
+        \begin{tikzpicture}[
+            node distance=1.5cm and 2cm,
+            block/.style={rectangle, draw, fill=blue!10, text width=8em, text centered, rounded corners, minimum height=3em, drop shadow},
+            line/.style={draw, -{Stealth[length=3mm, width=2mm]}},
+            cloud/.style={ellipse, draw, fill=gray!10, text width=6em, text centered, minimum height=3em, drop shadow}
+        ]
+            % Nodes
+                        \node[cloud] (srs) {SRS \& Requirements};
+                        \node[block, below=of srs] (planning) {Test Planning \& Design};
+                        \node[block, below left=of planning, xshift=0cm] (static) {Static Testing};
+                        \node[block, below right=of planning, xshift=-2cm] (dynamic) {Dynamic Testing};
+                        
+                        % Static Testing Branch
+                        \node[block, below=of static, text width=9em] (review) {Code \& Document Reviews};
+                        
+                        % Dynamic Testing Branch
+                        \node[block, below=of dynamic] (unit) {Unit Testing (Jest)};
+                        \node[block, below=of unit] (integration) {API \& Integration Testing (Jest/Supertest)};
+                        \node[block, below=of integration] (system) {System E2E Testing (Cypress)};
+                        \node[block, below=of system] (non-func) {Non-Functional Testing};
+                        
+                        % Merge back
+                        \node[block, below=of planning, yshift=-10cm, xshift=-2cm] (regression) {Regression Testing};
+                        \node[block, below=of regression] (defect) {Defect Management};
+                        \node[block, below=of defect] (report) {Reporting \& Sign-off};
+
+                        % Paths
+                        \path[line] (srs) -- (planning);
+                        \path[line] (planning) -- (static);
+                        \path[line] (planning) -- (dynamic);
+                        \path[line] (static) -- (review);
+                        \path[line] (dynamic) -- (unit);
+                        \path[line] (unit) -- (integration);
+                        \path[line] (integration) -- (system);
+                        \path[line] (system) -- (non-func);
+                        
+                        % Converge paths to regression
+                        \path[line] (review) |- (regression);
+                        \path[line] (non-func.west) -- (regression.east);
+                        
+                        \path[line] (regression) -- (defect);
+                        \path[line] (defect) -- (report);
+        \end{tikzpicture}%
+    }
+    \caption{Overall Testing Process Flowchart}
+    \label{fig:testing_process_flow}
+\end{figure}
+
+\section{Testing Levels}
+Testing is structured into distinct levels to ensure all parts of the system are validated, from the smallest code unit to the fully integrated application.
+
+\subsection{Unit Testing}
+Unit tests focus on the smallest individual components of the application in isolation. This is primarily aimed at the controllers, models, and utility functions within the Node.js backend.
+\begin{itemize}
+    \item \textbf{Objective:} To verify that each function or module behaves as expected.
+    \item \textbf{Framework:} Jest is used as the testing framework, assertion library, and test runner.
+    \item \textbf{Methodology:} Dependencies such as database models or external services are mocked to ensure tests are fast, reliable, and isolated. Test cases cover both successful paths and error conditions.
+\end{itemize}
+Detailed unit test cases are documented in the corresponding test file.
+\input{./test_artifacts/test_cases/III_Unit_Testing/III_Unit_Testing.tex}
+
+\subsection{Integration Testing}
+Integration testing focuses on verifying the interaction between different components. For the LMS, this primarily involves testing the API endpoints to ensure they correctly interact with controllers, models, and the database.
+\begin{itemize}
+    \item \textbf{Objective:} To detect defects in the interfaces and interactions between integrated components.
+    \item \textbf{Framework:} Jest and Supertest are used to send HTTP requests to the API endpoints and assert the responses.
+    \item \textbf{Methodology:} Tests cover creating, reading, updating, and deleting (CRUD) entities, as well as complex workflows involving multiple API calls. A test database is used to ensure a clean state for each test run.
+\end{itemize}
+The specific test cases for integration testing are detailed in:
+\input{./test_artifacts/test_cases/V_Integration_Testing/TC_Integration_Testing.tex}
+
+\subsection{System Testing}
+System testing evaluates the complete and fully integrated application from an end-to-end (E2E) perspective. This level of testing simulates real user scenarios to validate the system against the requirements defined in the SRS.
+\begin{itemize}
+    \item \textbf{Objective:} To validate the complete system's compliance with its specified requirements.
+    \item \textbf{Framework:} Cypress is used for E2E testing, automating user interactions in a real browser environment.
+    \item \textbf{Methodology:} Test scripts simulate user workflows such as logging in, searching for a book, borrowing a book, and managing user accounts. Assertions are made on the UI to confirm that the application behaves as expected.
+\end{itemize}
+
+
+\section{Dynamic Testing Types}
+Dynamic testing is performed while the code is executing. We have categorized our dynamic tests into functional and non-functional types to ensure comprehensive coverage.
+
+\subsection{Functional Testing}
+Functional testing verifies that the system performs its functions as specified in the SRS. Test cases are derived directly from the user stories and functional requirements.
+\subsubsection{Authentication and Authorization}
+\input{./test_artifacts/test_cases/I_Functional_Testing/TC_Authentication_Authorization/TC_Authentication_Authorization.tex}
+
+\subsubsection{Entity Management Testing}
+\input{./test_artifacts/test_cases/I_Functional_Testing/TC_Entity_Management/TC_Entity_Management.tex}
+
+\subsubsection{Use Case Testing}
+\input{./test_artifacts/test_cases/I_Functional_Testing/TC_Use_Case_Testing/TC_Use_Case_Testing.tex}
+
+\subsubsection{State Transition Testing}
+\input{./test_artifacts/test_cases/I_Functional_Testing/TC_State_Transition_Testing/TC_State_Transition_Testing.tex}
+
+\subsubsection{Specific Feature Testing}
+\input{./test_artifacts/test_cases/I_Functional_Testing/TC_Specific_Feature_Testing/TC_Specific_Feature_Testing.tex}
+
+\subsection{API Testing}
+API testing is performed to ensure the reliability, functionality, performance, and security of the application's API layer.
+\input{./test_artifacts/test_cases/II_API_Testing/TC_API_Testing.tex}
+
+\subsection{White-Box Testing}
+White-box testing examines the internal logic and structure of the code. Code coverage is a key metric used to evaluate the thoroughness of our white-box testing efforts.
+\begin{itemize}
+    \item \textbf{Objective:} To ensure that internal paths in the code are exercised and that the internal logic is sound.
+    \item \textbf{Methodology:} We use Jest's built-in coverage reporting tools, which are based on Istanbul. This helps us identify untested parts of the codebase.
+\end{itemize}
+\input{./test_artifacts/test_cases/III_White-Box_Testing/TC_White_Box_Testing.tex}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{assets/jest/coverage_test_report_jest.png}
+    \caption{Jest Code Coverage Report}
+    \label{fig:coverage_report}
+\end{figure}
+
+\subsection{Non-Functional Testing}
+Non-functional testing evaluates aspects of the system that are not related to specific functions but are critical to user satisfaction and system integrity.
+
+\subsubsection{Performance Testing}
+\input{./test_artifacts/test_cases/IV_Non-Functional_Testing/TC_Performance_Testing/TC_Performance_Testing.tex}
+
+\subsubsection{Security Testing}
+\input{./test_artifacts/test_cases/IV_Non-Functional_Testing/TC_Security_Testing/TC_Security_Testing.tex}
+
+\subsubsection{Usability Testing}
+\input{./test_artifacts/test_cases/IV_Non-Functional_Testing/TC_Usability_Testing/TC_Usability_Testing.tex}
+For a more detailed breakdown of usability heuristics, we utilized a checklist during evaluation:
+\input{./test_artifacts/checklists/usability_checklist.tex}
+
+\subsubsection{Browser Compatibility Testing}
+\input{./test_artifacts/test_cases/IV_Non-Functional_Testing/TC_Browser_Compatibility_Testing/TC_Browser_Compatibility_Testing.tex}
+
+\subsection{Regression Testing}
+Regression testing is performed to ensure that new code changes, enhancements, or bug fixes do not adversely affect existing functionalities.
+\input{./test_artifacts/test_cases/VI_Regression_Testing/TC_Regression_Testing.tex}
+
+\subsection{Installation and Deployment Testing}
+This testing ensures that the application can be installed and deployed successfully in the target environments (development, test, production) using the provided Docker configuration.
+\input{./test_artifacts/test_cases/VII_Installation_Deployment_Testing/TC_Installation_Deployment_Testing.tex}
+
+\section{Static Testing}
+Static testing is performed without executing the application code. It includes reviews of documentation and source code.
+\begin{itemize}
+    \item \textbf{Code Reviews:} Manual inspection of source code to identify potential defects, security vulnerabilities, and deviations from coding standards.
+    \item \textbf{Walkthroughs:} The development team presents the code to the testing team to explain its logic and flow.
+    \item \textbf{Documentation Review:} Review of the SRS, test plan, and other project documents for clarity, completeness, and consistency.
+\end{itemize}
+\input{./test_artifacts/test_cases/VIII_Static_Testing/TC_Static_Testing.tex}
+
+\section{Test Environment and Tools}
+All testing activities are conducted within a controlled and reproducible environment, managed by Docker. This ensures consistency between development, testing, and production setups.
+
+\begin{longtable}{|p{0.2\textwidth}|p{0.7\textwidth}|}
+    \caption{Testing Tools and Frameworks} \\
+    \hline
+    \textbf{Tool/Framework} & \textbf{Purpose} \\
+    \hline
+    \endfirsthead
+    \multicolumn{2}{c}%
+    {{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+    \hline
+    \textbf{Tool/Framework} & \textbf{Purpose} \\
+    \hline
+    \endhead
+    \hline \multicolumn{2}{|r|}{{Continued on next page}} \\ \hline
+    \endfoot
+    \hline
+    \endlastfoot
+    Docker & Containerization of the application, database (MongoDB), and testing environments. Used to ensure consistency across all stages. \\
+    \hline
+    Node.js & The runtime environment for the backend application and test execution. \\
+    \hline
+    Jest & The primary framework for unit and integration testing of the backend. Provides test running, assertion, and mocking capabilities. \\
+    \hline
+    Supertest & An HTTP assertion library used with Jest for API integration testing. \\
+    \hline
+    Cypress & The framework for end-to-end (E2E) system testing, browser compatibility testing, and parts of regression testing. \\
+    \hline
+    k6 & A modern load testing tool used for performance and stress testing of the API endpoints. \\
+    \hline
+    MongoDB & The NoSQL database used by the application. A separate test database instance is used for automated testing. \\
+    \hline
+    Git / GitHub & Version control system for source code and test scripts. Used for collaboration and tracking changes. \\
+    \hline
+\end{longtable}
+
+\section{Evaluation and Reporting}
+The evaluation of the system's quality is a continuous process involving test execution, defect management, and reporting.
+\begin{itemize}
+    \item \textbf{Test Execution:} Tests are executed automatically via npm scripts (e.g., \texttt{npm test}) and on a continuous integration (CI) server (conceptual).
+    \item \textbf{Defect Management:} A systematic approach is used to manage defects. When a test fails, a defect is logged with details including steps to reproduce, severity, and priority. The defect is then assigned, fixed, and re-tested.
+    \item \textbf{Test Reporting:} After each test cycle, reports are generated. These include Jest test results (see Figure \ref{fig:jest_report}) and code coverage reports (Figure \ref{fig:coverage_report}). These reports provide a clear overview of the application's health to the entire team.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{assets/jest/jest_report_screenshot.png}
+    \caption{Jest Test Execution Report}
+    \label{fig:jest_report}
+\end{figure}
+

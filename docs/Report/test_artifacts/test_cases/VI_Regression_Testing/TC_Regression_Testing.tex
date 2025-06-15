@@ -1,26 +1,3 @@
-\documentclass[10pt, a4paper]{report}
-\usepackage[utf8]{inputenc}
-\usepackage{geometry}
-\usepackage{longtable}
-\usepackage{array} % For better column definitions in longtable
-\usepackage{enumitem} % Required for itemize and enumerate options
-\usepackage{helvet} % Using a sans-serif font for better readability
-\renewcommand{\familydefault}{\sfdefault}
-
-\geometry{left=1.5cm, right=1.5cm, top=2cm, bottom=2cm}
-
-\title{VI. Regression Test Suite \\ \large Library Management System}
-\author{Test Team}
-\date{June 10, 2025}
-
-\begin{document}
-\maketitle
-\begin{center}
-    \textbf{Note:} This regression test suite is designed to verify that recent code changes have not adversely affected existing core functionalities. It focuses on the primary "happy path" scenarios and critical features identified in the SRS. These tests should be executed after every bug fix or feature implementation. 
-\end{center}
-
-\section*{VI. Regression Test Cases}
-
 \begin{longtable}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{5cm}|>{\raggedright\arraybackslash}p{5cm}|}
 \caption{Regression Test Suite}\label{tab:regression_test_cases}\\
 \hline
@@ -161,5 +138,3 @@ TC\_REG\_FLOW\_003 & Librarian can update a borrowal status (e.g., return a book
     \end{itemize} \\ \hline
 
 \end{longtable}
-
-\end{document}

@@ -1,75 +1,3 @@
-\documentclass[12pt]{article}
-\usepackage[utf8]{inputenc}
-\usepackage{geometry}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
-\usepackage{graphicx}
-\usepackage{hyperref}
-\usepackage{listings}
-\usepackage{xcolor}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-
-\geometry{margin=1in}
-
-% Code listing style
-\lstdefinestyle{mystyle}{
-    backgroundcolor=\color{gray!10},   
-    commentstyle=\color{green!60!black},
-    keywordstyle=\color{blue},
-    numberstyle=\tiny\color{gray},
-    stringstyle=\color{red!70!black},
-    basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
-    showstringspaces=false,
-    showtabs=false,                  
-    tabsize=2
-}
-\lstset{style=mystyle}
-
-\title{White-Box Testing Documentation\\Library Management System}
-\author{SE507 Software Testing and Evaluation}
-\date{\today}
-
-\begin{document}
-
-\maketitle
-
-\tableofcontents
-\newpage
-
-\section{Introduction}
-
-\subsection{Purpose}
-This document provides comprehensive white-box testing documentation for the Library Management System, focusing on internal code structure, logic coverage, and unit testing implementation as required by SE507 Software Testing and Evaluation coursework.
-
-\subsection{Scope}
-White-box testing covers both server-side (Node.js/Express) and client-side (React.js) components, including:
-\begin{itemize}
-    \item Unit testing of individual functions and methods
-    \item Code coverage analysis (statement, branch, condition, path)
-    \item Internal logic validation
-    \item Error handling and edge case testing
-    \item Complexity analysis of critical functions
-\end{itemize}
-
-\subsection{Testing Approach}
-White-box testing is performed using:
-\begin{itemize}
-    \item \textbf{Server-side}: Jest testing framework with mocking capabilities
-    \item \textbf{Client-side}: Jest with React Testing Library
-    \item \textbf{Coverage Tools}: Jest built-in coverage reporting
-    \item \textbf{Static Analysis}: ESLint for code quality assessment
-\end{itemize}
-
 \section{Test Strategy and Coverage Criteria}
 
 \subsection{Coverage Types Implemented}
@@ -188,11 +116,11 @@ TC\_WB\_USER\_016 & Should handle crypto errors gracefully & Error Path \\
 \textbf{Validation Flow Analysis}:
 \begin{lstlisting}[language=JavaScript, caption=Authentication Validation Flow]
 // White-box testing reveals exact validation order:
-1. if (!req.body.email) → return emailRequired error
-2. if (!req.body.password) → return passwordRequired error  
-3. if (!req.body.name) → return nameRequired error
-4. if (req.body.password.length < 8) → return weakPassword error
-5. User.findOne() → check existing user
+1. if (!req.body.email) -> return emailRequired error
+2. if (!req.body.password) -> return passwordRequired error  
+3. if (!req.body.name) -> return nameRequired error
+4. if (req.body.password.length < 8) -> return weakPassword error
+5. User.findOne() -> check existing user
 6. Create new user if validation passes
 \end{lstlisting}
 
@@ -434,50 +362,3 @@ Components & 75\% & 70\% & 85\% & 75\% \\
     \item \textbf{Assertion Quality}: Specific, meaningful assertions
     \item \textbf{Documentation}: Well-documented test cases with TC IDs
 \end{itemize}
-
-\section{Conclusion and Recommendations}
-
-\subsection{White-Box Testing Effectiveness}
-
-The comprehensive white-box testing implementation has successfully:
-\begin{itemize}
-    \item Achieved high code coverage (91\% server-side, 82\% client-side)
-    \item Identified and fixed critical security vulnerabilities
-    \item Validated internal logic and error handling paths
-    \item Established maintainable test infrastructure
-    \item Provided detailed complexity analysis for future improvements
-\end{itemize}
-
-\subsection{Future Improvements}
-
-\subsubsection{Short-term (Next Sprint)}
-\begin{enumerate}
-    \item Increase client-side component test coverage to 85\%
-    \item Implement additional error injection scenarios
-    \item Add performance benchmarking to unit tests
-    \item Enhance async operation testing coverage
-\end{enumerate}
-
-\subsubsection{Long-term (Next Release)}
-\begin{enumerate}
-    \item Implement mutation testing for test quality assessment
-    \item Add automated complexity monitoring in CI/CD pipeline
-    \item Establish code coverage gates (minimum 90\% for new code)
-    \item Implement property-based testing for critical algorithms
-\end{enumerate}
-
-\subsection{Assignment Compliance}
-
-This white-box testing implementation fully satisfies SE507 requirements:
-\begin{itemize}
-    \item \textbf{Unit Test Development}: Comprehensive Jest-based unit tests
-    \item \textbf{Code Coverage Analysis}: Statement, branch, condition, and path coverage
-    \item \textbf{Complexity Analysis}: Cyclomatic complexity assessment of critical functions
-    \item \textbf{Static Analysis}: ESLint integration for code quality assessment
-    \item \textbf{Documentation}: Complete test case documentation with traceability
-    \item \textbf{Defect Discovery}: Multiple critical issues identified and resolved
-\end{itemize}
-
-The white-box testing phase has significantly improved code quality, identified security vulnerabilities, and established a robust foundation for ongoing development and maintenance.
-
-\end{document} 

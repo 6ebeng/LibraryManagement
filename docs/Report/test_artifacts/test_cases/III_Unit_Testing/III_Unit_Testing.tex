@@ -1,37 +1,5 @@
-\documentclass{article}
-\usepackage[a4paper, margin=1in]{geometry}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{fancyhdr}
-\usepackage{hyperref}
-\usepackage{booktabs}
-\usepackage{graphicx}
+\subsection{Authentication Controller (authController)}
 
-\pagestyle{fancy}
-\fancyhf{}
-\rhead{Library Management System}
-\lhead{Test Design Document}
-\cfoot{\thepage}
-
-\hypersetup{
-    colorlinks=true,
-    linkcolor=blue,
-    filecolor=magenta,      
-    urlcolor=cyan,
-}
-
-\begin{document}
-
-\title{
-    \textbf{Library Management System}\\
-    \large{Software Test Design Document}
-}
-\author{Tishko}
-\date{\today}
-\maketitle
-
-\section{Authentication Controller (authController)}
-\subsection{Overview}
 The Auth Controller is responsible for user authentication, including registration (by a librarian), login, and logout. These tests ensure that access control and user session management are functioning correctly, as specified in the SRS.
 
 \begin{longtable}{|p{0.1\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|p{0.20\textwidth}|p{0.25\textwidth}|}
@@ -68,8 +36,9 @@ The Auth Controller is responsible for user authentication, including registrati
     \hline
 \end{longtable}
 
-\section{Author Controller (authorController)}
-\subsection{Overview}
+\subsubsection{Author Controller (authorController)}
+
+
 The Author Controller manages CRUD operations for author entities. These tests validate the creation and retrieval of authors.
 
 \begin{longtable}{|p{0.1\textwidth}|p{0.2\textwidth}|p{0.2\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|}
@@ -98,8 +67,8 @@ The Author Controller manages CRUD operations for author entities. These tests v
     \hline
 \end{longtable}
 
-\section{Book Controller (bookController)}
-\subsection{Overview}
+\subsubsection{Book Controller (bookController)}
+
 The Book Controller handles all CRUD operations for book entities. The tests ensure that books can be created, retrieved (all and by ID), updated, and deleted as per the requirements.
 
 \begin{longtable}{|p{0.1\textwidth}|p{0.2\textwidth}|p{0.2\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|}
@@ -136,8 +105,8 @@ The Book Controller handles all CRUD operations for book entities. The tests ens
     \hline
 \end{longtable}
 
-\section{Borrowal Controller (borrowalController)}
-\subsection{Overview}
+\subsubsection{Borrowal Controller (borrowalController)}
+
 This controller manages borrowal records. Tests cover creating a borrowal (and updating book availability), updating a borrowal's status, and retrieving borrowals based on user roles (Librarian vs. Member).
 
 \begin{longtable}{|p{0.1\textwidth}|p{0.2\textwidth}|p{0.2\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|}
@@ -170,8 +139,8 @@ This controller manages borrowal records. Tests cover creating a borrowal (and u
     \hline
 \end{longtable}
 
-\section{Genre Controller (genreController)}
-\subsection{Overview}
+\subsubsection{Genre Controller (genreController)}
+
 The Genre Controller manages CRUD operations for genre entities. These tests validate the creation and retrieval of genres.
 
 \begin{longtable}{|p{0.1\textwidth}|p{0.2\textwidth}|p{0.2\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|}
@@ -200,8 +169,8 @@ The Genre Controller manages CRUD operations for genre entities. These tests val
     \hline
 \end{longtable}
 
-\section{Review Controller (reviewController)}
-\subsection{Overview}
+\subsubsection{Review Controller (reviewController)}
+
 The Review Controller is responsible for managing book reviews. The tests cover the creation of reviews and fetching all reviews for a specific book.
 
 \begin{longtable}{|p{0.1\textwidth}|p{0.2\textwidth}|p{0.2\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|}
@@ -229,5 +198,3 @@ The Review Controller is responsible for managing book reviews. The tests cover 
     TC-REV-002 & 3.8 Review Management  & Get all reviews for a specific book & 1. Provide a book ID in \texttt{req.params.bookId}. \newline 2. Mock \texttt{Review.find().populate()} to resolve with an array of reviews. \newline 3. Call \texttt{getReviewsForBook}. & 1. \texttt{Review.find} is called with a filter for the book ID. \newline 2. Response status is 200. \newline 3. Response JSON contains the array of reviews for that book. \\
     \hline
 \end{longtable}
-
-\end{document}

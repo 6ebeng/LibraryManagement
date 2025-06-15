@@ -1,44 +1,3 @@
-\documentclass[12pt,a4paper]{article}
-\usepackage[utf8]{inputenc}
-\usepackage{geometry}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{enumitem}
-\usepackage{xcolor}
-\usepackage{colortbl}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
-\usepackage{graphicx}
-\usepackage{hyperref}
-\usepackage{fancyhdr}
-\usepackage{booktabs}
-\usepackage{listings}
-
-\geometry{left=2.5cm, right=2.5cm, top=3cm, bottom=3cm}
-
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[L]{SE507 - Software Testing}
-\fancyhead[R]{Static Testing}
-\fancyfoot[C]{\thepage}
-
-\title{\textbf{Static Testing} \\ \large Test Case Design Document \\ Library Management System}
-\author{SE507 Software Testing Assignment}
-\date{\today}
-
-\begin{document}
-
-\maketitle
-
-\tableofcontents
-\newpage
-
-\section{Introduction}
-
-\subsection{Purpose}
-This document outlines the comprehensive static testing strategy for the Library Management System. Static testing involves examining code, documentation, and design artifacts without executing the software to identify defects, improve quality, and ensure compliance with standards.
-
 \subsection{Scope}
 The Static Testing covers:
 \begin{itemize}
@@ -664,7 +623,7 @@ The Static Testing covers:
 
 \subsection{Static Analysis Tool Configuration}
 
-\begin{lstlisting}[language=json, caption=ESLint Configuration Example]
+\begin{lstlisting}[language=JavaScript, caption=ESLint Configuration Example]
 {
   "extends": [
     "eslint:recommended",
@@ -729,21 +688,3 @@ The Static Testing covers:
 \end{itemize} \\
 \hline
 \end{longtable}
-
-\section{Conclusion}
-
-Static testing is a critical component of the overall quality assurance strategy for the Library Management System. Through systematic code reviews, walkthroughs, documentation reviews, and automated static analysis, we can identify and prevent defects early in the development lifecycle.
-
-The implementation of comprehensive static testing processes ensures:
-\begin{itemize}
-    \item Early defect detection and prevention
-    \item Improved code quality and maintainability
-    \item Enhanced security posture
-    \item Compliance with coding standards
-    \item Knowledge sharing among team members
-    \item Reduced testing and maintenance costs
-\end{itemize}
-
-Regular execution of these static testing activities, combined with continuous improvement of processes and tools, will contribute significantly to the overall success and quality of the Library Management System.
-
-\end{document} 
