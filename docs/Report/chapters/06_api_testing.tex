@@ -1,0 +1,93 @@
+\chapter{API Testing}
+\label{chap:api_testing}
+
+\section{Introduction to API Testing}
+Application Programming Interface (API) testing is a critical phase in the software development lifecycle, focused on validating the business logic, data responses, security, and performance of the backend services. For the Library Management System, which operates on a client-server architecture, the API serves as the backbone, handling all data transactions between the React frontend and the Node.js backend. 
+
+Our strategy involved a dual approach:
+\begin{itemize}
+    \item \textbf{Manual Testing:} Using Postman to execute individual API requests, allowing for exploratory testing and validation of specific scenarios designed by the team.
+    \item \textbf{Automated Testing:} Implementing integration tests using Jest and Supertest to create a repeatable and efficient suite for validating API endpoints, ensuring that new changes do not break existing functionality (regression testing).
+\end{itemize}
+
+This chapter details the design of our API test cases, the implementation of the automated test suite, and the significant findings uncovered during execution, particularly concerning role-based access control vulnerabilities.
+
+\section{Test Design and Strategy}
+The design of our API test cases was a collaborative effort, as outlined in our project's task distribution plan.  Non-coding members of the team took the lead in designing user-centric scenarios based on the Software Requirements Specification (SRS), while coders focused on the technical implementation and automation of these tests. 
+
+\subsection{Test Case Derivation}
+All API test cases were derived directly from the functional requirements detailed in the SRS document.  The goal was to cover all major API endpoints, focusing on:
+\begin{itemize}[noitemsep]
+    \item \textbf{Authentication:} Testing login, registration, and logout endpoints.
+    \item \textbf{Authorization (RBAC):} Verifying that role-based access control is correctly enforced (e.g., only librarians can access administrative endpoints).
+    \item \textbf{CRUD Operations:} Ensuring that Create, Read, Update, and Delete operations work as expected for all major entities (Books, Authors, etc.).
+    \item \textbf{Input Validation and Error Handling:} Testing the API's response to invalid, incomplete, or malicious inputs.
+\end{itemize}
+The comprehensive set of designed test cases can be found in the test artifact document, \texttt{TC\_API\_Testing.tex}.
+
+\subsection{Manual Testing with Postman}
+Postman was used for initial manual API testing. This allowed the team to quickly send requests to each endpoint, examine the full response body and headers, and validate the expected outcomes against the SRS. This approach was particularly useful for exploratory testing and for non-coders to participate directly in the API testing process.
+
+\begin{figure}[H]
+    \centering
+    % Placeholder for a screenshot of Postman
+    \fbox{\parbox[c][10cm][c]{0.8\textwidth}{\centering \Large \vspace{4cm} Screenshot of Postman Interface \\ Showing API Test Execution}}
+    \caption{Manual API Testing using Postman}
+    \label{fig:postman_execution}
+\end{figure}
+
+\section{Automated API Testing with Jest and Supertest}
+To ensure long-term stability and create an efficient regression testing process, we developed an automated API test suite. These tests run in a controlled environment, interacting directly with the server without a UI, which makes them fast and reliable.
+
+\subsection{Framework and Setup}
+Our automated suite uses the following tools:
+\begin{itemize}
+    \item \textbf{Jest:} A popular JavaScript testing framework that provides a test runner, assertion library, and mocking capabilities.
+    \item \textbf{Supertest:} A library that allows for high-level abstraction for testing HTTP, making it easy to send requests to our Express.js application and assert responses.
+\end{itemize}
+
+The tests are structured to be self-contained, handling their own setup and teardown of test data. An authenticated `agent` is created for both a librarian and a member role to test protected endpoints and simulate real user sessions. The test file \texttt{auth.api.test.js} demonstrates this setup.
+
+\subsection{Example Test Implementation}
+The following code snippet from \texttt{book.api.test.js} illustrates how we test the endpoint for creating a new book. The test, `TC\_BOOK\_CREATE\_001`, uses the authenticated librarian agent to send a POST request with a valid book payload and asserts that the server responds with a status code of 201 (Created).
+
+\begin{lstlisting}[language=JavaScript, caption={Automated Test for Book Creation (book.api.test.js)}, label={lst:api_book_test}]
+it('TC_BOOK_CREATE_001: should allow a librarian to create a new book', async () => {
+    const res = await librarianAgent.post('/api/books/add').send({
+        name: 'A New Hope',
+        isbn: '978-3-16-148410-0-B',
+        authorId: testAuthor._id.toString(),
+        genreId: testGenre._id.toString(),
+    });
+    expect(res.statusCode).toEqual(201);
+    expect(res.body).toHaveProperty('newBook.name', 'A New Hope');
+    if (res.body.newBook && res.body.newBook._id) {
+        createdBookIds.push(res.body.newBook._id);
+    }
+});
+\end{lstlisting}
+
+\section{Test Execution and Key Findings}
+The execution of both manual and automated API tests provided crucial insights into the health of our application's backend. While most endpoints for data retrieval and basic authentication functioned as expected, the testing process uncovered critical security vulnerabilities related to authorization.
+
+\subsection{Discrepancy in Access Control}
+A major discrepancy was found between the specified requirements in the SRS and the actual behavior of the API concerning book management. The SRS clearly states that only users with the Librarian role should have the ability to create, update, or delete book records. 
+
+However, our automated tests in \texttt{book.api.test.js} revealed that a user authenticated as a `Member` could successfully perform these administrative actions. The server incorrectly returned a `200 OK` or `201 Created` status instead of the expected `403 Forbidden`.
+
+The code snippet below from the automated test log highlights this failure. The test was written to expect a 403 status, but the comment indicates that the server's actual response was 201, allowing the action.
+
+\begin{lstlisting}[language=JavaScript, caption={Test Showing Member Can Incorrectly Create a Book (book.api.test.js)}, label={lst:api_defect}]
+it('TC_BOOK_CREATE_003: should prevent a member from creating a book', async () => {
+    const res = await memberAgent.post('/api/books/add').send({
+        name: 'A Member Book',
+        isbn: '978-1-4028-9462-6-B',
+        authorId: testAuthor._id,
+        genreId: testGenre._id,
+    });
+    // MODIFIED: Was 403. Server currently allows member to create book (201).
+    expect(res.statusCode).toEqual(201);
+});
+\end{lstlisting}
+
+This finding was critical, as it represented a severe security flaw that would allow any registered member to alter the library's entire catalog. This underscores the value of API-level testing, as such a logic flaw in the backend might not be immediately obvious when testing through the UI alone, especially if the UI correctly hides the buttons for these actions from members. The backend must always enforce its own security and not rely on the client.
