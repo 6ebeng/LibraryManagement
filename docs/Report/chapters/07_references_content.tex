@@ -1,0 +1,56 @@
+% This file creates the 'references.bib' file and then prints the bibliography.
+% It should be included in your main .tex file where you want the reference list to appear.
+% NOTE: The \usepackage{filecontents} command has been removed from this file.
+% Please ensure it is present in the preamble of your main report.tex file.
+
+% The filecontents* environment writes the content to 'references.bib'.
+% The [overwrite] option ensures it is updated if you re-compile.
+\begin{filecontents*}[overwrite]{references.bib}
+@misc{repo:testing,
+  author       = {Salah, Tishko and Zuhair, Sara and Hussein, Yassin and Barzan, Ravyar},
+  title        = {Library Management System - Testing Repository},
+  year         = {2025},
+  howpublished = {\url{https://github.com/6ebeng/LibraryManagement}},
+  note         = {Accessed: June 15, 2025}
+}
+
+@misc{repo:lms,
+  author       = {{MERNRAD}},
+  title        = {Library Management - MERN Project},
+  year         = {2023},
+  howpublished = {\url{https://github.com/MERNRAD/LibraryManagement}},
+  note         = {Accessed: June 15, 2025. (This repository was used as a base for the project)}
+}
+
+@misc{doc:srs,
+  author       = {Salah, Tishko and Zuhair, Sara and Hussein, Yassin and Barzan, Ravyar},
+  title        = {Software Requirements Specification for Library Management System},
+  year         = {2025},
+  howpublished = {\url{https://github.com/6ebeng/LibraryManagement/blob/main/docs/SRS\%20Library\%20Management.docx}},
+  note         = {Accessed: June 15, 2025}
+}
+
+@misc{doc:tasks,
+  author       = {Salah, Tishko and Zuhair, Sara and Hussein, Yassin and Barzan, Ravyar},
+  title        = {Library Management System - Software Testing Plan and Timeline},
+  year         = {2025},
+  howpublished = {\url{https://github.com/6ebeng/LibraryManagement/blob/main/docs/Tasks/Tasks.pdf}},
+  note         = {Accessed: June 15, 2025}
+}
+\end{filecontents*}
+
+% The \addbibresource command should already be in your main report's preamble.
+% It is what connects the .bib file created above to the document.
+
+% Create the References chapter
+\chapter*{References}
+\label{chap:references}
+\lhead{References}
+\addcontentsline{toc}{chapter}{References}
+
+% Add \nocite{*} to include all references from the .bib file,
+% regardless of whether they have been cited in the text.
+\nocite{*}
+
+% Now, print the bibliography using the 'heading=none' option because we have created our own chapter heading.
+\printbibliography[heading=none]
