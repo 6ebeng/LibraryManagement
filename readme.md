@@ -1,5 +1,3 @@
-Of course. I have updated the `README.md` to include a new section on Code Coverage, using the provided reports.
-
 # Library Management System
 
 This is a full-stack web application for managing a library's inventory, users, and borrowals. It provides a user-friendly interface for both librarians and members, with role-based access control to ensure data security and integrity.
