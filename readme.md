@@ -16,13 +16,13 @@ This project implements a structured testing lifecycle, breaking down the qualit
 
 ### Testing Phases
 
-[cite_start]The testing process is organized into the following phases, aligned with the project timeline from early March 2025 to June 15, 2025[cite: 482]:
+The testing process is organized into the following phases, aligned with the project timeline from early March 2025 to June 15, 2025:
 
-- [cite_start]**Phase 1: Planning & Initial Static Testing:** Focuses on understanding requirements and developing a detailed test plan[cite: 482].
-- [cite_start]**Phase 2: Core Functional & API Test Design & Execution:** Involves the design and execution of black-box functional and API tests based on the SRS[cite: 484, 485, 486, 487, 488].
-- [cite_start]**Phase 3: White-Box & Non-Functional Testing:** Covers unit testing, code coverage analysis, and testing for non-functional requirements like security and usability[cite: 489, 490].
-- [cite_start]**Phase 4: Integration & Early Regression Testing:** Ensures that different parts of the system work together as expected and that new changes do not break existing functionality[cite: 491, 492, 493, 494].
-- [cite_start]**Phase 5: System Changes, Final Testing & Report:** Involves final regression testing, deployment validation, and the preparation of the final report[cite: 494, 495, 496, 497].
+- **Phase 1: Planning & Initial Static Testing:** Focuses on understanding requirements and developing a detailed test plan.
+- **Phase 2: Core Functional & API Test Design & Execution:** Involves the design and execution of black-box functional and API tests based on the SRS.
+- **Phase 3: White-Box & Non-Functional Testing:** Covers unit testing, code coverage analysis, and testing for non-functional requirements like security and usability.
+- **Phase 4: Integration & Early Regression Testing:** Ensures that different parts of the system work together as expected and that new changes do not break existing functionality.
+- **Phase 5: System Changes, Final Testing & Report:** Involves final regression testing, deployment validation, and the preparation of the final report.
 
 ---
 
@@ -32,58 +32,58 @@ A variety of testing methodologies are employed throughout the project, with res
 
 ### I. Functional Testing (Black-Box)
 
-[cite_start]Led by non-coders, this testing is based on the **Software Requirements Specification (SRS)** and focuses on the application's behavior without knowledge of the internal code structure[cite: 523].
+Led by non-coders, this testing is based on the **Software Requirements Specification (SRS)** and focuses on the application's behavior without knowledge of the internal code structure.
 
-- [cite_start]**Authentication & Authorization**: Tests user login/logout, registration, and role-based access control to ensure users can only access appropriate features[cite: 524].
-- [cite_start]**Entity Management (CRUD)**: Verifies all Create, Read, Update, and Delete operations for books, authors, genres, users, borrowals, and reviews[cite: 526].
-- [cite_start]**Specific Feature Testing**: Validates the functionality of key features like the librarian dashboard, borrowal management, and review management[cite: 528].
-- [cite_start]**Use Case Testing**: Executes tests for all main, alternative, and exception flows outlined in the SRS to ensure graceful error handling[cite: 530].
-- [cite_start]**State Transition Testing**: Checks the system's behavior as entities transition between states, such as a book's availability or a borrowal's status[cite: 532].
+- **Authentication & Authorization**: Tests user login/logout, registration, and role-based access control to ensure users can only access appropriate features.
+- **Entity Management (CRUD)**: Verifies all Create, Read, Update, and Delete operations for books, authors, genres, users, borrowals, and reviews.
+- **Specific Feature Testing**: Validates the functionality of key features like the librarian dashboard, borrowal management, and review management.
+- **Use Case Testing**: Executes tests for all main, alternative, and exception flows outlined in the SRS to ensure graceful error handling.
+- **State Transition Testing**: Checks the system's behavior as entities transition between states, such as a book's availability or a borrowal's status.
 
 ### II. API Testing
 
-[cite_start]This is a balanced effort between coders and non-coders to test the application's API endpoints directly[cite: 534, 535].
+This is a balanced effort between coders and non-coders to test the application's API endpoints directly.
 
-- [cite_start]**Coders** lead the development of automated API test scripts to validate functionality, performance, and security[cite: 534].
-- [cite_start]**Non-coders** lead the design of user-centric test scenarios and perform manual testing using tools like Postman to validate requests and responses[cite: 535].
+- **Coders** lead the development of automated API test scripts to validate functionality, performance, and security.
+- **Non-coders** lead the design of user-centric test scenarios and perform manual testing using tools like Postman to validate requests and responses.
 
 ### III. White-Box Testing
 
-[cite_start]Led by coders, this testing focuses on the internal logic and structure of the source code[cite: 536].
+Led by coders, this testing focuses on the internal logic and structure of the source code.
 
-- [cite_start]**Unit Tests**: Jest is used to develop and execute unit tests for both frontend and backend modules, focusing on critical controllers, models, and complex logic[cite: 537].
-- [cite_start]**Code Coverage**: The team analyzes code coverage for decisions, paths, and conditions to ensure that the code is thoroughly tested[cite: 490].
+- **Unit Tests**: Jest is used to develop and execute unit tests for both frontend and backend modules, focusing on critical controllers, models, and complex logic.
+- **Code Coverage**: The team analyzes code coverage for decisions, paths, and conditions to ensure that the code is thoroughly tested.
 
 ### IV. Non-Functional Testing
 
 This category covers aspects of the system that are not related to specific functions but are critical to the user experience.
 
-- **Security Testing**: A balanced team effort to identify vulnerabilities. [cite_start]Coders focus on technical aspects like penetration testing and server-side validation, while non-coders test for user-facing issues like XSS and access control violations[cite: 539, 540].
-- [cite_start]**Usability Testing**: Non-coders design and conduct tests to evaluate the UI/UX for intuitiveness, consistency, and efficiency[cite: 542].
-- [cite_start]**Performance Testing**: The team collaborates to check API response times and document UI responsiveness under various conditions[cite: 544, 545].
-- [cite_start]**Browser Compatibility**: Non-coders test the application's core functionality and UI rendering on specified browsers (Chrome, Firefox, Edge, Safari)[cite: 548].
+- **Security Testing**: A balanced team effort to identify vulnerabilities. Coders focus on technical aspects like penetration testing and server-side validation, while non-coders test for user-facing issues like XSS and access control violations.
+- **Usability Testing**: Non-coders design and conduct tests to evaluate the UI/UX for intuitiveness, consistency, and efficiency.
+- **Performance Testing**: The team collaborates to check API response times and document UI responsiveness under various conditions.
+- **Browser Compatibility**: Non-coders test the application's core functionality and UI rendering on specified browsers (Chrome, Firefox, Edge, Safari).
 
 ### V. Integration Testing
 
-[cite_start]The team works together to ensure that different components and services of the application function correctly as a whole[cite: 550]. [cite_start]Non-coders design end-to-end user scenarios, which are then executed to verify data consistency and workflow integrity[cite: 551].
+The team works together to ensure that different components and services of the application function correctly as a whole.
 
 ### VI. Regression Testing
 
-[cite_start]A shared responsibility to ensure new changes do not negatively impact existing functionality[cite: 553].
+A shared responsibility to ensure new changes do not negatively impact existing functionality.
 
-- [cite_start]**Automated Suite**: Coders develop and maintain an automated regression suite of unit and API tests[cite: 552].
-- [cite_start]**Manual Suite**: Non-coders maintain and execute a manual suite covering critical user workflows and previously identified defects[cite: 553].
+- **Automated Suite**: Coders develop and maintain an automated regression suite of unit and API tests.
+- **Manual Suite**: Non-coders maintain and execute a manual suite covering critical user workflows and previously identified defects.
 
 ### VII. Installation/Deployment Testing
 
-The team validates the deployment process to ensure the application can be installed and run successfully in its target environment. [cite_start]This includes verifying Docker setups and deployment scripts[cite: 555].
+The team validates the deployment process to ensure the application can be installed and run successfully in its target environment. This includes verifying Docker setups and deployment scripts.
 
 ### VIII. Static Testing
 
 This involves testing without executing the code.
 
-- **Code Reviews**: Coders lead technical reviews to check for logic, security, and efficiency issues. [cite_start]Non-coders participate to ensure alignment with the SRS[cite: 557, 558].
-- [cite_start]**Documentation Review**: Non-coders lead the review of all project documentation for clarity, completeness, and accuracy[cite: 561].
+- **Code Reviews**: Coders lead technical reviews to check for logic, security, and efficiency issues. Non-coders participate to ensure alignment with the SRS.
+- **Documentation Review**: Non-coders lead the review of all project documentation for clarity, completeness, and accuracy.
 
 ---
 
