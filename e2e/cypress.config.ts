@@ -24,13 +24,7 @@ export default defineConfig({
     showSkipped: true,
   },
   e2e: {
-    // ---- SETTINGS MOVED HERE ----
     watchForFileChanges: true,
-    watchOptions: {
-      usePolling: true,
-      interval: 500,
-    },
-    // ----------------------------
     supportFile: 'cypress/support/e2e.ts',
     setupNodeEvents: async (on, config) => {
       const plugin = await import('cypress-mochawesome-reporter/plugin')
