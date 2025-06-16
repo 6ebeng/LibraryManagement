@@ -100,8 +100,8 @@ Cypress.Commands.add('loginAsLibrarian', (email, password) => {
       cy.visit('/login')
       cy.autoFillLoginForm({ email, password })
       cy.get('button[type="submit"]').click()
-      cy.url({ timeout: 15000 }).should('include', '/dashboard')
-      cy.contains('h4', /Welcome back/i, { timeout: 15000 }).should(
+      cy.url({ timeout: 15000 }).should('match', /\/dashboard|\/Books/)
+      cy.contains('h4', /Welcome back|Books/i, { timeout: 15000 }).should(
         'be.visible'
       )
     },

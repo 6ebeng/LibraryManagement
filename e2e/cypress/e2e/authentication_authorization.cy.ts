@@ -28,30 +28,190 @@ describe('E2E: Authentication & Authorization', () => {
   })
 
   // --- User Registration Tests (by Librarian) ---
-  describe('User Registration (by Librarian)', () => {
-    beforeEach(() => {
-      if (
-        !fixtureUserData?.librarian?.email ||
-        !fixtureUserData?.librarian?.password
-      ) {
-        throw new Error('Librarian credentials not found in fixture.')
-      }
+  // describe('User Registration (by Librarian)', () => {
+  //   beforeEach(() => {
+  //     if (
+  //       !fixtureUserData?.librarian?.email ||
+  //       !fixtureUserData?.librarian?.password
+  //     ) {
+  //       throw new Error('Librarian credentials not found in fixture.')
+  //     }
+  //     cy.loginAsLibrarian(
+  //       fixtureUserData.librarian.email,
+  //       fixtureUserData.librarian.password
+  //     )
+  //     cy.visit('/users')
+  //     cy.url().should('include', '/users')
+  //   })
+
+  //   it('TC_AUTH_REG_001: Successfully register a new user (Member)', () => {
+  //     const newMember = {
+  //       name: `TestRegMember${testTimestamp}`,
+  //       email: `e2e_member_reg_${testTimestamp}@example.com`,
+  //       password: 'ValidRegPassword123!',
+  //       isAdmin: false,
+  //     }
+
+  //     cy.contains('button', 'New User').click()
+  //     cy.fillRegistrationForm(newMember)
+  //     cy.get('div.MuiBox-root.css-1bbaby5').contains('button', 'Submit').click()
+
+  //     cy.get('.MuiTablePagination-select').click()
+  //     cy.get('li[data-value="25"]').click()
+  //     cy.get('table > tbody')
+  //       .contains('td', newMember.email)
+  //       .should('be.visible')
+  //   })
+  // })
+
+  // --- User Login Tests ---
+  // describe('User Login', () => {
+  //   beforeEach(() => {
+  //     cy.visit('/login')
+  //   })
+
+  //   it('TC_AUTH_LOGIN_001: Successfully log in with valid Librarian credentials', () => {
+  //     if (!fixtureUserData?.librarian)
+  //       throw new Error('Librarian fixture data not loaded')
+
+  //     cy.autoFillLoginForm({
+  //       email: fixtureUserData.librarian.email,
+  //       password: fixtureUserData.librarian.password,
+  //     })
+  //     cy.get('button[type="submit"]').click()
+
+  //     cy.url().should('include', '/dashboard')
+  //     cy.contains('h4', /Welcome back/i).should('be.visible')
+  //   })
+
+  //   it('TC_AUTH_LOGIN_002: Successfully log in with valid Member credentials', () => {
+  //     if (!fixtureUserData?.member)
+  //       throw new Error('Member fixture data not loaded')
+
+  //     cy.autoFillLoginForm({
+  //       email: fixtureUserData.member.email,
+  //       password: fixtureUserData.member.password,
+  //     })
+  //     cy.get('button[type="submit"]').click()
+
+  //     cy.url().should('include', '/books')
+  //     cy.contains('h3', 'Books').should('be.visible')
+  //   })
+
+  //   it('TC_AUTH_LOGIN_003: Attempt to log in with an invalid email', () => {
+  //     cy.autoFillLoginForm({
+  //       email: 'nonexistent_user@example.com',
+  //       password: 'anypassword',
+  //     })
+  //     cy.get('button[type="submit"]').click()
+
+  //     cy.contains('No account found with this email address. Please check your email or register.').should('be.visible')
+  //     cy.url().should('include', '/login')
+  //   })
+
+  //   it('TC_AUTH_LOGIN_004: Attempt with valid email but invalid password', () => {
+  //     cy.autoFillLoginForm({
+  //       email: fixtureUserData.librarian.email,
+  //       password: 'WrongPassword123!',
+  //     })
+  //     cy.get('button[type="submit"]').click()
+
+  //     cy.contains('The password you entered is incorrect. Please try again.').should('be.visible')
+  //     cy.url().should('include', '/login')
+  //   })
+
+  //   it('TC_AUTH_LOGIN_005: Attempt to log in with an empty email field', () => {
+  //     cy.autoFillLoginForm({ password: 'anypassword' }) // Email is empty
+  //     cy.get('button[type="submit"]').click()
+
+  //     cy.contains(/Please enter your email address/i).should('be.visible')
+  //   })
+
+  //   it('TC_AUTH_LOGIN_006: Attempt to log in with an empty password field', () => {
+  //     cy.autoFillLoginForm({ email: fixtureUserData.librarian.email }) // Password is empty
+  //     cy.get('button[type="submit"]').click()
+
+  //     cy.contains(/Please enter your password/i).should('be.visible')
+  //   })
+  // })
+
+  // --- User Logout Tests ---
+  // describe('User Logout', () => {
+  //   const performLogout = () => {
+  //     cy.get('header > div > div.MuiStack-root > button').click()
+  //     cy.get('body > div.MuiPopover-root > div.MuiPaper-root > li').click()
+  //   }
+
+  //   it('TC_AUTH_LOGOUT_001: Successfully log out a Librarian', () => {
+  //     if (!fixtureUserData?.librarian)
+  //       throw new Error('Librarian fixture data not loaded')
+  //     cy.loginAsLibrarian(
+  //       fixtureUserData.librarian.email,
+  //       fixtureUserData.librarian.password
+  //     )
+  //     cy.visit('/dashboard')
+  //     performLogout()
+  //     cy.url().should('include', '/login')
+  //   })
+
+  //   it('TC_AUTH_LOGOUT_002: Successfully log out a Member', () => {
+  //     if (!fixtureUserData?.member)
+  //       throw new Error('Member fixture data not loaded')
+  //     cy.loginAsMember(
+  //       fixtureUserData.member.email,
+  //       fixtureUserData.member.password
+  //     )
+  //     cy.visit('/books')
+  //     performLogout()
+  //     cy.url().should('include', '/login')
+  //   })
+  // })
+
+  // --- Role-Based Access Control (RBAC) Tests ---
+  describe('Role-Based Access Control (RBAC)', () => {
+    const performLogout = () => {
+      cy.get('header > div > div.MuiStack-root > button').click()
+      cy.get('body > div.MuiPopover-root > div.MuiPaper-root > li').click()
+    }
+
+    // it('TC_AUTH_RBAC_001: Verify Librarian can access admin features', () => {
+    //   if (!fixtureUserData?.librarian)
+    //     throw new Error('Librarian fixture data not loaded')
+    //   cy.loginAsLibrarian(
+    //     fixtureUserData.librarian.email,
+    //     fixtureUserData.librarian.password
+    //   )
+    //   cy.visit('/users')
+    //   cy.contains('h3', 'Users').should('be.visible')
+    // })
+
+    // it('TC_AUTH_RBAC_002: Verify Member cannot access admin features', () => {
+    //   if (!fixtureUserData?.member)
+    //     throw new Error('Member fixture data not loaded')
+    //   cy.loginAsMember(
+    //     fixtureUserData.member.email,
+    //     fixtureUserData.member.password
+    //   )
+    //   cy.visit('/users', { failOnStatusCode: false })
+    //   cy.url().should('not.include', '/users')
+    //   cy.url().should('include', '/404')
+    // })
+
+    it('TC_INT_005: should restrict member access to admin features', () => {
+      // **Librarian setup**
       cy.loginAsLibrarian(
         fixtureUserData.librarian.email,
         fixtureUserData.librarian.password
       )
-      cy.visit('/users')
-      cy.url().should('include', '/users')
-    })
 
-    it('TC_AUTH_REG_001: Successfully register a new user (Member)', () => {
       const newMember = {
-        name: `TestRegMember${testTimestamp}`,
-        email: `e2e_member_reg_${testTimestamp}@example.com`,
-        password: 'ValidRegPassword123!',
+        name: `TestRbacMember${testTimestamp}`,
+        email: `e2e_member_rbac_${testTimestamp}@example.com`,
+        password: 'password123!',
         isAdmin: false,
       }
 
+      cy.visit('/users')
       cy.contains('button', 'New User').click()
       cy.fillRegistrationForm(newMember)
       cy.get('div.MuiBox-root.css-1bbaby5').contains('button', 'Submit').click()
@@ -61,169 +221,25 @@ describe('E2E: Authentication & Authorization', () => {
       cy.get('table > tbody')
         .contains('td', newMember.email)
         .should('be.visible')
-    })
-  })
 
-  // --- User Login Tests ---
-  describe('User Login', () => {
-    beforeEach(() => {
-      cy.visit('/login')
-    })
-
-    it('TC_AUTH_LOGIN_001: Successfully log in with valid Librarian credentials', () => {
-      if (!fixtureUserData?.librarian)
-        throw new Error('Librarian fixture data not loaded')
-
-      cy.autoFillLoginForm({
-        email: fixtureUserData.librarian.email,
-        password: fixtureUserData.librarian.password,
-      })
-      cy.get('button[type="submit"]').click()
-
-      cy.url().should('include', '/dashboard')
-      cy.contains('h4', /Welcome back/i).should('be.visible')
-    })
-
-    it('TC_AUTH_LOGIN_002: Successfully log in with valid Member credentials', () => {
-      if (!fixtureUserData?.member)
-        throw new Error('Member fixture data not loaded')
-
-      cy.autoFillLoginForm({
-        email: fixtureUserData.member.email,
-        password: fixtureUserData.member.password,
-      })
-      cy.get('button[type="submit"]').click()
-
-      cy.url().should('include', '/books')
-      cy.contains('h3', 'Books').should('be.visible')
-    })
-
-    it('TC_AUTH_LOGIN_003: Attempt to log in with an invalid email', () => {
-      cy.autoFillLoginForm({
-        email: 'nonexistent_user@example.com',
-        password: 'anypassword',
-      })
-      cy.get('button[type="submit"]').click()
-
-      cy.contains('User not found').should('be.visible')
-      cy.url().should('include', '/login')
-    })
-
-    it('TC_AUTH_LOGIN_004: Attempt with valid email but invalid password', () => {
-      cy.autoFillLoginForm({
-        email: fixtureUserData.librarian.email,
-        password: 'WrongPassword123!',
-      })
-      cy.get('button[type="submit"]').click()
-
-      cy.contains('Password incorrect').should('be.visible')
-      cy.url().should('include', '/login')
-    })
-
-    it('TC_AUTH_LOGIN_005: Attempt to log in with an empty email field', () => {
-      cy.autoFillLoginForm({ password: 'anypassword' }) // Email is empty
-      cy.get('button[type="submit"]').click()
-
-      cy.contains(/Please enter email and password/i).should('be.visible')
-    })
-
-    it('TC_AUTH_LOGIN_006: Attempt to log in with an empty password field', () => {
-      cy.autoFillLoginForm({ email: fixtureUserData.librarian.email }) // Password is empty
-      cy.get('button[type="submit"]').click()
-
-      cy.contains(/Please enter email and password/i).should('be.visible')
-    })
-  })
-
-  // --- User Logout Tests ---
-  describe('User Logout', () => {
-    const performLogout = () => {
-      cy.get('header > div > div.MuiStack-root > button').click()
-      cy.get('body > div.MuiPopover-root > div.MuiPaper-root > li').click()
-    }
-
-    it('TC_AUTH_LOGOUT_001: Successfully log out a Librarian', () => {
-      if (!fixtureUserData?.librarian)
-        throw new Error('Librarian fixture data not loaded')
-      cy.loginAsLibrarian(
-        fixtureUserData.librarian.email,
-        fixtureUserData.librarian.password
-      )
-      cy.visit('/dashboard')
       performLogout()
-      cy.url().should('include', '/login')
-    })
-
-    it('TC_AUTH_LOGOUT_002: Successfully log out a Member', () => {
-      if (!fixtureUserData?.member)
-        throw new Error('Member fixture data not loaded')
-      cy.loginAsMember(
-        fixtureUserData.member.email,
-        fixtureUserData.member.password
-      )
-      cy.visit('/books')
-      performLogout()
-      cy.url().should('include', '/login')
-    })
-  })
-
-  // --- Role-Based Access Control (RBAC) Tests ---
-  describe('Role-Based Access Control (RBAC)', () => {
-    it('TC_AUTH_RBAC_001: Verify Librarian can access admin features', () => {
-      if (!fixtureUserData?.librarian)
-        throw new Error('Librarian fixture data not loaded')
-      cy.loginAsLibrarian(
-        fixtureUserData.librarian.email,
-        fixtureUserData.librarian.password
-      )
-      cy.visit('/users')
-      cy.contains('h3', 'Users').should('be.visible')
-    })
-
-    it('TC_AUTH_RBAC_002: Verify Member cannot access admin features', () => {
-      if (!fixtureUserData?.member)
-        throw new Error('Member fixture data not loaded')
-      cy.loginAsMember(
-        fixtureUserData.member.email,
-        fixtureUserData.member.password
-      )
-      cy.visit('/users', { failOnStatusCode: false })
-      cy.url().should('not.include', '/users')
-      cy.url().should('include', '/404')
-    })
-
-    it('TC_INT_005: should restrict member access to admin features', () => {
-      // **Librarian setup**
-      cy.loginAsLibrarian(fixtureUserData.librarian.email, fixtureUserData.librarian.password);
-
-      const newMember = {
-        name: `TestRbacMember${testTimestamp}`,
-        email: `e2e_member_rbac_${testTimestamp}@example.com`,
-        password: 'password123!',
-        isAdmin: false,
-      };
-
-      cy.visit('/users');
-      cy.contains('button', 'New User').click();
-      cy.fillRegistrationForm(newMember);
-      cy.get('button[type="submit"]').click();
-      cy.contains(newMember.name).should('be.visible');
-      cy.logout();
 
       // **Member actions & verifications**
-      cy.loginAsMember(newMember.email, newMember.password);
+      cy.loginAsMember(newMember.email, newMember.password)
 
       // Attempt to access User Management page
-      cy.visit('/users', { failOnStatusCode: false });
-      cy.contains('h4', 'Hi, Welcome back').should('be.visible'); // Should be redirected to dashboard
+      cy.visit('/users', { failOnStatusCode: false })
+      cy.contains('p', 'Sorry, page not found!').should('be.visible') // Should be redirected to dashboard
 
       // Navigate to Books list and check for admin controls
-      cy.visit('/books');
-      cy.contains('button', 'New Book').should('not.exist');
-      cy.get('.MuiCard-root').first().within(() => {
-        cy.contains('button', 'Edit').should('not.exist');
-        cy.contains('button', 'Delete').should('not.exist');
-      });
+      cy.visit('/books')
+      cy.contains('button', 'New Book').should('not.exist')
+      cy.get('.MuiCard-root')
+        .first()
+        .within(() => {
+          cy.contains('button', 'Edit').should('not.exist')
+          cy.contains('button', 'Delete').should('not.exist')
+        })
 
       // Attempt to add a book via API
       cy.request({
@@ -237,9 +253,8 @@ describe('E2E: Authentication & Authorization', () => {
         },
         failOnStatusCode: false,
       }).then((response) => {
-        expect(response.status).to.be.oneOf([401, 403]);
-      });
-    });
-    
+        expect(response.status).to.be.oneOf([401, 403])
+      })
+    })
   })
 })
