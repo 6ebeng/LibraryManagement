@@ -30,7 +30,7 @@ const StyledBookImage = styled('img')({
 });
 
 // New component to display the list of reviews
-const ReviewList = ({ reviews, isLoading }) => {
+const ReviewsList = ({ reviews, isLoading }) => {
   if (isLoading) {
     return <CircularProgress />;
   }
@@ -44,9 +44,9 @@ const ReviewList = ({ reviews, isLoading }) => {
         <Card key={review._id} sx={{ mb: 2, p: 2 }}>
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Typography variant="subtitle2">{review.memberId?.name || 'Anonymous'}</Typography>
-            <Rating value={review.star} readOnly size="small" />
+            <Rating value={review.rating} readOnly size="small" />
           </Stack>
-          <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>{review.rating}</Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>{review.comment}</Typography>
           <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', textAlign: 'right' }}>
             {fDate(review.createdAt)}
           </Typography>
@@ -56,7 +56,7 @@ const ReviewList = ({ reviews, isLoading }) => {
   );
 };
 
-ReviewList.propTypes = {
+ReviewsList.propTypes = {
   reviews: PropTypes.array.isRequired,
   isLoading: PropTypes.bool.isRequired,
 };
@@ -155,7 +155,7 @@ const BookPage = () => {
     // This route needs to be implemented in your backend
     axios.get(apiUrl(routes.REVIEW, methods.GET_ALL_BY_PARENT, bookId))
       .then((response) => {
-        setReviews(response.data.reviewList || []);
+        setReviews(response.data.reviewsList || []);
       })
       .catch((error) => {
         console.error("Failed to fetch reviews:", error);
@@ -173,7 +173,7 @@ const submitReview = (reviewData) => {
       .then(() => {
         toast.success('Review submitted!');
         // Corrected from reviewData.bookID to reviewData.bookId
-        getReviewsForBook(reviewData.bookId); 
+        getReviewsForBook(reviewData.bookId);
       })
       .catch((error) => {
         console.error("Failed to submit review:", error);
@@ -354,7 +354,7 @@ const submitReview = (reviewData) => {
 
               <Box mt={3}>
                 <Typography variant="h5">Reviews</Typography>
-                <ReviewList reviews={reviews} isLoading={isReviewsLoading} />
+                <ReviewsList reviews={reviews} isLoading={isReviewsLoading} />
                 {!user.isAdmin && (
                   <ReviewForm bookId={selectedBookForDetails._id} onSubmit={submitReview} isSubmitting={isSubmittingReview} />
                 )}

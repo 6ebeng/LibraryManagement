@@ -41,25 +41,27 @@ const getReview = async (req, res) => {
 const getAllReviews = async (req, res) => {
 	const { bookId } = req.params;
 
-	if (!mongoose.Types.ObjectId.isValid(bookId)) {
+	// If bookId is provided, validate it.
+	if (bookId && !mongoose.Types.ObjectId.isValid(bookId)) {
 		return res.status(400).json({
 			success: false,
-			message: errorMessages.book.invalidData, // Existing book message
+			message: errorMessages.book.invalidData,
 		});
 	}
 
 	try {
-		const reviews = await Review.find({ bookId }).populate('memberId', 'name');
+		const query = bookId ? { bookId } : {};
+		const reviews = await Review.find(query).populate('memberId', 'name').populate('bookId', 'name');
 
 		return res.status(200).json({
 			success: true,
-			reviewList: reviews,
+			reviewsList: reviews,
 		});
 	} catch (err) {
 		console.error('Database error fetching reviews:', err);
 		return res.status(500).json({
 			success: false,
-			message: errorMessages.general.databaseError, // Existing general message
+			message: errorMessages.general.databaseError,
 		});
 	}
 };

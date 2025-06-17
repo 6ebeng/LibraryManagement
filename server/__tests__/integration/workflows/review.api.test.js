@@ -145,9 +145,9 @@ describe('Review Management API', () => {
 	it('TC_REV_VIEW_001: should allow any user to view all reviews with populated fields', async () => {
 		const res = await request(app).get(`/api/reviews/getAll/${testBook._id}`);
 		expect(res.statusCode).toEqual(200);
-		expect(res.body.reviewList.length).toBeGreaterThan(0);
+		expect(res.body.reviewsList.length).toBeGreaterThan(0);
 
-		const firstReview = res.body.reviewList[0];
+		const firstReview = res.body.reviewsList[0];
 		expect(firstReview).toHaveProperty('comment', 'Good read!');
 		expect(firstReview).toHaveProperty('bookId');
 		if (typeof firstReview.bookId === 'object' && firstReview.bookId !== null && firstReview.bookId._id) {

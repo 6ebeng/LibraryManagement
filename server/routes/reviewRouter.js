@@ -7,6 +7,8 @@ const { getReview, getAllReviews, addReview, deleteReview } = require('../contro
 
 router.get('/getAll/:bookId', (req, res) => getAllReviews(req, res));
 
+router.get('/getAll', (req, res) => getAllReviews(req, res));
+
 router.get('/get/:id', (req, res) => getReview(req, res));
 
 router.post('/add', (req, res) => addReview(req, res));

@@ -339,8 +339,8 @@ describe('Specific Feature Testing', () => {
 		test('TC_REV_VIEW_001: Verify any user can view reviews for a book', async () => {
 			const res = await memberAgent.get(`/api/reviews/getAll/${testBook._id}`);
 			expect(res.statusCode).toBe(200);
-			expect(res.body.reviewList.length).toBeGreaterThan(0);
-			expect(res.body.reviewList[0]).toHaveProperty('comment');
+			expect(res.body.reviewsList.length).toBeGreaterThan(0);
+			expect(res.body.reviewsList[0]).toHaveProperty('comment');
 		});
 
 		test('TC_REV_DEL_001: Successful deletion of a review by Librarian', async () => {

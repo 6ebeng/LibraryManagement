@@ -158,7 +158,7 @@ describe('Review Controller - Unit Tests', () => {
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith({
 				success: true,
-				reviewList: mockReviews, // Controller uses reviewList
+				reviewsList: mockReviews, // Controller uses reviewsList
 			});
 		});
 

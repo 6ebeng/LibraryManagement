@@ -2,13 +2,26 @@ import { Helmet } from 'react-helmet-async';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { Card, Container, Stack, Typography, Table, TableContainer, TableBody, TableRow, TableCell, IconButton, Popover, MenuItem } from '@mui/material';
+import {
+  Card,
+  Container,
+  Stack,
+  Typography,
+  Table,
+  TableContainer,
+  TableBody,
+  TableRow,
+  TableCell,
+  IconButton,
+  Popover,
+  MenuItem,
+  Rating,
+} from '@mui/material';
 
 import Iconify from '../../../components/iconify';
 import Scrollbar from '../../../components/scrollbar';
 import { apiUrl, methods, routes } from '../../../constants';
 import { fDate } from '../../../utils/formatTime';
-import Label from '../../../components/label';
 
 export default function ReviewPage() {
   const [reviews, setReviews] = useState([]);
@@ -38,7 +51,7 @@ export default function ReviewPage() {
         console.log(error);
       });
   };
-  
+
   const getAllReviews = () => {
     axios
       .get(apiUrl(routes.REVIEW, methods.GET_ALL))
@@ -78,18 +91,18 @@ export default function ReviewPage() {
 
                     return (
                       <TableRow hover key={_id} tabIndex={-1}>
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                            <Typography variant="subtitle2" noWrap>
-                              {bookId.name}
-                            </Typography>
-                          </Stack>
+                        <TableCell component="th" scope="row" padding="none" sx={{ pl: 2 }}>
+                            <Stack direction="row" alignItems="center" spacing={2}>
+                                <Typography variant="subtitle2" noWrap>
+                                    {bookId.name}
+                                </Typography>
+                            </Stack>
                         </TableCell>
                         <TableCell align="left">{memberId.name}</TableCell>
-                        <TableCell align="left">{comment}</TableCell>
                         <TableCell align="left">
-                          <Label color="info">{rating} Stars</Label>
+                          <Rating value={rating} readOnly />
                         </TableCell>
+                        <TableCell align="left">{comment}</TableCell>
                         <TableCell align="left">{fDate(createdAt)}</TableCell>
                         <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={(e) => handleOpenMenu(e, _id)}>
