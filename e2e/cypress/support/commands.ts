@@ -11,26 +11,8 @@
 declare global {
   namespace Cypress {
     interface Chainable {
-      /**
-       * Custom command to log in as a librarian using a cached session.
-       * @param email The librarian's email
-       * @param password The librarian's password
-       * @example cy.loginAsLibrarian('librarian@example.com', 'password123')
-       */
       loginAsLibrarian(email: string, password?: string): Chainable<void>
-
-      /**
-       * Custom command to log in as a member using a cached session.
-       * @param email The member's email
-       * @param password The member's password
-       * @example cy.loginAsMember('member@example.com', 'password123')
-       */
       loginAsMember(email: string, password?: string): Chainable<void>
-
-      /**
-       * Fills the user registration form with the provided data.
-       * @param user - Object with user details.
-       */
       fillRegistrationForm(user: {
         name?: string
         dob?: string
@@ -39,30 +21,21 @@ declare global {
         password?: string
         isAdmin?: boolean
       }): Chainable<void>
-
-      /**
-       * Custom command to automatically fill the login form fields.
-       * Does not submit the form.
-       * @param credentials - An object with email and password.
-       * @example cy.autoFillLoginForm({ email: 'test@test.com', password: 'password' })
-       */
+      fillBookForm(book: {
+        name?: string
+        isbn?: string
+        author?: string
+        genre?: string
+        summary?: string
+      }): Chainable<void>
       autoFillLoginForm(credentials: {
         email?: string
         password?: string
       }): Chainable<void>
-
-      /**
-       * Custom command to wait for an API to be callable.
-       * @param url The API endpoint URL
-       * @param timeout The maximum time to wait in milliseconds (default: 30000)
-       */
+      performLogout(): Chainable<void>
+      deleteFromTable(name: string): Chainable<void>
       waitForApi(url: string, timeout?: number): Chainable<void>
-
-      /**
-       * Custom command to clear all user session data.
-       */
       clearUserSession(): Chainable<void>
-
       saveTestData(data: any, filename: string): Chainable<void>
       verifyDataSaved(filename: string): Chainable<void>
       listDownloads(): Chainable<void>
@@ -70,66 +43,45 @@ declare global {
   }
 }
 
-/**
- * Command: autoFillLoginForm
- * Description: Fills the email and password fields on the login page.
- */
 Cypress.Commands.add('autoFillLoginForm', ({ email, password }) => {
   cy.get('input[name="email"]', { timeout: 10000 }).should('be.visible')
-
   if (email) {
-    cy.get('input[name="email"]').clear()
-    cy.get('input[name="email"]').type(email)
+    cy.get('input[name="email"]').clear().type(email)
   } else {
     cy.get('input[name="email"]').clear()
   }
-
   if (password) {
-    cy.get('input[name="password"]').clear()
-    cy.get('input[name="password"]').type(password)
+    cy.get('input[name="password"]').clear().type(password)
   } else {
     cy.get('input[name="password"]').clear()
   }
 })
 
-/**
- * Command: loginAsLibrarian
- * Description: Logs in a user with the 'librarian' role using a cached session.
- * Refactored to use the autoFillLoginForm helper command.
- */
 Cypress.Commands.add('loginAsLibrarian', (email, password) => {
   cy.session(
-    [email, password, 'librarian'], // Unique key for the session
+    [email, password, 'librarian'],
     () => {
       cy.visit('/login')
       cy.autoFillLoginForm({ email, password })
       cy.get('button[type="submit"]').click()
-      cy.url({ timeout: 15000 }).should('match', /\/dashboard|\/Books/)
-      cy.contains('h4', /Welcome back|Books/i, { timeout: 15000 }).should(
+      cy.url({ timeout: 15000 }).should('include', '/dashboard')
+      cy.contains('h4', /welcome back/i, { timeout: 15000 }).should(
         'be.visible'
       )
     },
     {
       cacheAcrossSpecs: true,
       validate() {
-        // Visit a protected route to ensure the session is still valid
-        // cy.visit('/dashboard')
-        cy.contains('h4', /Welcome back/i, { timeout: 10000 }).should(
-          'be.visible'
-        )
+        cy.visit('/dashboard')
+        cy.get('.apexcharts-canvas').should('be.visible')
       },
     }
   )
 })
 
-/**
- * Command: loginAsMember
- * Description: Logs in a user with the 'member' role using a cached session.
- * Refactored to use the autoFillLoginForm helper command.
- */
 Cypress.Commands.add('loginAsMember', (email, password) => {
   cy.session(
-    [email, password, 'member'], // Unique key for the session
+    [email, password, 'member'],
     () => {
       cy.visit('/login')
       cy.autoFillLoginForm({ email, password })
@@ -140,56 +92,70 @@ Cypress.Commands.add('loginAsMember', (email, password) => {
     {
       cacheAcrossSpecs: true,
       validate() {
-        // Visit a protected route to ensure the session is still valid
-        //cy.visit('/books')
-        cy.contains('h3', 'Books', { timeout: 10000 }).should('be.visible')
+        cy.visit('/books')
+        cy.contains('h3', 'Books').should('be.visible')
       },
     }
   )
 })
 
-/**
- * Command: fillRegistrationForm
- * Description: Fills the user registration/update form fields from a dialog.
- */
 Cypress.Commands.add('fillRegistrationForm', (user) => {
-  cy.get('div.MuiBox-root.css-1bbaby5')
+  cy.contains('h4', /Add user|Edit user/i)
+    .parents('.MuiBox-root')
+    .first()
     .should('be.visible')
-    .then(($dialog) => {
-      if (user.name) {
-        cy.wrap($dialog).find('input[name="name"]').clear()
-        cy.wrap($dialog).find('input[name="name"]').type(user.name)
-      }
-      if (user.dob) {
-        cy.wrap($dialog).find('input[name="dob"]').clear()
-        cy.wrap($dialog).find('input[name="dob"]').type(user.dob)
-      }
-      if (user.email) {
-        cy.wrap($dialog).find('input[name="email"]').clear()
-        cy.wrap($dialog).find('input[name="email"]').type(user.email)
-      }
-      if (user.phone) {
-        cy.wrap($dialog).find('input[name="phone"]').clear()
-        cy.wrap($dialog).find('input[name="phone"]').type(user.phone)
-      }
-      if (user.password) {
-        cy.wrap($dialog).find('input[name="password"]').clear()
-        cy.wrap($dialog).find('input[name="password"]').type(user.password)
-      }
+    .within(() => {
+      if (user.name) cy.get('input[name="name"]').clear().type(user.name)
+      if (user.dob) cy.get('input[name="dob"]').clear().type(user.dob)
+      if (user.email) cy.get('input[name="email"]').clear().type(user.email)
+      if (user.phone) cy.get('input[name="phone"]').clear().type(user.phone)
+      if (user.password)
+        cy.get('input[name="password"]').clear().type(user.password)
       if (user.isAdmin !== undefined) {
         const role = user.isAdmin ? 'Librarian' : 'Member'
-        cy.wrap($dialog)
-          .contains('label', role)
-          .find('input[type="radio"]')
-          .click()
+        cy.contains('label', role).find('input[type="radio"]').click()
       }
     })
 })
 
-/**
- * Command: waitForApi
- * Description: Waits for a specific API endpoint to become responsive.
- */
+Cypress.Commands.add('fillBookForm', (book) => {
+  cy.contains('h4', /Add book|Edit book/i)
+    .parents('.MuiBox-root')
+    .first()
+    .should('be.visible')
+    .within(() => {
+      if (book.name) cy.get('input[name="name"]').clear().type(book.name)
+      if (book.isbn) cy.get('input[name="isbn"]').clear().type(book.isbn)
+      if (book.summary)
+        cy.get('textarea[name="summary"]').clear().type(book.summary)
+
+      if (book.author) {
+        cy.get('#author-label').parent().find('div[role="combobox"]').click()
+        cy.get('li[role="option"]').contains(book.author).click()
+      }
+      if (book.genre) {
+        cy.get('#genre-label').parent().find('div[role="combobox"]').click()
+        cy.get('li[role="option"]').contains(book.genre).click()
+      }
+    })
+})
+
+Cypress.Commands.add('performLogout', () => {
+  cy.log('Performing logout via UI')
+  cy.get('header .MuiStack-root button').click()
+  cy.get('.MuiPopover-root li').contains('Logout').click()
+  cy.url().should('include', '/login')
+})
+
+Cypress.Commands.add('deleteFromTable', (name) => {
+  cy.log(`Deleting entity: ${name}`)
+  cy.contains('tr', name).within(() => {
+    cy.get('td:last-child button').click()
+  })
+  cy.get('.MuiPopover-root').contains('li', 'Delete').click()
+  cy.get('.MuiDialog-container').contains('button', 'Delete').click()
+})
+
 Cypress.Commands.add('waitForApi', (url, timeout = 30000) => {
   cy.request({
     url: url,
@@ -198,14 +164,10 @@ Cypress.Commands.add('waitForApi', (url, timeout = 30000) => {
     retryOnNetworkFailure: true,
     failOnStatusCode: false,
   }).then((response) => {
-    expect(response.status).to.be.lessThan(500) // Ensure no server errors
+    expect(response.status).to.be.lessThan(500)
   })
 })
 
-/**
- * Command: clearUserSession
- * Description: Clears all session data, including localStorage and cookies.
- */
 Cypress.Commands.add('clearUserSession', () => {
   Cypress.session.clearAllSavedSessions()
   cy.clearLocalStorage()
@@ -233,5 +195,4 @@ Cypress.Commands.add('listDownloads', () => {
   })
 })
 
-// To ensure the file is treated as a module by TypeScript
 export {}

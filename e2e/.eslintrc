@@ -1,16 +1,14 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typescript-eslint",
-    "cypress"
-  ],
+  "plugins": ["@typescript-eslint", "cypress"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:cypress/recommended",
     "plugin:prettier/recommended",
+    "plugin:cypress/unsafe-to-chain-command",
   ],
   "parserOptions": {
     "ecmaVersion": 2020,
@@ -25,7 +23,6 @@
   },
   "env": {
     "node": true,
-    "cypress/globals": true
-  }
+    "cypress/globals": true,
+  },
 }
-

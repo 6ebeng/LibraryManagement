@@ -68,7 +68,7 @@ services:
       context: ./server
       target: e2e-test-server
     ports:
-      - '8080:8080'
+      - '8081:8081'
     volumes:
       - ./server:/app
       - /app/node_modules
@@ -79,14 +79,14 @@ services:
     environment:
       - NODE_ENV=test
       - MONGO_URI=${MONGO_URI}
-      - PORT=8080
+      - PORT=8081
       - CHOKIDAR_USEPOLLING=true
       - E2E_TESTING=true
     entrypoint: ['sh', '/app/scripts/entrypoint-e2e.sh'] # This script seeds and then starts the server
     networks:
       - test-network
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://backend-e2e:8080/api/health']
+      test: ['CMD', 'curl', '-f', 'http://backend-e2e:8081/api/health']
       interval: 30s
       timeout: 10s
       retries: 5
@@ -97,7 +97,7 @@ services:
       context: ./client
       target: development
     ports:
-      - '3000:3000'
+      - '3001:3001'
     env_file:
       - .env.test
     volumes:
@@ -106,13 +106,13 @@ services:
     command: sh -c "npm start"
     environment:
       - CHOKIDAR_USEPOLLING=true
-      - PORT=3000
+      - PORT=3001
       - WATCHPACK_POLLING=true
-      - REACT_APP_API_URL=http://backend-e2e:8080
+      - REACT_APP_API_URL=http://backend-e2e:8081
     networks:
       - test-network
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://frontend-e2e:3000/']
+      test: ['CMD', 'curl', '-f', 'http://frontend-e2e:3001/']
       interval: 30s
       timeout: 10s
       retries: 5
@@ -131,8 +131,8 @@ services:
       backend-e2e:
         condition: service_healthy
     environment:
-      - CYPRESS_BASE_URL=http://frontend-e2e:3000
-      - CYPRESS_API_URL=http://backend-e2e:8080
+      - CYPRESS_BASE_URL=http://frontend-e2e:3001
+      - CYPRESS_API_URL=http://backend-e2e:8081
     working_dir: /app
     volumes:
       - ./e2e/cypress/data:/app/cypress/data
@@ -197,8 +197,8 @@ services:
     env_file:
       - .env.test
     environment:
-      - CYPRESS_BASE_URL=http://frontend-e2e:3000
-      - CYPRESS_API_URL=http://backend-e2e:8080
+      - CYPRESS_BASE_URL=http://frontend-e2e:3001
+      - CYPRESS_API_URL=http://backend-e2e:8081
       - DISPLAY=${DISPLAY}
       - CYPRESS_CACHE_FOLDER=/app/cache/Cypress
       - CHOKIDAR_USEPOLLING=true
@@ -223,7 +223,7 @@ services:
     env_file: # Changed to env_file
       - .env.test
     environment:
-      - BASE_URL=http://backend-e2e:8080 # Still need to pass BASE_URL as it's a service-specific variable
+      - BASE_URL=http://backend-e2e:8081 # Still need to pass BASE_URL as it's a service-specific variable
       - USER_EMAIL=${TEST_LIBRARIAN_EMAIL}
       - USER_PASSWORD=${TEST_LIBRARIAN_PASSWORD}
     command: run /home/k6/performance-test.js
