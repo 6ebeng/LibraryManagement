@@ -28,6 +28,10 @@ declare global {
         genre?: string
         summary?: string
       }): Chainable<void>
+      fillReviewForm(review: {
+        rating: number
+        comment: string
+      }): Chainable<void>
       autoFillLoginForm(credentials: {
         email?: string
         password?: string
@@ -39,6 +43,7 @@ declare global {
       saveTestData(data: any, filename: string): Chainable<void>
       verifyDataSaved(filename: string): Chainable<void>
       listDownloads(): Chainable<void>
+      ExtendPagination(): Chainable<void>
     }
   }
 }
@@ -140,6 +145,15 @@ Cypress.Commands.add('fillBookForm', (book) => {
     })
 })
 
+Cypress.Commands.add('fillReviewForm', (review) => {
+  // Find the form within the dialog for robustness
+  cy.get('div[role="dialog"]').within(() => {
+    cy.get(`input[name="rating"][value="${review.rating}"]`).parent().click()
+    cy.get('textarea').first().type(review.comment)
+    cy.contains('button', 'Submit Review').click()
+  })
+})
+
 Cypress.Commands.add('performLogout', () => {
   cy.log('Performing logout via UI')
   cy.get('header .MuiStack-root button').click()
@@ -147,13 +161,19 @@ Cypress.Commands.add('performLogout', () => {
   cy.url().should('include', '/login')
 })
 
+Cypress.Commands.add('ExtendPagination', () => {
+  cy.get('div[role="combobox"][aria-expanded="false"]').click()
+  cy.get('li:nth-child(3)').click()
+})
+
 Cypress.Commands.add('deleteFromTable', (name) => {
+  cy.ExtendPagination()
   cy.log(`Deleting entity: ${name}`)
   cy.contains('tr', name).within(() => {
     cy.get('td:last-child button').click()
   })
-  cy.get('.MuiPopover-root').contains('li', 'Delete').click()
-  cy.get('.MuiDialog-container').contains('button', 'Delete').click()
+  cy.get('li[role="menuitem"]:last-child').click()
+  cy.get('div.MuiDialogActions-root> button:nth-child(2)').click()
 })
 
 Cypress.Commands.add('waitForApi', (url, timeout = 30000) => {
