@@ -62,6 +62,10 @@ declare global {
        * Custom command to clear all user session data.
        */
       clearUserSession(): Chainable<void>
+
+      saveTestData(data: any, filename: string): Chainable<void>
+      verifyDataSaved(filename: string): Chainable<void>
+      listDownloads(): Chainable<void>
     }
   }
 }
@@ -208,6 +212,24 @@ Cypress.Commands.add('clearUserSession', () => {
   cy.clearCookies()
   cy.window().then((win) => {
     win.sessionStorage.clear()
+  })
+})
+
+Cypress.Commands.add('saveTestData', (data: any, filename: string) => {
+  cy.task('saveData', { filename, data }).then((savedPath) => {
+    cy.log(`Data saved to: ${savedPath}`)
+  })
+})
+
+Cypress.Commands.add('verifyDataSaved', (filename: string) => {
+  const filepath = `cypress/data/downloads/${filename}`
+  cy.task('fileExists', filepath).should('equal', true)
+  cy.log(`Verified file exists: ${filename}`)
+})
+
+Cypress.Commands.add('listDownloads', () => {
+  cy.task('listDownloads').then((files) => {
+    cy.log(`Downloads directory contains: ${JSON.stringify(files)}`)
   })
 })
 

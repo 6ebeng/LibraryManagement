@@ -1,8 +1,22 @@
 {
-  "name": "cypress",
-  "description": "Examples of end-to-end tests for Library Management System",
+  "name": "cypress-e2e-tests",
+  "description": "End-to-end tests for Library Management System",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "cy:open": "npx cypress open",
+    "cy:run": "npx cypress run",
+    "cy:run:docker": "npx cypress run --env docker=true",
+    "cy:run:performance": "npx cypress run --env docker=true --spec 'cypress/e2e/performance.cy.ts'",
+    "cy:run:report": "npx cypress run --reporter cypress-mochawesome-reporter",
+    "cy:run:headless": "npx cypress run --headless",
+    "cy:generate:report": "npx cypress-mochawesome-reporter generate",
+    "cy:clean:reports": "rm -rf cypress/data/reports/* || true",
+    "lint:check": "eslint .",
+    "prettier:check": "prettier . --check",
+    "code:check": "npm run lint:check && npm run prettier:check",
+    "code:fix": "eslint . --fix && prettier . --write"
+  },
   "devDependencies": {
     "@cypress/react": "^9.0.1",
     "@cypress/react18": "^2.0.1",
@@ -10,29 +24,19 @@
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "@typescript-eslint/parser": "^7.8.0",
     "ajv": "^8.13.0",
-    "cypress": "14.4.1",
+    "cypress": "^13.15.2",
     "cypress-iframe": "^1.0.1",
     "cypress-mochawesome-reporter": "^3.8.2",
     "cypress-plugin-api": "^2.11.1",
+    "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-cypress": "^3.2.0",
     "eslint-plugin-prettier": "^5.1.3",
-    "prettier": "3.2.5",
+    "prettier": "^3.2.5",
     "typescript": "~5.4.2"
   },
-  "scripts": {
-    "cy:open": "npx cypress open",
-    "cy:run": "npx cypress run",
-    "cy:run:docker": "npx cypress run --env docker=true",
-    "cy:run:performance": "npx cypress run --env docker=true --spec 'cypress/e2e/performance.cy.ts'",
-    "lint:check": "eslint . ",
-    "prettier:check": "prettier . --check",
-    "code:check": "eslint . ; prettier . --check",
-    "code:fix": "eslint . --fix ; prettier . --write"
-  },
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "fs": "^0.0.1-security"
+    "dotenv": "^16.4.5"
   },
   "ts-standard": {
     "project": "./tsconfig.json"
