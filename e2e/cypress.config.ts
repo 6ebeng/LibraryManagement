@@ -1,6 +1,7 @@
 import { defineConfig } from 'cypress'
 
 export default defineConfig({
+  projectId: '4qctqy',
   screenshotOnRunFailure: true,
   trashAssetsBeforeRuns: true,
   chromeWebSecurity: false,

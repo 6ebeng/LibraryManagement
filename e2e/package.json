@@ -6,7 +6,7 @@
   "scripts": {
     "cy:open": "npx cypress open",
     "cy:run": "npx cypress run",
-    "cy:run:docker": "npx cypress run --env docker=true",
+    "cy:run:docker": "npx cypress run --env docker=true --record --key 2bdb8652-ce68-4edb-9221-012f24492517",
     "cy:run:performance": "npx cypress run --env docker=true --spec 'cypress/e2e/performance.cy.ts'",
     "cy:run:report": "npx cypress run --reporter cypress-mochawesome-reporter",
     "cy:run:headless": "npx cypress run --headless",
