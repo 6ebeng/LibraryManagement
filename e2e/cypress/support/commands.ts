@@ -28,6 +28,14 @@ declare global {
         genre?: string
         summary?: string
       }): Chainable<void>
+      fillAuthorForm(author: {
+        name: string
+        biography?: string
+      }): Chainable<void>
+      fillGenreForm(genre: {
+        name: string
+        description?: string
+      }): Chainable<void>
       fillReviewForm(review: {
         rating: number
         comment: string
@@ -43,7 +51,7 @@ declare global {
       saveTestData(data: any, filename: string): Chainable<void>
       verifyDataSaved(filename: string): Chainable<void>
       listDownloads(): Chainable<void>
-      ExtendPagination(): Chainable<void>
+      extendPagination(): Chainable<void>
     }
   }
 }
@@ -145,11 +153,39 @@ Cypress.Commands.add('fillBookForm', (book) => {
     })
 })
 
+Cypress.Commands.add('fillAuthorForm', (author) => {
+  cy.contains('h4', /Add author|Edit author/i)
+    .parents('.MuiBox-root')
+    .first()
+    .should('be.visible')
+    .within(() => {
+      cy.get('input[name="name"]').clear().type(author.name)
+      if (author.biography) {
+        cy.get('textarea[name="description"]').clear().type(author.biography)
+      }
+    })
+})
+
+Cypress.Commands.add('fillGenreForm', (genre) => {
+  cy.contains('h4', /Add genre|Edit genre/i)
+    .parents('.MuiBox-root')
+    .first()
+    .should('be.visible')
+    .within(() => {
+      cy.get('input[name="name"]').clear().type(genre.name)
+      if (genre.description) {
+        cy.get('textarea[name="description"]').clear().type(genre.description)
+      }
+    })
+})
+
 Cypress.Commands.add('fillReviewForm', (review) => {
-  // Find the form within the dialog for robustness
   cy.get('div[role="dialog"]').within(() => {
-    cy.get(`input[name="rating"][value="${review.rating}"]`).parent().click()
-    cy.get('textarea').first().type(review.comment)
+    cy.get(`label[for*="rating"]`)
+      .contains(`${review.rating} Star`)
+      .prev()
+      .click()
+    cy.get('textarea').clear().type(review.comment)
     cy.contains('button', 'Submit Review').click()
   })
 })
@@ -161,19 +197,22 @@ Cypress.Commands.add('performLogout', () => {
   cy.url().should('include', '/login')
 })
 
-Cypress.Commands.add('ExtendPagination', () => {
-  cy.get('div[role="combobox"][aria-expanded="false"]').click()
-  cy.get('li:nth-child(3)').click()
+Cypress.Commands.add('extendPagination', () => {
+  cy.get('.MuiTablePagination-root').within(() => {
+    cy.get('div[role="combobox"]').click()
+  })
+  cy.get('li[role="option"][data-value="25"]').click()
 })
 
 Cypress.Commands.add('deleteFromTable', (name) => {
-  cy.ExtendPagination()
   cy.log(`Deleting entity: ${name}`)
   cy.contains('tr', name).within(() => {
     cy.get('td:last-child button').click()
   })
-  cy.get('li[role="menuitem"]:last-child').click()
-  cy.get('div.MuiDialogActions-root> button:nth-child(2)').click()
+  // Refined selector for better stability
+  cy.get('ul[role="menu"]').contains('li', 'Delete').click()
+  // Refined selector for better stability
+  cy.get('div[role="dialog"]').contains('button', 'Delete').click()
 })
 
 Cypress.Commands.add('waitForApi', (url, timeout = 30000) => {
