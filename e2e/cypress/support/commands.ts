@@ -114,7 +114,7 @@ Cypress.Commands.add('loginAsMember', (email, password) => {
 })
 
 Cypress.Commands.add('fillRegistrationForm', (user) => {
-  cy.contains('h4', /Add user|Edit user/i)
+  cy.contains('h4', /Add user|Update user/i)
     .parents('.MuiBox-root')
     .first()
     .should('be.visible')
@@ -133,7 +133,7 @@ Cypress.Commands.add('fillRegistrationForm', (user) => {
 })
 
 Cypress.Commands.add('fillBookForm', (book) => {
-  cy.contains('h4', /Add book|Edit book/i)
+  cy.contains('h4', /Add book|Update book/i)
     .parents('.MuiBox-root')
     .first()
     .should('be.visible')
@@ -162,7 +162,7 @@ Cypress.Commands.add('fillBookForm', (book) => {
 })
 
 Cypress.Commands.add('fillAuthorForm', (author) => {
-  cy.contains('h4', /Add author|Edit author/i)
+  cy.contains('h4', /Add author|Update author/i)
     .parents('.MuiBox-root')
     .first()
     .should('be.visible')
@@ -175,7 +175,7 @@ Cypress.Commands.add('fillAuthorForm', (author) => {
 })
 
 Cypress.Commands.add('fillGenreForm', (genre) => {
-  cy.contains('h4', /Add genre|Edit genre/i)
+  cy.contains('h4', /Add genre|Update genre/i)
     .parents('.MuiBox-root')
     .first()
     .should('be.visible')
