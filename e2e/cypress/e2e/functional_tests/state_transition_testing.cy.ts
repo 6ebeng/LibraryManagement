@@ -2,7 +2,7 @@
  * E2E Test Cases for State Transition Testing
  * File: cypress/e2e/state_transition_testing.cy.ts
  * * Tests state transitions for Borrowal Records, Book Availability, and User Sessions
- * Based on TC_State_Transition_Testing.tex
+ * Based on TC_State_Transition_Testing
  */
 
 describe('E2E: State Transition Testing', () => {

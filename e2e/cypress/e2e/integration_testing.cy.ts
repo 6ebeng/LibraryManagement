@@ -2,7 +2,7 @@
  * E2E Test Cases for Integration Testing
  * File: cypress/e2e/integration_testing.cy.ts
  * * Tests integration between modules: Entity Lifecycle, Data Integrity, State Transitions, RBAC Integration
- * Based on TC_Integration_Testing.tex
+ * Based on TC_Integration_Testing
  */
 
 describe('E2E: Integration Testing', () => {

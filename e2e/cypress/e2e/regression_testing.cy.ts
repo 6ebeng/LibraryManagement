@@ -2,7 +2,7 @@
  * E2E Test Cases for Regression Testing
  * File: cypress/e2e/regression_testing.cy.ts
  * * Tests core functionality to ensure no regressions: Authentication, CRUD Operations, User Workflows
- * Based on TC_Regression_Testing.tex
+ * Based on TC_Regression_Testing
  */
 describe('E2E: Regression Testing', () => {
   const testTimestamp = Date.now()

@@ -2,7 +2,7 @@
  * E2E Test Cases for Use Case Testing
  * File: cypress/e2e/use_case_testing.cy.ts
  * * Tests key use cases: Add New Book (UC-002), Borrow a Book (UC-003), View Borrowal History (UC-005)
- * Based on TC_Use_Case_Testing.tex
+ * Based on TC_Use_Case_Testing
  */
 
 describe('E2E: Use Case Testing', () => {
