@@ -39,9 +39,9 @@ export default defineConfig({
       on('task', {})
       return config
     },
-  },
-  retries: {
-    runMode: 0,
-    openMode: 0,
+    retries: {
+      runMode: 0,
+      openMode: 0,
+    },
   },
 })
