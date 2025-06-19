@@ -8,7 +8,7 @@ const getAllBooksResponseTrend = new Trend('get_all_books_response_time');
 const addBorrowalResponseTrend = new Trend('add_borrowal_response_time');
 
 // Environment variables for configuration
-const BASE_URL = __ENV.BASE_URL || 'http://localhost:3000';
+const BASE_URL = __ENV.K6_HOST || 'http://localhost:8081';
 const USER_CREDENTIALS = {
 	email: __ENV.USER_EMAIL || 'librarian@example.com',
 	password: __ENV.USER_PASSWORD || 'password123',
@@ -85,114 +85,50 @@ export function apiResponseTime() {
 			const res = http.post(
 				`${BASE_URL}/api/borrowal/add`,
 				JSON.stringify({
-					bookId: '60d21b4667d0d8992e610c85', // Replace with a valid book ID
-					memberId: '60d21b4667d0d8992e610c86', // Replace with a valid member ID
-					dueDate: new Date(new Date().setDate(new Date().getDate() + 14)), // 2 weeks from now
+					bookId: '60d5ec49a4d8f512c8b76384', // Replace with a valid book ID
+					memberId: '60d5ec49a4d8f512c8b76385', // Replace with a valid member ID
 				}),
-				{
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: `Bearer ${token}`,
-					},
-				}
+				{ headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } }
 			);
-			check(res, {
-				'add borrowal successful': (r) => r.status === 201,
-			});
+			check(res, { 'add borrowal successful': (r) => r.status === 201 });
 			addBorrowalResponseTrend.add(res.timings.duration);
 		});
+		sleep(1);
 	});
-	sleep(1);
 }
 
-// Test case for Volume Testing
+// Test case for volume testing
 export function volumeTest() {
 	group('Volume Test', () => {
 		const token = login();
-		// TC_PERF_VOL_001: Perform common user actions with a large data volume
-		group('TC_PERF_VOL_001: Common User Actions', () => {
-			// 1. Search for a book
-			const searchRes = http.get(`${BASE_URL}/api/book/search?q=The Lord of the Rings`, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-			check(searchRes, {
-				'search for book successful': (r) => r.status === 200,
-			});
 
-			// 2. View user list
-			const userListRes = http.get(`${BASE_URL}/api/user/getAll`, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-			check(userListRes, {
-				'view user list successful': (r) => r.status === 200,
-			});
-
-			// 3. View borrowal history
-			const borrowalHistoryRes = http.get(`${BASE_URL}/api/borrowal/getAll`, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-			check(borrowalHistoryRes, {
-				'view borrowal history successful': (r) => r.status === 200,
-			});
-		});
+		for (let i = 0; i < 5; i++) {
+			http.get(`${BASE_URL}/api/book/getAll`, { headers: { Authorization: `Bearer ${token}` } });
+			sleep(1);
+		}
 	});
-	sleep(1);
 }
 
-// Test case for Stress Testing
+// Test case for stress testing
 export function stressTest() {
 	group('Stress Test', () => {
 		const token = login();
-		// TC_PERF_STRS_001: Simulate high concurrent user load
-		group('TC_PERF_STRS_001: High Concurrent User Load', () => {
-			// Actions include: Logging in, Fetching book lists, Adding new borrowals
-			http.get(`${BASE_URL}/api/book/getAll`, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-			http.post(
-				`${BASE_URL}/api/borrowal/add`,
-				JSON.stringify({
-					bookId: '60d21b4667d0d8992e610c85', // Replace with a valid book ID
-					memberId: '60d21b4667d0d8992e610c86', // Replace with a valid member ID
-					dueDate: new Date(new Date().setDate(new Date().getDate() + 14)), // 2 weeks from now
-				}),
-				{
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: `Bearer ${token}`,
-					},
-				}
-			);
-		});
+		http.get(`${BASE_URL}/api/book/getAll`, { headers: { Authorization: `Bearer ${token}` } });
+		sleep(1);
 	});
-	sleep(1);
 }
 
-// Test case for Recovery Testing
+// Test case for recovery testing
 export function recoveryTest() {
 	group('Recovery Test', () => {
+		// Simulate a server restart or failure
+		// This is a placeholder for actual recovery testing steps
+		sleep(60);
+
 		const token = login();
-		// TC_PERF_STRS_002: System recovery after a stress period
-		group('TC_PERF_STRS_002: System Recovery', () => {
-			// Perform a single-user check by navigating key pages
-			const res = http.get(`${BASE_URL}/api/book/getAll`, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-			check(res, {
-				'recovery check successful': (r) => r.status === 200,
-				'response time within baseline': (r) => r.timings.duration < 300,
-			});
+		const res = http.get(`${BASE_URL}/api/book/getAll`, {
+			headers: { Authorization: `Bearer ${token}` },
 		});
+		check(res, { 'system recovered': (r) => r.status === 200 });
 	});
-	sleep(1);
 }

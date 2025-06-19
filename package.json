@@ -5,7 +5,7 @@
 	"scripts": {
 		"test:api": "docker-compose --env-file .env.test -f docker-compose.test.yml up --build --exit-code-from api-tester api-tester mongo-test && docker-compose --env-file .env.test -f docker-compose.test.yml down --remove-orphans",
 		"test:api:watch": "docker-compose --env-file .env.test -f docker-compose.test.yml run --rm --service-ports api-tester-watch",
-		"test:api:performance": "docker-compose --env-file .env.test -f docker-compose.test.yml up --build --exit-code-from performance-tester performance-tester backend-e2e mongo-test && docker-compose --env-file .env.test -f docker-compose.test.yml down --remove-orphans",
+		"test:api:performance": "docker-compose --env-file .env.test -f docker-compose.test.yml up --build --exit-code-from performance-tester performance-tester performance-reporter backend-e2e mongo-test && docker-compose --env-file .env.test -f docker-compose.test.yml down --remove-orphans",
 		"test:component": "docker-compose --env-file .env.test -f docker-compose.test.yml up --build --exit-code-from component-tester component-tester && docker-compose --env-file .env.test -f docker-compose.test.yml down -v --remove-orphans",
 		"test:component:fast": "docker-compose --env-file .env.test -f docker-compose.test.yml up --exit-code-from component-tester component-tester && docker-compose --env-file .env.test -f docker-compose.test.yml down -v --remove-orphans",
 		"test:component:watch": "docker-compose --env-file .env.test -f docker-compose.test.yml run --rm --service-ports component-tester-watch",
