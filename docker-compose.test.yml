@@ -226,18 +226,11 @@ services:
       - K6_HOST=http://backend-e2e:8081
       - USER_EMAIL=${TEST_LIBRARIAN_EMAIL}
       - USER_PASSWORD=${TEST_LIBRARIAN_PASSWORD}
+      - K6_WEB_DASHBOARD=true
+      - K6_WEB_DASHBOARD_EXPORT=/app/results/report.html
     command: ['run', 'performance-test.js']
     depends_on:
       - backend-e2e
-
-  # --- Performance Report Generator ---
-  performance-reporter:
-    image: lordgaav/k6-reporter
-    command: '--input /results/k6-result.json --output /results/report.html'
-    volumes:
-      - ./performance/results:/results
-    depends_on:
-      - performance-tester
 
 networks:
   test-network:
