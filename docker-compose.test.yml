@@ -218,6 +218,8 @@ services:
     build:
       context: ./performance
       dockerfile: Dockerfile
+    ports:
+      - '5665:5665'
     networks:
       - test-network
     env_file:
@@ -229,6 +231,8 @@ services:
       - K6_WEB_DASHBOARD=true
       - K6_WEB_DASHBOARD_EXPORT=/app/results/report.html
     command: ['run', 'performance-test.js']
+    volumes:
+      - ./performance:/app
     depends_on:
       - backend-e2e
 
