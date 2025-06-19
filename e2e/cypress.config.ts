@@ -32,6 +32,12 @@ export default defineConfig({
   e2e: {
     baseUrl: process.env.CYPRESS_BASE_URL || 'http://localhost:3000',
     watchForFileChanges: true,
+    specPattern: 'cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
+    excludeSpecPattern: [
+      '**/examples/*',
+      '**/__snapshots__/*',
+      '**/__image_snapshots__/*',
+    ],
     supportFile: 'cypress/support/e2e.ts',
     setupNodeEvents: async (on, config) => {
       const plugin = await import('cypress-mochawesome-reporter/plugin')
