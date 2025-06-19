@@ -115,6 +115,8 @@ describe('Browser Compatibility Testing', () => {
 
         cy.wait(2000)
 
+        cy.extendPagination()
+
         cy.deleteFromTable(newUserEmail)
         cy.wait(2000)
         cy.contains(newUserEmail).should('not.exist')

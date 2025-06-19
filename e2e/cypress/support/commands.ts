@@ -46,6 +46,7 @@ declare global {
       }): Chainable<void>
       performLogout(): Chainable<void>
       deleteFromTable(name: string): Chainable<void>
+      deleteFromCards(name: string): Chainable<void>
       waitForApi(url: string, timeout?: number): Chainable<void>
       clearUserSession(): Chainable<void>
       saveTestData(data: any, filename: string): Chainable<void>
@@ -144,11 +145,18 @@ Cypress.Commands.add('fillBookForm', (book) => {
 
       if (book.author) {
         cy.get('#author-label').parent().find('div[role="combobox"]').click()
-        cy.get('li[role="option"]').contains(book.author).click()
+        cy.wait(500) // Wait for dropdown to be ready
+        cy.xpath('//ul[@role="listbox"][1]').should('be.visible')
+        cy.xpath(`//li[@role="option" and contains(text(), "${book.author}")]`)
+          .should('be.visible')
+          .click()
       }
       if (book.genre) {
         cy.get('#genre-label').parent().find('div[role="combobox"]').click()
-        cy.get('li[role="option"]').contains(book.genre).click()
+        cy.xpath('//ul[@role="listbox"][1]').should('be.visible')
+        cy.xpath(
+          `//li[@role="option" and contains(text(), "${book.genre}")]`
+        ).click()
       }
     })
 })
@@ -181,11 +189,8 @@ Cypress.Commands.add('fillGenreForm', (genre) => {
 
 Cypress.Commands.add('fillReviewForm', (review) => {
   cy.get('div[role="dialog"]').within(() => {
-    cy.get(`label[for*="rating"]`)
-      .contains(`${review.rating} Star`)
-      .prev()
-      .click()
-    cy.get('textarea').clear().type(review.comment)
+    cy.get(`input[class*="MuiRating"][value="${review.rating}"]`).prev().click()
+    cy.get('textarea').first().clear().type(review.comment)
     cy.contains('button', 'Submit Review').click()
   })
 })
@@ -210,9 +215,28 @@ Cypress.Commands.add('deleteFromTable', (name) => {
     cy.get('td:last-child button').click()
   })
   // Refined selector for better stability
-  cy.get('ul[role="menu"]').contains('li', 'Delete').click()
+  cy.get(
+    'body > div.MuiPopover-root.MuiModal-root > div.MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation8.MuiPopover-paper'
+  )
+    .contains('li', 'Delete')
+    .click()
   // Refined selector for better stability
-  cy.get('div[role="dialog"]').contains('button', 'Delete').click()
+  cy.get('div[role="dialog"]').contains('button', 'Yes').click()
+})
+
+Cypress.Commands.add('deleteFromCards', (name) => {
+  cy.contains('div.MuiGrid-root.MuiGrid-container', name).within(() => {
+    cy.get('div:last-child> div > div> span> button').click()
+  })
+
+  // Refined selector for better stability
+  cy.get(
+    'body > div.MuiPopover-root.MuiModal-root > div.MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation8.MuiPopover-paper'
+  )
+    .contains('li', 'Delete')
+    .click()
+  // Refined selector for better stability
+  cy.get('div[role="dialog"]').contains('button', 'Yes').click()
 })
 
 Cypress.Commands.add('waitForApi', (url, timeout = 30000) => {

@@ -13,19 +13,19 @@ describe('E2E: Entity Management (CRUD Operations)', () => {
 
   beforeEach(function () {
     // Set up all potential API intercepts for this test suite
-    cy.intercept('POST', '/api/books').as('createBook')
+    cy.intercept('POST', '/api/books/add').as('createBook')
     cy.intercept('PUT', '/api/books/*').as('updateBook')
-    cy.intercept('DELETE', '/api/books/*').as('deleteBook')
-    cy.intercept('POST', '/api/authors').as('createAuthor')
-    cy.intercept('DELETE', '/api/authors/*').as('deleteAuthor')
-    cy.intercept('POST', '/api/genres').as('createGenre')
-    cy.intercept('DELETE', '/api/genres/*').as('deleteGenre')
-    cy.intercept('POST', '/api/users').as('createUser')
-    cy.intercept('DELETE', '/api/users/*').as('deleteUser')
-    cy.intercept('POST', '/api/borrowals').as('createBorrowal')
-    cy.intercept('PUT', '/api/borrowals/*').as('updateBorrowal')
-    cy.intercept('POST', '/api/reviews').as('createReview')
-    cy.intercept('DELETE', '/api/reviews/*').as('deleteReview')
+    cy.intercept('DELETE', '/api/books/delete/*').as('deleteBook')
+    cy.intercept('POST', '/api/authors/add').as('createAuthor')
+    cy.intercept('DELETE', '/api/authors/delete/*').as('deleteAuthor')
+    cy.intercept('POST', '/api/genres/add').as('createGenre')
+    cy.intercept('DELETE', '/api/genres/delete/*').as('deleteGenre')
+    cy.intercept('POST', '/api/users/add').as('createUser')
+    cy.intercept('DELETE', '/api/users/delete/*').as('deleteUser')
+    cy.intercept('POST', '/api/borrowals/add').as('createBorrowal')
+    cy.intercept('PUT', '/api/borrowals/delete/*').as('updateBorrowal')
+    cy.intercept('POST', '/api/reviews/add').as('createReview')
+    cy.intercept('DELETE', '/api/reviews/delete/*').as('deleteReview')
 
     cy.loginAsLibrarian(
       this.userData.librarian.email,
@@ -54,7 +54,7 @@ describe('E2E: Entity Management (CRUD Operations)', () => {
       cy.contains(newBook.name).should('be.visible')
 
       // Now delete the book
-      cy.deleteFromTable(newBook.name)
+      cy.deleteFromCards(newBook.name)
       cy.wait('@deleteBook').its('response.statusCode').should('eq', 204)
       cy.contains(newBook.name).should('not.exist')
     })
@@ -83,19 +83,27 @@ describe('E2E: Entity Management (CRUD Operations)', () => {
       cy.contains('button', 'Submit').click()
 
       cy.wait('@createAuthor')
-      cy.contains('td', newAuthor.name).should('be.visible')
+
+      cy.extendPagination()
+      cy.get('table > tbody > tr > td:nth-child(2)')
+        .contains(newAuthor.name)
+        .should('be.visible')
     })
 
     it('TC_AUTHOR_DELETE_001: Attempt to delete an author linked to a book', () => {
       cy.visit('/authors')
-      cy.contains('td', 'Agatha Christie')
+      cy.extendPagination()
+      cy.get('table > tbody > tr > td:nth-child(2)')
+        .contains('Isaac Asimov')
+        .parent()
         .parent()
         .within(() => {
           cy.get('td:last-child button').click()
         })
       cy.get('.MuiPopover-root').contains('li', 'Delete').click()
-      cy.get('.MuiDialog-container')
-        .should('be.visible')
+      cy.get('div[role="dialog"]')
+        .contains('button', 'Yes')
+        .click()
         .and('contain.text', 'Cannot delete author')
     })
   })
@@ -115,6 +123,7 @@ describe('E2E: Entity Management (CRUD Operations)', () => {
       cy.contains('button', 'Submit').click()
 
       cy.wait('@createGenre')
+      cy.extendPagination()
       cy.contains('td', newGenre.name).should('be.visible')
     })
   })
@@ -149,11 +158,9 @@ describe('E2E: Entity Management (CRUD Operations)', () => {
       )
       cy.visit('/books')
 
-      cy.contains('.MuiCard-root', 'Murder on the Orient Express').within(
-        () => {
-          cy.contains('button', 'View Details & Reviews').click()
-        }
-      )
+      cy.contains('.MuiCard-root', 'Pride and Prejudice').within(() => {
+        cy.contains('button', 'View Details & Reviews').click()
+      })
 
       const review = {
         rating: 4,
@@ -178,7 +185,6 @@ describe('E2E: Entity Management (CRUD Operations)', () => {
           cy.get('td:last-child button').click()
         })
       cy.get('.MuiPopover-root').contains('li', 'Delete').click()
-      cy.get('.MuiDialog-container').contains('button', 'Delete').click()
       cy.wait('@deleteReview')
       // Add assertion here that the review is gone
     })
