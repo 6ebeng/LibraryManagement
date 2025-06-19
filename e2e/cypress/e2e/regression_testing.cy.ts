@@ -18,11 +18,11 @@ describe('E2E: Regression Testing', () => {
 
   beforeEach(function () {
     cy.clearUserSession()
-    cy.intercept('POST', '/api/books').as('createBook')
-    cy.intercept('PUT', '/api/books/*').as('updateBook')
-    cy.intercept('POST', '/api/users').as('createUser')
-    cy.intercept('POST', '/api/borrowals').as('createBorrowal')
-    cy.intercept('PUT', '/api/borrowals/*').as('updateBorrowal')
+    cy.intercept('POST', '/api/books/add').as('createBook')
+    cy.intercept('PUT', '/api/books/update/*').as('updateBook')
+    cy.intercept('POST', '/api/users/add').as('createUser')
+    cy.intercept('POST', '/api/borrowals/add').as('createBorrowal')
+    cy.intercept('PUT', '/api/borrowals/update/*').as('updateBorrowal')
   })
 
   // --- Authentication & Core Access (Smoke Tests) ---

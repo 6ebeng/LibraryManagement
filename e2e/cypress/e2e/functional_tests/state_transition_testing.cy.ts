@@ -17,8 +17,8 @@ describe('E2E: State Transition Testing', () => {
   })
 
   beforeEach(() => {
-    cy.intercept('POST', '/api/borrowals').as('createBorrowal')
-    cy.intercept('PUT', '/api/borrowals/*').as('updateBorrowal')
+    cy.intercept('POST', '/api/borrowals/add').as('createBorrowal')
+    cy.intercept('PUT', '/api/borrowals/update/*').as('updateBorrowal')
   })
 
   // --- Borrowal Record State Transitions ---

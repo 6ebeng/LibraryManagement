@@ -14,14 +14,14 @@ describe('E2E: Integration Testing', () => {
 
   beforeEach(() => {
     // Set up all potential API intercepts for this test suite
-    cy.intercept('POST', '/api/books').as('createBook')
-    cy.intercept('DELETE', '/api/books/*').as('deleteBook')
-    cy.intercept('POST', '/api/authors').as('createAuthor')
-    cy.intercept('DELETE', '/api/authors/*').as('deleteAuthor')
-    cy.intercept('POST', '/api/genres').as('createGenre')
-    cy.intercept('POST', '/api/users').as('createUser')
-    cy.intercept('DELETE', '/api/users/*').as('deleteUser')
-    cy.intercept('POST', '/api/borrowals').as('createBorrowal')
+    cy.intercept('POST', '/api/books/add').as('createBook')
+    cy.intercept('DELETE', '/api/books/delete/*').as('deleteBook')
+    cy.intercept('POST', '/api/authors/add').as('createAuthor')
+    cy.intercept('DELETE', '/api/authors/delete/*').as('deleteAuthor')
+    cy.intercept('POST', '/api/genres/add').as('createGenre')
+    cy.intercept('POST', '/api/users/add').as('createUser')
+    cy.intercept('DELETE', '/api/users/delete/*').as('deleteUser')
+    cy.intercept('POST', '/api/borrowals/add').as('createBorrowal')
   })
 
   // --- Full Lifecycle - From Entity Creation to Borrowal ---

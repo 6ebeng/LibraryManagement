@@ -16,9 +16,9 @@ describe('E2E: Use Case Testing', () => {
         fixtureUserData = data
       })
     // API intercepts for all tests in this suite
-    cy.intercept('POST', '/api/books').as('createBook')
-    cy.intercept('POST', '/api/users').as('createUser')
-    cy.intercept('POST', '/api/borrowals').as('createBorrowal')
+    cy.intercept('POST', '/api/books/add').as('createBook')
+    cy.intercept('POST', '/api/users/add').as('createUser')
+    cy.intercept('POST', '/api/borrowals/add').as('createBorrowal')
   })
 
   // --- UC-002: Add New Book (Librarian) ---
