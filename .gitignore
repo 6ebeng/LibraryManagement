@@ -155,3 +155,5 @@ docker-compose.prod.yml
 .env.dev
 .env.prod
 .env.test
+
+docs/Presentation/
