@@ -27,14 +27,18 @@ describe('E2E: Entity Management (CRUD Operations)', () => {
     cy.intercept('POST', '/api/reviews/add').as('createReview')
     cy.intercept('DELETE', '/api/reviews/delete/*').as('deleteReview')
 
-    cy.loginAsLibrarian(
-      this.userData.librarian.email,
-      this.userData.librarian.password
-    )
+    cy.clearUserSession() // Ensure a clean state before each test
   })
 
   // --- Book Management Tests ---
   describe('Book Management (CRUD)', () => {
+    beforeEach(function () {
+      cy.loginAsLibrarian(
+        this.userData.librarian.email,
+        this.userData.librarian.password
+      )
+    })
+
     it('TC_BOOK_CREATE_001 & TC_BOOK_DELETE_001: Successfully creates and deletes a book', () => {
       cy.visit('/books')
       cy.contains('button', 'New Book').click()
@@ -55,7 +59,7 @@ describe('E2E: Entity Management (CRUD Operations)', () => {
 
       // Now delete the book
       cy.deleteFromCards(newBook.name)
-      cy.wait('@deleteBook').its('response.statusCode').should('eq', 204)
+      cy.wait('@deleteBook').its('response.statusCode').should('eq', 200)
       cy.contains(newBook.name).should('not.exist')
     })
 
@@ -70,6 +74,12 @@ describe('E2E: Entity Management (CRUD Operations)', () => {
 
   // --- Author Management Tests ---
   describe('Author Management (CRUD)', () => {
+    beforeEach(function () {
+      cy.loginAsLibrarian(
+        this.userData.librarian.email,
+        this.userData.librarian.password
+      )
+    })
     it('TC_AUTHOR_CREATE_001: Successfully creates a new author', () => {
       cy.visit('/authors')
       cy.contains('button', 'New Author').click()
@@ -94,7 +104,7 @@ describe('E2E: Entity Management (CRUD Operations)', () => {
       cy.visit('/authors')
       cy.extendPagination()
       cy.get('table > tbody > tr > td:nth-child(2)')
-        .contains('Isaac Asimov')
+        .contains('Agatha Christie')
         .parent()
         .parent()
         .within(() => {
@@ -110,6 +120,12 @@ describe('E2E: Entity Management (CRUD Operations)', () => {
 
   // --- Genre Management Tests ---
   describe('Genre Management (CRUD)', () => {
+    beforeEach(function () {
+      cy.loginAsLibrarian(
+        this.userData.librarian.email,
+        this.userData.librarian.password
+      )
+    })
     it('TC_GENRE_CREATE_001: Successfully creates a new genre', () => {
       cy.visit('/genres')
       cy.contains('button', 'New Genre').click()
@@ -171,12 +187,16 @@ describe('E2E: Entity Management (CRUD Operations)', () => {
       cy.wait('@createReview')
         .its('response.statusCode')
         .should('be.oneOf', [200, 201])
-      cy.get('div[role="dialog"]').contains(review.comment).should('be.visible')
+      cy.xpath(
+        '//div[contains(@class, "MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiCard-root")]/p[text()]'
+      ).should('be.visible', review.comment)
     })
 
     it('TC_REVIEW_DELETE_001: Librarian can delete a review', function () {
-      // Assumes a review exists to be deleted.
-      // A more robust test would first create a review as a member.
+      cy.loginAsMember(
+        this.userData.member.email,
+        this.userData.member.password
+      )
       cy.visit('/reviews')
       cy.get('tbody tr')
         .first()

@@ -21,6 +21,11 @@ describe('E2E: Specific Feature Testing', () => {
       })
   })
 
+  beforeEach(() => {
+    // Clear user session before each test to ensure a clean state
+    cy.clearUserSession()
+  })
+
   // --- Dashboard Feature Tests (Librarian vs. Member) ---
   describe('Dashboard Access Control', () => {
     it('TC_DASH_001: Verify Librarian can access the Dashboard', function () {
