@@ -100,7 +100,7 @@ describe('E2E: Regression Testing', () => {
       cy.visit('/books')
       cy.contains('button', 'New Book').click()
       cy.fillBookForm(bookData)
-      cy.get('div[role="dialog"]').contains('button', 'Submit').click()
+      cy.get('div[role="presentation"]').contains('button', 'Submit').click()
       cy.wait('@createBook')
       cy.contains('.MuiCard-root', bookData.name).should('be.visible')
 
@@ -108,15 +108,17 @@ describe('E2E: Regression Testing', () => {
       cy.contains('.MuiCard-root', bookData.name)
         .contains('button', 'View Details & Reviews')
         .click()
-      cy.get('div[role="dialog"]').contains('button', 'Edit').click()
+      cy.get('div[role="presentation"]').contains('button', 'Edit').click()
       const updatedSummary = `Updated summary at ${new Date().toLocaleTimeString()}`
-      cy.get('div[role="dialog"]')
+      cy.get('div[role="presentation"]')
         .find('textarea[name="summary"]')
         .clear()
         .type(updatedSummary)
-      cy.get('div[role="dialog"]').contains('button', 'Submit').click()
+      cy.get('div[role="presentation"]').contains('button', 'Submit').click()
       cy.wait('@updateBook')
-      cy.get('div[role="dialog"]').contains(updatedSummary).should('be.visible')
+      cy.get('div[role="presentation"]')
+        .contains(updatedSummary)
+        .should('be.visible')
     })
 
     it('TC_REG_CRUD_003: Librarian can register a new user who can then log in', function () {
@@ -130,7 +132,7 @@ describe('E2E: Regression Testing', () => {
 
       cy.contains('button', 'New User').click()
       cy.fillRegistrationForm(userData)
-      cy.get('div[role="dialog"]').contains('button', 'Submit').click()
+      cy.get('div[role="presentation"]').contains('button', 'Submit').click()
       cy.wait('@createUser')
       cy.extendPagination()
       cy.contains('td', userData.email).should('be.visible')
@@ -154,11 +156,13 @@ describe('E2E: Regression Testing', () => {
       cy.contains('.MuiCard-root', '1984')
         .contains('button', 'View Details & Reviews')
         .click()
-      cy.get('div[role="dialog"]').contains('button', 'Borrow Book').click()
-      cy.get('div[role="dialog"]')
+      cy.get('div[role="presentation"]')
+        .contains('button', 'Borrow Book')
+        .click()
+      cy.get('div[role="presentation"]')
         .find('#member')
         .should('contain', this.userData.member.name)
-      cy.get('div[role="dialog"]').contains('button', 'Submit').click()
+      cy.get('div[role="presentation"]').contains('button', 'Submit').click()
       cy.wait('@createBorrowal')
 
       // Verify book is unavailable
@@ -166,10 +170,10 @@ describe('E2E: Regression Testing', () => {
       cy.contains('.MuiCard-root', '1984')
         .contains('button', 'View Details & Reviews')
         .click()
-      cy.get('div[role="dialog"]')
+      cy.get('div[role="presentation"]')
         .contains('span', 'Not Available')
         .should('be.visible')
-      cy.get('div[role="dialog"]').contains('button', 'Close').click()
+      cy.get('div[role="presentation"]').contains('button', 'Close').click()
 
       // Librarian returns the book
       cy.loginAsLibrarian(
@@ -187,7 +191,7 @@ describe('E2E: Regression Testing', () => {
       cy.contains('.MuiCard-root', '1984')
         .contains('button', 'View Details & Reviews')
         .click()
-      cy.get('div[role="dialog"]')
+      cy.get('div[role="presentation"]')
         .contains('span', 'Available')
         .should('be.visible')
     })

@@ -43,7 +43,7 @@ describe('E2E: Use Case Testing', () => {
       }
 
       cy.fillBookForm(newBook)
-      cy.get('div[role="dialog"]').contains('button', 'Submit').click()
+      cy.get('div[role="presentation"]').contains('button', 'Submit').click()
       cy.wait('@createBook')
 
       cy.contains('.MuiCard-root', newBook.name).should('be.visible')
@@ -53,10 +53,10 @@ describe('E2E: Use Case Testing', () => {
       cy.visit('/books')
       cy.contains('button', 'New Book').click()
 
-      cy.get('div[role="dialog"]').contains('button', 'Submit').click()
+      cy.get('div[role="presentation"]').contains('button', 'Submit').click()
       cy.contains('Name is required').should('be.visible')
-      cy.get('div[role="dialog"]').should('be.visible')
-      cy.get('div[role="dialog"]').contains('button', 'Cancel').click()
+      cy.get('div[role="presentation"]').should('be.visible')
+      cy.get('div[role="presentation"]').contains('button', 'Cancel').click()
     })
   })
 
@@ -75,29 +75,38 @@ describe('E2E: Use Case Testing', () => {
         .contains('button', 'View Details & Reviews')
         .click()
 
-      cy.get('div[role="dialog"]').contains('button', 'Borrow Book').click()
+      cy.get('div[role="presentation"]')
+        .contains('span', 'Available')
+        .should('be.visible')
+
+      cy.visit('/borrowals')
+      cy.contains('button', 'New Borrowal').click()
+
+      cy.get('div.MuiModal-root').within(() => {
+        cy.get('#book').parent().click()
+        cy.get('li[role="option"]').contains('1984').click()
+      })
 
       // Verify Member field is auto-populated and dates are correct
-      cy.get('div[role="dialog"]')
+      cy.get('div[role="presentation"]')
         .find('#member')
         .should('contain', fixtureUserData.member.name)
       const today = new Date().toISOString().split('T')[0]
       cy.get('input[name="borrowedDate"]').should('have.value', today)
 
-      cy.get('div[role="dialog"]').contains('button', 'Submit').click()
+      cy.get('div[role="presentation"]').contains('button', 'Submit').click()
       cy.wait('@createBorrowal')
 
-      cy.visit('/reviews')
       cy.contains('tr', '1984').should('be.visible')
     })
 
     it('TC_UC_BORROW_002: Attempt to borrow an unavailable book (Alternative Flow A1)', () => {
       // This test assumes a book named 'Foundation' is already borrowed and thus unavailable.
       cy.visit('/books')
-      cy.contains('.MuiCard-root', 'Foundation')
+      cy.contains('.MuiCard-root', '1984')
         .contains('button', 'View Details & Reviews')
         .click()
-      cy.get('div[role="dialog"]').within(() => {
+      cy.get('div[role="presentation"]').within(() => {
         cy.get('span').contains('Not Available').should('be.visible')
         cy.get('button').contains('Borrow Book').should('not.exist')
       })
@@ -134,7 +143,7 @@ describe('E2E: Use Case Testing', () => {
       cy.visit('/users')
       cy.contains('button', 'New User').click()
       cy.fillRegistrationForm(newUser)
-      cy.get('div[role="dialog"]').contains('button', 'Submit').click()
+      cy.get('div[role="presentation"]').contains('button', 'Submit').click()
       cy.wait('@createUser')
 
       cy.loginAsMember(newUser.email, newUser.password)

@@ -58,14 +58,14 @@ describe('E2E: Integration Testing', () => {
       cy.visit('/authors')
       cy.contains('button', 'New Author').click()
       cy.fillAuthorForm(testData.author)
-      cy.get('.MuiDialog-container').contains('button', 'Submit').click()
+      cy.get('div[role="presentation"]').contains('button', 'Submit').click()
       cy.wait('@createAuthor')
 
       // Create Genre
       cy.visit('/genres')
       cy.contains('button', 'New Genre').click()
       cy.fillGenreForm(testData.genre)
-      cy.get('.MuiDialog-container').contains('button', 'Submit').click()
+      cy.get('div[role="presentation"]').contains('button', 'Submit').click()
       cy.wait('@createGenre')
 
       // Create Book with linked entities
@@ -76,7 +76,7 @@ describe('E2E: Integration Testing', () => {
         author: testData.author.name,
         genre: testData.genre.name,
       })
-      cy.get('.MuiDialog-container').contains('button', 'Submit').click()
+      cy.get('div[role="presentation"]').contains('button', 'Submit').click()
       cy.wait('@createBook')
       cy.contains(testData.book.name).should('be.visible')
 
@@ -84,7 +84,7 @@ describe('E2E: Integration Testing', () => {
       cy.visit('/users')
       cy.contains('button', 'New User').click()
       cy.fillRegistrationForm(testData.member)
-      cy.get('.MuiDialog-container').contains('button', 'Submit').click()
+      cy.get('div[role="presentation"]').contains('button', 'Submit').click()
       cy.wait('@createUser')
       cy.extendPagination()
       cy.contains(testData.member.name).should('be.visible')
@@ -94,16 +94,13 @@ describe('E2E: Integration Testing', () => {
       cy.loginAsMember(testData.member.email, testData.member.password)
 
       // Find and borrow the book
-      cy.visit('/books')
-      cy.contains('.MuiCard-root', testData.book.name)
-        .contains('button', 'View Details & Reviews')
-        .click()
-      cy.get('div[role="dialog"]').contains('button', 'Borrow Book').click()
-      cy.get('div[role="dialog"]').contains('button', 'Submit').click()
+      cy.visit('/borrowals')
+      cy.contains('button', 'New Borrowal').click()
+      cy.get('div[role="presentation"]').contains('button', 'Submit').click()
       cy.wait('@createBorrowal')
 
       // Verify borrowal and book status change
-      cy.visit('/reviews')
+      cy.visit('/borrowals')
       cy.extendPagination()
       cy.contains(testData.book.name).should('be.visible')
 
@@ -111,8 +108,8 @@ describe('E2E: Integration Testing', () => {
       cy.contains('.MuiCard-root', testData.book.name)
         .contains('button', 'View Details & Reviews')
         .click()
-      cy.get('div[role="dialog"]')
-        .contains('span', 'Not Available')
+      cy.get('div[role="presentation"]')
+        .contains('span', 'Not available')
         .should('be.visible')
     })
   })
@@ -130,7 +127,7 @@ describe('E2E: Integration Testing', () => {
       cy.contains('td', 'Agatha Christie').parent().as('authorRow')
       cy.get('@authorRow').find('td:last-child button').click()
       cy.get('ul[role="menu"]').contains('li', 'Delete').click()
-      cy.get('div[role="dialog"]')
+      cy.get('div[role="presentation"]')
         .should('be.visible')
         .and('contain.text', 'Cannot delete author with associated books')
     })
@@ -146,12 +143,12 @@ describe('E2E: Integration Testing', () => {
       cy.contains('.MuiCard-root', '1984')
         .contains('button', 'View Details & Reviews')
         .click()
-      cy.get('div[role="dialog"]')
+      cy.get('div[role="presentation"]')
         .contains('button', 'Borrow Book')
         .click({ force: true })
-      cy.get('div[role="dialog"]').find('#member-label').parent().click()
+      cy.get('div[role="presentation"]').find('#member-label').parent().click()
       cy.get('li[role="option"]').contains(this.userData.member.email).click()
-      cy.get('div[role="dialog"]').contains('button', 'Submit').click()
+      cy.get('div[role="presentation"]').contains('button', 'Submit').click()
       cy.wait('@createBorrowal')
 
       // Test: Attempt to delete the user
@@ -160,7 +157,7 @@ describe('E2E: Integration Testing', () => {
       cy.deleteFromTable(this.userData.member.name)
 
       // Verification
-      cy.get('div[role="dialog"]').should(
+      cy.get('div[role="presentation"]').should(
         'contain.text',
         'Cannot delete user with active borrowals'
       )
