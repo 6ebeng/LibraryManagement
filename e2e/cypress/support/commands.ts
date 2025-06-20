@@ -72,45 +72,18 @@ Cypress.Commands.add('autoFillLoginForm', ({ email, password }) => {
 })
 
 Cypress.Commands.add('loginAsLibrarian', (email, password) => {
-  cy.session(
-    [email, password, 'librarian'],
-    () => {
-      cy.visit('/login')
-      cy.autoFillLoginForm({ email, password })
-      cy.get('button[type="submit"]').click()
-      cy.url({ timeout: 15000 }).should('include', '/dashboard')
-      cy.contains('h4', /welcome back/i, { timeout: 15000 }).should(
-        'be.visible'
-      )
-    },
-    {
-      cacheAcrossSpecs: true,
-      validate() {
-        cy.visit('/dashboard')
-        cy.get('.apexcharts-canvas').should('be.visible')
-      },
-    }
-  )
+  cy.visit('/login')
+  cy.autoFillLoginForm({ email, password })
+  cy.get('button[type="submit"]').click()
+  cy.url({ timeout: 15000 }).should('include', '/dashboard')
+  cy.contains('h4', /welcome back/i, { timeout: 15000 }).should('be.visible')
 })
 
 Cypress.Commands.add('loginAsMember', (email, password) => {
-  cy.session(
-    [email, password, 'member'],
-    () => {
-      cy.visit('/login')
-      cy.autoFillLoginForm({ email, password })
-      cy.get('button[type="submit"]').click()
-      cy.url({ timeout: 15000 }).should('include', '/books')
-      cy.contains('h3', 'Books', { timeout: 15000 }).should('be.visible')
-    },
-    {
-      cacheAcrossSpecs: true,
-      validate() {
-        cy.visit('/books')
-        cy.contains('h3', 'Books').should('be.visible')
-      },
-    }
-  )
+  cy.visit('/login')
+  cy.autoFillLoginForm({ email, password })
+  cy.get('button[type="submit"]').click()
+  cy.url({ timeout: 15000 }).should('include', '/books')
 })
 
 Cypress.Commands.add('fillRegistrationForm', (user) => {

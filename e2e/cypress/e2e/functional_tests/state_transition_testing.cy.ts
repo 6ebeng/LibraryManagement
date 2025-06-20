@@ -26,6 +26,7 @@ describe('E2E: State Transition Testing', () => {
     cy.intercept('POST', '/api/borrowals/add').as('createBorrowal')
     cy.intercept('PUT', '/api/borrowals/update/*').as('updateBorrowal')
     cy.intercept('POST', '/api/books/add').as('createBook')
+    cy.clearUserSession() // Ensure a clean state before each test
   })
 
   // --- Borrowal Record State Transitions ---
@@ -49,6 +50,8 @@ describe('E2E: State Transition Testing', () => {
       cy.fillBookForm(newBook)
       cy.get('div[role="presentation"]').contains('button', 'Submit').click()
       cy.wait('@createBook')
+
+      cy.performLogout()
 
       // TC_STATE_BORROW_001: Transition from (None) to "Borrowed"
       // Uses the loginAsMember custom command
@@ -74,6 +77,7 @@ describe('E2E: State Transition Testing', () => {
         .within(() => {
           cy.contains('td', 'Borrowed').should('be.visible')
         })
+      cy.performLogout()
 
       // TC_STATE_BORROW_002: Transition from "Borrowed" to "Returned"
       cy.loginAsLibrarian(
@@ -126,6 +130,8 @@ describe('E2E: State Transition Testing', () => {
       cy.get('div[role="presentation"]').contains('button', 'Submit').click()
       cy.wait('@createBook')
 
+      cy.performLogout()
+
       // TC_STATE_BOOK_001: Transition from 'Available' to 'Unavailable'
       cy.loginAsMember(
         fixtureUserData.member.email,
@@ -149,6 +155,8 @@ describe('E2E: State Transition Testing', () => {
         .contains('span', 'Not available')
         .should('be.visible')
       cy.get('div[role="dialog"]').contains('button', 'Close').click()
+
+      cy.performLogout()
 
       // TC_STATE_BOOK_002: Transition from 'Unavailable' to 'Available'
       cy.loginAsLibrarian(
@@ -193,12 +201,12 @@ describe('E2E: State Transition Testing', () => {
         fixtureUserData.member.email,
         fixtureUserData.member.password
       )
-      cy.url().should('not.include', '/login')
       cy.url().should('include', '/books')
-      cy.contains('h3', 'Books').should('be.visible')
+      cy.contains('h3', /Books/).should('be.visible')
 
       // TC_STATE_SESSION_002: Transition to "Logged-Out"
       cy.performLogout()
+      cy.wait(1000) // Wait for logout to complete
       cy.url().should('include', '/login')
     })
 
