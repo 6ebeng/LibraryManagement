@@ -20,7 +20,7 @@
   "devDependencies": {
     "@cypress/react": "^9.0.1",
     "@cypress/react18": "^2.0.1",
-    "@types/node": "^22.15.30",
+    "@types/node": "^24.0.3",
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "@typescript-eslint/parser": "^7.8.0",
     "ajv": "^8.13.0",
