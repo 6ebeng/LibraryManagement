@@ -130,7 +130,7 @@ const BorrowalPage = () => {
   }
 
   const deleteBorrowal = () => {
-    axios.delete(apiUrl(routes.BORROWAL, methods.PUT, selectedBorrowalId))
+    axios.delete(apiUrl(routes.BORROWAL, methods.DELETE, selectedBorrowalId))
       .then((response) => {
         toast.success("Borrowal deleted");
         handleCloseDialog();
