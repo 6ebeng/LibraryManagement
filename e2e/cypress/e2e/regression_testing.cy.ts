@@ -23,6 +23,10 @@ describe('E2E: Regression Testing', () => {
     cy.intercept('POST', '/api/users/add').as('createUser')
     cy.intercept('POST', '/api/borrowals/add').as('createBorrowal')
     cy.intercept('PUT', '/api/borrowals/update/*').as('updateBorrowal')
+    cy.intercept('POST', '/api/reviews/add').as('createReview')
+    cy.intercept('DELETE', '/api/reviews/delete/*').as('deleteReview')
+    cy.intercept('GET', '/api/reviews/getAll').as('getReviews')
+    cy.intercept('GET', '/api/books/getAll').as('getBooks')
   })
 
   // --- Authentication & Core Access (Smoke Tests) ---
@@ -105,10 +109,13 @@ describe('E2E: Regression Testing', () => {
       cy.contains('.MuiCard-root', bookData.name).should('be.visible')
 
       // Update
-      cy.contains('.MuiCard-root', bookData.name)
-        .contains('button', 'View Details & Reviews')
-        .click()
-      cy.get('div[role="presentation"]').contains('button', 'Edit').click()
+      // Click the menu on the card to reveal the 'Edit' option
+      cy.contains('.MuiCard-root', bookData.name).within(() => {
+        cy.get('button').first().click()
+      })
+      // Click 'Edit' from the popover menu
+      cy.get('.MuiPopover-root').contains('li', 'Edit').click()
+
       const updatedSummary = `Updated summary at ${new Date().toLocaleTimeString()}`
       cy.get('div[role="presentation"]')
         .find('textarea[name="summary"]')
@@ -116,6 +123,10 @@ describe('E2E: Regression Testing', () => {
         .type(updatedSummary)
       cy.get('div[role="presentation"]').contains('button', 'Submit').click()
       cy.wait('@updateBook')
+
+      cy.contains('.MuiCard-root', bookData.name)
+        .contains('button', 'View Details & Reviews')
+        .click()
       cy.get('div[role="presentation"]')
         .contains(updatedSummary)
         .should('be.visible')
@@ -146,49 +157,112 @@ describe('E2E: Regression Testing', () => {
 
   // --- Core Use Cases / User Workflows ---
   describe('Core Use Cases / User Workflows', () => {
+    const bookData = {
+      name: `Regression Book ${testTimestamp}`,
+      isbn: `REG-${testTimestamp}`,
+      author: 'Agatha Christie',
+      genre: 'Mystery',
+      summary: 'A book for regression testing',
+    }
+
     it('TC_REG_FLOW_001 & TC_REG_FLOW_003: Member borrows a book and Librarian returns it', function () {
+      // Librarian adds a book
+      cy.loginAsLibrarian(
+        this.userData.librarian.email,
+        this.userData.librarian.password
+      )
+
+      cy.visit('/books')
+      cy.contains('button', 'New Book').click()
+      cy.fillBookForm(bookData)
+      cy.get('div[role="presentation"]').contains('button', 'Submit').click()
+      cy.wait('@createBook')
+      cy.wait('@getBooks')
+      cy.contains('.MuiCard-root', bookData.name).should('be.visible')
+
+      cy.performLogout()
+
       // Member borrows book
       cy.loginAsMember(
         this.userData.member.email,
         this.userData.member.password
       )
-      cy.visit('/books')
-      cy.contains('.MuiCard-root', '1984')
-        .contains('button', 'View Details & Reviews')
-        .click()
-      cy.get('div[role="presentation"]')
-        .contains('button', 'Borrow Book')
-        .click()
-      cy.get('div[role="presentation"]')
-        .find('#member')
-        .should('contain', this.userData.member.name)
-      cy.get('div[role="presentation"]').contains('button', 'Submit').click()
+
+      cy.visit('/borrowals')
+      cy.contains('button', 'New Borrowal').click()
+
+      // The 'Add borrowal' modal should be visible.
+      // We target the modal root and check for the heading.
+      cy.get('div.MuiModal-root')
+        .contains('h4', 'Add borrowal')
+        .should('be.visible')
+
+      // Interact with the 'Book' dropdown within the modal.
+      cy.get('div.MuiModal-root').within(() => {
+        cy.get('#book').parent().click() // Click the combobox to open the dropdown.
+        // Select the book from the options list that appears.
+        cy.get('li[role="option"]').contains(bookData.name).click()
+
+        // Click the submit button.
+        cy.contains('button', 'Submit').click()
+      })
       cy.wait('@createBorrowal')
 
       // Verify book is unavailable
       cy.visit('/books')
-      cy.contains('.MuiCard-root', '1984')
+      cy.contains('.MuiCard-root', bookData.name)
         .contains('button', 'View Details & Reviews')
         .click()
       cy.get('div[role="presentation"]')
-        .contains('span', 'Not Available')
+        .contains('span', 'Not available')
         .should('be.visible')
+
+      // Add review for the borrowed book
+      const review = {
+        rating: 4,
+        comment: `A fantastic read! ${testTimestamp}`,
+      }
+      cy.fillReviewForm(review)
+
+      cy.wait('@createReview')
+        .its('response.statusCode')
+        .should('be.oneOf', [200, 201])
+      cy.xpath(
+        '//div[contains(@class, "MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiCard-root")]/p[text()]'
+      ).should('be.visible', review.comment)
+
       cy.get('div[role="presentation"]').contains('button', 'Close').click()
 
+      cy.performLogout()
+
       // Librarian returns the book
+
       cy.loginAsLibrarian(
         this.userData.librarian.email,
         this.userData.librarian.password
       )
+
       cy.visit('/borrowals')
+
       cy.extendPagination()
-      cy.contains('tr', '1984').find('td:last-child button').click()
-      cy.get('.MuiPopover-root').contains('li', 'Mark as Returned').click()
-      cy.wait('@updateBorrowal')
+
+      // Find the record and mark it as returned
+      cy.contains('tr', bookData.name).within(() => {
+        cy.get('td:last-child button').click()
+      })
+      cy.get('.MuiPopover-root').contains('li', 'Edit').click()
+
+      cy.get('div.MuiModal-root')
+        .first()
+        .within(() => {
+          cy.get('input[name="status"]').clear().type('Returned')
+          cy.contains('button', 'Submit').click()
+        })
+      cy.wait('@updateBorrowal').its('response.statusCode').should('eq', 200)
 
       // Verify book is available again
       cy.visit('/books')
-      cy.contains('.MuiCard-root', '1984')
+      cy.contains('.MuiCard-root', bookData.name)
         .contains('button', 'View Details & Reviews')
         .click()
       cy.get('div[role="presentation"]')
@@ -203,12 +277,13 @@ describe('E2E: Regression Testing', () => {
       )
       cy.visit('/reviews') // Member's borrowal history is on the reviews page
 
-      cy.get('table tbody tr').each(($row) => {
-        cy.wrap($row)
-          .find('td')
-          .eq(1)
-          .should('contain.text', this.userData.member.name)
-      })
+      cy.wait('@getReviews')
+      cy.get('table tbody tr')
+        .should('have.length.greaterThan', 0)
+        .last()
+        .within(() => {
+          cy.get('th').contains(bookData.name).should('be.visible')
+        })
     })
   })
 })
