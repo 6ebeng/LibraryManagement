@@ -11,7 +11,7 @@ import { AuthProvider } from '../../hooks/useAuth';
 // Mocks
 jest.mock('../../hooks/useAuth', () => ({
   useAuth: jest.fn(),
-  AuthProvider: ({ children }) => <div>{children}</div>,
+  AuthProvider: ({ children }) => React.createElement('div', null, children),
 }));
 
 const mockUseAuth = require('../../hooks/useAuth').useAuth;

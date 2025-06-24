@@ -32,12 +32,32 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app"
-    ]
+      "react-app",
+      "react-app/jest"
+    ],
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+      "requireConfigFile": false,
+      "babelOptions": {
+        "presets": [
+          [
+            "@babel/preset-react",
+            {
+              "runtime": "automatic"
+            }
+          ]
+        ]
+      }
+    }
   },
   "babel": {
     "presets": [
-      "@babel/preset-react"
+      [
+        "@babel/preset-react",
+        {
+          "runtime": "automatic"
+        }
+      ]
     ]
   },
   "browserslist": {
@@ -78,7 +98,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
-    "@babel/eslint-parser": "^7.19.1",
+    "@babel/eslint-parser": "^7.24.1",
+    "@babel/preset-env": "^7.27.2",
+    "@babel/preset-react": "^7.27.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
